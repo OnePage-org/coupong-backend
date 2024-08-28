@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 public class Certification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String username;
 
     private String email;
     /* 인증번호 */
     private String certification;
+
 }
