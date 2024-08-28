@@ -1,5 +1,6 @@
 package com.onepage.coupong.sign.entity;
 
+import com.onepage.coupong.sign.dto.request.SignUpRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,4 +27,11 @@ public class User {
     /* ROLE_USER / ROLE_ADMIN */
     private String role;
 
+    public User(SignUpRequestDto dto) {
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+        this.email = dto.getEmail();
+        type = "WEB";
+        role = "ROLE_USER";
+    }
 }
