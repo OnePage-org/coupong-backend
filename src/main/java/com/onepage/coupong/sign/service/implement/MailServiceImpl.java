@@ -1,8 +1,10 @@
 package com.onepage.coupong.sign.service.implement;
 
 import com.onepage.coupong.common.RandomNumber;
+import com.onepage.coupong.sign.dto.request.CheckEmailCertificationRequestDto;
 import com.onepage.coupong.sign.dto.request.EmailCertificationRequestDto;
 import com.onepage.coupong.sign.dto.response.ResponseDto;
+import com.onepage.coupong.sign.dto.response.auth.CheckEmailCertificationResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.EmailCertificationResponseDto;
 import com.onepage.coupong.sign.entity.Certification;
 import com.onepage.coupong.sign.repository.CertificationRepository;
@@ -84,5 +86,24 @@ public class MailServiceImpl implements MailService {
         message.setFrom(id);
 
         return message;
+    }
+
+    /* 사용자가 입력한 인증번호와 서버에서 생성한 인증번호를 비교하는 메서드 */
+    @Override
+    public ResponseEntity<? super CheckEmailCertificationResponseDto> verifyCode(CheckEmailCertificationRequestDto dto) {
+
+        String code = dto.getCertification();
+        Certification certification = certificationRepository.findCertificationByUsername(dto.getUsername());
+
+        try {
+            if (!code.equals(certification.getCertification())) {
+                return CheckEmailCertificationResponseDto.certificationFailed();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return CheckEmailCertificationResponseDto.success();
     }
 }

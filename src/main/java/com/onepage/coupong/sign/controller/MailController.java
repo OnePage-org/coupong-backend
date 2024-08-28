@@ -1,6 +1,8 @@
 package com.onepage.coupong.sign.controller;
 
+import com.onepage.coupong.sign.dto.request.CheckEmailCertificationRequestDto;
 import com.onepage.coupong.sign.dto.request.EmailCertificationRequestDto;
+import com.onepage.coupong.sign.dto.response.auth.CheckEmailCertificationResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.EmailCertificationResponseDto;
 import com.onepage.coupong.sign.service.MailService;
 import jakarta.validation.Valid;
@@ -21,9 +23,16 @@ public class MailController {
     @PostMapping("/sendMail")
     ResponseEntity<? super EmailCertificationResponseDto> sendMail(
             @RequestBody @Valid EmailCertificationRequestDto requestBody
-            ) throws Exception{
+    ) throws Exception {
         ResponseEntity<? super EmailCertificationResponseDto> response = mailService.sendMessage(requestBody);
         return response;
     }
 
+    @PostMapping("/checkCertification")
+    ResponseEntity<? super CheckEmailCertificationResponseDto> checkCertification(
+            @RequestBody @Valid CheckEmailCertificationRequestDto requestBody
+            ) {
+        ResponseEntity<? super CheckEmailCertificationResponseDto> response = mailService.verifyCode(requestBody);
+        return response;
+    }
 }
