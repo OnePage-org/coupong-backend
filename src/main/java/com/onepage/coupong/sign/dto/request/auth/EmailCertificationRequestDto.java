@@ -1,4 +1,4 @@
-package com.onepage.coupong.sign.dto.request;
+package com.onepage.coupong.sign.dto.request.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CheckEmailCertificationRequestDto {
+public class EmailCertificationRequestDto {
 
     @NotBlank
     private String username;
@@ -17,7 +17,4 @@ public class CheckEmailCertificationRequestDto {
     @NotBlank
     @Email
     private String email;
-
-    @NotBlank
-    private String certification;
 }

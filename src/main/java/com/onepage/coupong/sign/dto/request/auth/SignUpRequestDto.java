@@ -1,8 +1,7 @@
-package com.onepage.coupong.sign.dto.request;
+package com.onepage.coupong.sign.dto.request.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

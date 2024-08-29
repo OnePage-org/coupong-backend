@@ -1,7 +1,7 @@
 package com.onepage.coupong.sign.service.implement;
 
-import com.onepage.coupong.sign.dto.request.IdCheckRequestDto;
-import com.onepage.coupong.sign.dto.request.SignUpRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.IdCheckRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
 import com.onepage.coupong.sign.dto.response.ResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.IdCheckResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignUpResponseDto;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

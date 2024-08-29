@@ -1,6 +1,6 @@
 package com.onepage.coupong.sign.entity;
 
-import com.onepage.coupong.sign.dto.request.SignUpRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

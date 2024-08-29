@@ -1,7 +1,7 @@
 package com.onepage.coupong.sign.service;
 
-import com.onepage.coupong.sign.dto.request.CheckEmailCertificationRequestDto;
-import com.onepage.coupong.sign.dto.request.EmailCertificationRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.CheckEmailCertificationRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.EmailCertificationRequestDto;
 import com.onepage.coupong.sign.dto.response.auth.CheckEmailCertificationResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.EmailCertificationResponseDto;
 import org.springframework.http.ResponseEntity;

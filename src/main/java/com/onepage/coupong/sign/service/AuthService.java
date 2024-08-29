@@ -1,7 +1,7 @@
 package com.onepage.coupong.sign.service;
 
-import com.onepage.coupong.sign.dto.request.IdCheckRequestDto;
-import com.onepage.coupong.sign.dto.request.SignUpRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.IdCheckRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
 import com.onepage.coupong.sign.dto.response.auth.IdCheckResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignUpResponseDto;
 import org.springframework.http.ResponseEntity;
