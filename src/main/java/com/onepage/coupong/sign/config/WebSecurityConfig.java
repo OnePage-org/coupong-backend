@@ -1,6 +1,8 @@
 package com.onepage.coupong.sign.config;
 
 import com.onepage.coupong.sign.filter.JwtAuthenticationFilter;
+import com.onepage.coupong.sign.service.implement.OAuth2UserServiceImpl;
+import com.onepage.coupong.sign.handler.OAuth2SuccessHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +32,8 @@ import java.io.IOException;
 public class WebSecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2UserServiceImpl oAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
@@ -42,12 +46,19 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "api/v1/auth/**").permitAll()
+                        .requestMatchers("/", "api/v1/auth/**", "/oauth2/**").permitAll()
                         .requestMatchers("/api/v1/user/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         /* 이메일을 보내기 위한 API 허용 */
                         .requestMatchers("/api/v1/mail/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                /* OAuth2 관련 */
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))

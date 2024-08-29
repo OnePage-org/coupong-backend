@@ -34,4 +34,12 @@ public class User {
         type = "WEB";
         role = "ROLE_USER";
     }
+
+    public User(String username, String email, String type) {
+        this.username = username;
+        password = "tempPassword";
+        this.email = email;
+        this.type = type;
+        role = "ROLE_USER";
+    }
 }
