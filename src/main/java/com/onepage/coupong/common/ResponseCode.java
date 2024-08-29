@@ -2,6 +2,7 @@ package com.onepage.coupong.common;
 
 public interface ResponseCode {
 
+    /* 모든 경우에 발생하는 경우 */
     /* 성공 */
     String SUCCESS = "SU";
 
@@ -10,7 +11,6 @@ public interface ResponseCode {
 
     /* 사용자의 요구 사항에 대해 실패 */
     String VALIDATION_FAILED = "VF";
-
 
     /* 회원가입 및 로그인 관련 */
     /* 아이디 중복 */

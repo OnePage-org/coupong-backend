@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/* 회원가입시 인증번호를 요청하게 되면 log 형식처럼 데이터가 쌓이는 구조로 생각 */
-
+/* 회원가입시 인증번호를 검증할 때 활용할 데이터
+* 인증번호 메일을 보낼 때 생성하게 됨 */
 @Entity
 @Getter
 @NoArgsConstructor

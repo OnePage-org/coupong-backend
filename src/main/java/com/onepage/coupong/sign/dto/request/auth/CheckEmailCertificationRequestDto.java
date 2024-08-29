@@ -11,6 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CheckEmailCertificationRequestDto {
 
+    /* @NotBlank와 @Email 어노테이션에 대해 설명 필요 */
+
     @NotBlank
     private String username;
 

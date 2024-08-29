@@ -27,6 +27,8 @@ public class User {
     /* ROLE_USER / ROLE_ADMIN */
     private String role;
 
+    /* 이메일 인증을 통해 회원가입할 때 사용할 생성자
+    * 웹페이지에서 회원가입하기 때문에 type은 WEB으로 저장됨 */
     public User(SignUpRequestDto dto) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
@@ -35,6 +37,8 @@ public class User {
         role = "ROLE_USER";
     }
 
+    /* OAuth를 활용해서 유저 정보를 저장할 때 사용할 생성자
+    * type에는 kakao 또는 naver가 들어감 */
     public User(String username, String email, String type) {
         this.username = username;
         password = "tempPassword";

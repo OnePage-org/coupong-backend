@@ -20,6 +20,7 @@ public class MailController {
 
     private final MailService mailService;
 
+    /* 메일 전송 API */
     @PostMapping("/sendMail")
     ResponseEntity<? super EmailCertificationResponseDto> sendMail(
             @RequestBody @Valid EmailCertificationRequestDto requestBody
@@ -28,6 +29,7 @@ public class MailController {
         return response;
     }
 
+    /* 인증번호 검증 API */
     @PostMapping("/checkCertification")
     ResponseEntity<? super CheckEmailCertificationResponseDto> checkCertification(
             @RequestBody @Valid CheckEmailCertificationRequestDto requestBody

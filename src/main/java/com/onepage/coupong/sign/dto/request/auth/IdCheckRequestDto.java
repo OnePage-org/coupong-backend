@@ -10,7 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class IdCheckRequestDto {
 
-    /* 필수값이기 때문에 @NotBlank 어노테이션 사용 */
     @NotBlank
     private String username;
 }

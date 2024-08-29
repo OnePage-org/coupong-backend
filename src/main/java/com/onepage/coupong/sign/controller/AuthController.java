@@ -22,6 +22,9 @@ public class AuthController {
 
     private final AuthService authService;
 
+    /* @@@@@@@@@@@@@@@ ResponseEntity에 대한 설명 필요 @@@@@@@@@@@@@@@@@@@ */
+
+    /* ID 중복 검사 요청 API */
     @PostMapping("/idCheck")
     public ResponseEntity<? super IdCheckResponseDto> idCheck(
             @RequestBody @Valid IdCheckRequestDto requestBody
@@ -30,6 +33,7 @@ public class AuthController {
         return response;
     }
 
+    /* 회원가입 요청 API */
     @PostMapping("/signUp")
     public ResponseEntity<? super SignUpResponseDto> signUp(
             @RequestBody @Valid SignUpRequestDto requestBody
@@ -38,6 +42,7 @@ public class AuthController {
         return response;
     }
 
+    /* 로그인 요청 API */
     @PostMapping("/signIn")
     public ResponseEntity<? super SignInResponseDto> signIn(
             @RequestBody @Valid SignInRequestDto requestBody

@@ -14,6 +14,7 @@ public class CustomOAuth2User implements OAuth2User {
 
     private String username;
 
+    /* OAuth2 에서 유저의 이름 정보를 가져옴 */
     @Override
     public String getName() {
         return this.username;

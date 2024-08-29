@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 
+/* @@@@@@@@ MimeMessage 클래스에 대한 설명 필요 @@@@@@@@@@@@@@ */
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -28,6 +30,7 @@ public class MailServiceImpl implements MailService {
 
     /* MailConfig 에서 등록해둔 Bean을 autowired 해 사용하기 */
     private final JavaMailSender emailSender;
+
     private final CertificationRepository certificationRepository;
 
     /* 사용자가 메일로 받을 인증번호 */
@@ -43,7 +46,10 @@ public class MailServiceImpl implements MailService {
     @Override
     public ResponseEntity<? super EmailCertificationResponseDto> sendMessage(EmailCertificationRequestDto dto) throws Exception {
 
+        /* 인증번호로 활용할 무작위의 4자리 숫자를 생성해서 key에 넣어준다. */
         key = RandomNumber.getCertificationNumber();
+
+        /* 인증번호를 받는 사람의 이메일 주소 */
         String to = dto.getEmail();
         String username = dto.getUsername();
 
@@ -55,7 +61,8 @@ public class MailServiceImpl implements MailService {
             /* 메일로 보내주는 메서드 */
             emailSender.send(message);
 
-            /* 이메일 인증 번호 정보 DB 저장 */
+            /* 이메일 인증 번호 정보 DB 저장
+            * 해당 데이터는 인증 번호 검증에 사용한다. */
             Certification certification = new Certification(username, to, key);
             certificationRepository.save(certification);
 
@@ -75,6 +82,7 @@ public class MailServiceImpl implements MailService {
         /* 이메일 제목 */
         message.setSubject("[coupong] 회원가입 이메일 인증코드");
 
+        /* 메일 내용 작성 */
         String mailMessage = "";
         mailMessage += "<h1 style='text-align: center;'>[coupong] 회원가입 인증메일</h1>";
         mailMessage += "<h3 style='text-align: center;'>인증코드 : <strong style='font-size: 32px; letter-spacing: 8px;'>"
@@ -82,6 +90,7 @@ public class MailServiceImpl implements MailService {
 
         /* 메일 내용, charset타입, subtype */
         message.setText(mailMessage, "utf-8", "html");
+
         /* 보내는 사람의 이메일 주소, 보내는 사람 이름 */
         message.setFrom(id);
 
@@ -92,10 +101,15 @@ public class MailServiceImpl implements MailService {
     @Override
     public ResponseEntity<? super CheckEmailCertificationResponseDto> verifyCode(CheckEmailCertificationRequestDto dto) {
 
-        String code = dto.getCertification();
-        Certification certification = certificationRepository.findCertificationByUsername(dto.getUsername());
-
         try {
+            /* 해당 사용자에 대한 인증번호 정보가 없다면 에러 반환 */
+            String code = dto.getCertification();
+            Certification certification = certificationRepository.findCertificationByUsername(dto.getUsername());
+            if (certification == null) {
+                return CheckEmailCertificationResponseDto.certificationFailed();
+            }
+
+            /* 인증번호 검증을 위해 클라이언트가 작성한 인증번호가 다르다면 에러 반환 */
             if (!code.equals(certification.getCertification())) {
                 return CheckEmailCertificationResponseDto.certificationFailed();
             }
