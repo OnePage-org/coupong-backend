@@ -1,8 +1,10 @@
 package com.onepage.coupong.sign.service;
 
 import com.onepage.coupong.sign.dto.request.auth.IdCheckRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.SignInRequestDto;
 import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
 import com.onepage.coupong.sign.dto.response.auth.IdCheckResponseDto;
+import com.onepage.coupong.sign.dto.response.auth.SignInResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignUpResponseDto;
 import org.springframework.http.ResponseEntity;
 
@@ -12,4 +14,6 @@ public interface AuthService {
     ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto);
 
     ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto);
+
+    ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto);
 }

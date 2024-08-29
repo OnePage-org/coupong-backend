@@ -1,8 +1,10 @@
 package com.onepage.coupong.sign.controller;
 
 import com.onepage.coupong.sign.dto.request.auth.IdCheckRequestDto;
+import com.onepage.coupong.sign.dto.request.auth.SignInRequestDto;
 import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
 import com.onepage.coupong.sign.dto.response.auth.IdCheckResponseDto;
+import com.onepage.coupong.sign.dto.response.auth.SignInResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignUpResponseDto;
 import com.onepage.coupong.sign.service.AuthService;
 import jakarta.validation.Valid;
@@ -33,6 +35,14 @@ public class AuthController {
             @RequestBody @Valid SignUpRequestDto requestBody
     ) {
         ResponseEntity<? super SignUpResponseDto> response = authService.signUp(requestBody);
+        return response;
+    }
+
+    @PostMapping("/signIn")
+    public ResponseEntity<? super SignInResponseDto> signIn(
+            @RequestBody @Valid SignInRequestDto requestBody
+    ) {
+        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
         return response;
     }
 }
