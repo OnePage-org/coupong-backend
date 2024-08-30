@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### config File ###
+application.yml
+
+### docker volunm ###
+mysql_data/
