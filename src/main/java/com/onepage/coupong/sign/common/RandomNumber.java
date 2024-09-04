@@ -1,4 +1,4 @@
-package com.onepage.coupong.common;
+package com.onepage.coupong.sign.common;
 
 /* 굳이 common 패키지에 만들지 않고 이메일 전송 쪽에 둬도 되긴하는데,
 * 혹시나 해당 랜덤번호를 만드는 메서드가 필요한 곳이 있을수도... 있으니 ? (추후에 위치 변경 가능) */

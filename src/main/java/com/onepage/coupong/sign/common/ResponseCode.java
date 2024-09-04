@@ -1,4 +1,4 @@
-package com.onepage.coupong.common;
+package com.onepage.coupong.sign.common;
 
 public interface ResponseCode {
 
