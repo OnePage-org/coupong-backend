@@ -1,11 +1,12 @@
 package com.onepage.coupong.entity;
 
+import com.onepage.coupong.entity.enums.CouponCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -28,7 +29,6 @@ public class Coupon {
     @Column(name = "coupon_category")
     private CouponCategory category;
 
-    @Temporal(TemporalType.DATE)
-    private Date expireationDate;
+    private LocalDateTime expirationDate;
 
 }

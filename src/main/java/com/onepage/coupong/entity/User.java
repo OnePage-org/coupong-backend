@@ -1,13 +1,12 @@
 package com.onepage.coupong.entity;
 
+import com.onepage.coupong.entity.enums.Logintype;
+import com.onepage.coupong.entity.enums.UserRole;
 import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter

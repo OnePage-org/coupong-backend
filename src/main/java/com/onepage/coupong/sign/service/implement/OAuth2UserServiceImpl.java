@@ -1,6 +1,6 @@
 package com.onepage.coupong.sign.service.implement;
 
-import com.onepage.coupong.entity.Logintype;
+import com.onepage.coupong.entity.enums.Logintype;
 import com.onepage.coupong.sign.entity.CustomOAuth2User;
 import com.onepage.coupong.entity.User;
 import com.onepage.coupong.sign.repository.UserRepository;

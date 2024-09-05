@@ -1,11 +1,12 @@
 package com.onepage.coupong.entity;
 
+import com.onepage.coupong.entity.enums.CouponEventState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,16 +19,14 @@ public class CouponEvent {
     @Column(name = "coupon_event_id")
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "coupon_event_date")
-    private Date eventData;
+    private LocalDateTime eventDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "coupon_event_state")
     private CouponEventState eventState;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date winnigDate;
+    private LocalDateTime winningDate;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id")
