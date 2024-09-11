@@ -55,18 +55,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             /* ROLE_USER, ROLE_ADMIN */
             String role = String.valueOf(user.getRole());
 
+            /* GrantedAuthority 는 현재 사용자(principal)가 가지고 있는 권한을 의미한다.
+            *  ROLE_ADMIN, ROLE_USER 와 같이 ROLE_*의 형태로 사용한다.
+            *  GrantedAuthority 객체는 UserDetailsService에 의해 불러올 수 있고
+            *  특정 자원에 대한 권한이 있는지를 검사해 접근 허용 여부를 결정한다. */
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(role));
 
-            /* 토큰에 들어갈 context 객체를 만들어준다. */
+            /* 토큰이 들어갈 context 객체를 만들어준다. */
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 
-
-            AbstractAuthenticationToken authenticationToken =
+            UsernamePasswordAuthenticationToken authenticationToken =
                     /* 첫 번째 위치에는 User의 정보, 두 번째 위치는 Password, 그 이후에는 여기서는 권한을 추가적으로 넣어줬다. */
                     new UsernamePasswordAuthenticationToken(username, null, authorities);
 
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource());
+            /* Authentication 설정 추가 */
+            securityContext.setAuthentication(authenticationToken);
+
             SecurityContextHolder.setContext(securityContext);
 
         } catch (Exception e) {
