@@ -155,6 +155,12 @@ public class AuthServiceImpl implements AuthService {
         UserRole role = null;
 
         try {
+            boolean isBearer = token.startsWith("Bearer ");
+            if (!isBearer) {
+                return ResponseDto.validationFailed();
+            }
+            token = token.substring(7);
+
             /* jjwt 라이브러리와 개인키(secretKey)를 이용해서 signature를 복호화하는 과정으로
             *  setSigngKey()가 개인키를 복호화해준다. */
             Claims claim =

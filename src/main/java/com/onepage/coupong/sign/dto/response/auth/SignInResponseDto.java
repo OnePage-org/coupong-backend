@@ -16,7 +16,7 @@ public class SignInResponseDto extends ResponseDto {
 
     private SignInResponseDto(String token) {
         super();
-        this.token = token;
+        this.token = "Bearer " + token;
         /* 만료 시간 1시간을 의미
         * 만료 시간에 대해 수정하고 싶으면 JwtProvider.create() -> expiredDate 수정해주면 됨 */
         expirationTime = 3600;
