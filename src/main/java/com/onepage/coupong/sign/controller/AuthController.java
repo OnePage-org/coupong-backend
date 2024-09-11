@@ -25,6 +25,10 @@ public class AuthController {
     /* ID 중복 검사 요청 API */
     @PostMapping("/idCheck")
     public ResponseEntity<? super IdCheckResponseDto> idCheck(
+            /* @RequestBody 옆에 @Valid를 작성하면, RequestBody로 들어오는 객체에 대한 검증을 수행한다.
+            * 검증을 하는 여러 세부적인 사항들 중 몇개만 예시로 들면,
+            * @NotNull : 인자로 들어온 필드 값에 null 값을 허용하지 않는다.
+            * @Email : 인자로 들어온 값을 Email 형식을 갖춰야 한다. */
             @RequestBody @Valid IdCheckRequestDto requestBody
     ) {
         ResponseEntity<? super IdCheckResponseDto> response = authService.idCheck(requestBody);
