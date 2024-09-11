@@ -6,14 +6,12 @@ import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
 import com.onepage.coupong.sign.dto.response.auth.IdCheckResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignInResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignUpResponseDto;
+import com.onepage.coupong.sign.dto.response.auth.TokenResponseDto;
 import com.onepage.coupong.sign.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -48,6 +46,15 @@ public class AuthController {
             @RequestBody @Valid SignInRequestDto requestBody
     ) {
         ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
+        return response;
+    }
+
+    /* 요청 헤더로부터 받은 Authorization 복호화 후 유저 정보 반환 API */
+    @GetMapping("/tokenDecryption")
+    public ResponseEntity<? super TokenResponseDto> tokenDecryption(
+            @RequestHeader("Authorization") String token
+    ) {
+        ResponseEntity<? super TokenResponseDto> response = authService.tokenDecryption(token);
         return response;
     }
 }

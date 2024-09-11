@@ -1,5 +1,7 @@
 package com.onepage.coupong.sign.service.implement;
 
+import com.onepage.coupong.entity.enums.Logintype;
+import com.onepage.coupong.entity.enums.UserRole;
 import com.onepage.coupong.sign.dto.request.auth.IdCheckRequestDto;
 import com.onepage.coupong.sign.dto.request.auth.SignInRequestDto;
 import com.onepage.coupong.sign.dto.request.auth.SignUpRequestDto;
@@ -7,17 +9,23 @@ import com.onepage.coupong.sign.dto.response.ResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.IdCheckResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignInResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignUpResponseDto;
+import com.onepage.coupong.sign.dto.response.auth.TokenResponseDto;
 import com.onepage.coupong.sign.entity.Certification;
 import com.onepage.coupong.entity.User;
 import com.onepage.coupong.sign.provider.JwtProvider;
 import com.onepage.coupong.sign.repository.CertificationRepository;
 import com.onepage.coupong.sign.repository.UserRepository;
 import com.onepage.coupong.sign.service.AuthService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +39,9 @@ public class AuthServiceImpl implements AuthService {
     * BCrypt 해싱함수를 사용해서 비밀번호를 인코딩해주는 메서드와 사용자에 의해 제출된 원본 비밀번호와 DB에 저장되어 있는 암호화된 비밀번호의 일치 여부를 확인해주는 matches() 메서드를 제공
     * PasswordEncoder interface를 구현한 클래스이다. */
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Value("${jwt.secret.key}")
+    private String secretKey;
 
     /* 아이디 중복 검사 확인 서비스 */
     @Override
@@ -133,5 +144,37 @@ public class AuthServiceImpl implements AuthService {
 
         /* 성공 코드, 메시지와 토큰을 함께 보내준다. */
         return SignInResponseDto.success(token);
+    }
+
+    @Override
+    public ResponseEntity<? super TokenResponseDto> tokenDecryption(String token) {
+
+        String username = "";
+        String email = "";
+        Logintype logintype = null;
+        UserRole role = null;
+
+        try {
+            /* jjwt 라이브러리와 개인키(secretKey)를 이용해서 signature를 복호화하는 과정으로
+            *  setSigngKey()가 개인키를 복호화해준다. */
+            Claims claim =
+                    Jwts.parserBuilder().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8)).build().parseClaimsJws(token).getBody();
+
+            String getUsername = claim.getSubject();
+            User user = userRepository.findUserByUsername(getUsername);
+            if (user == null) {
+                return ResponseDto.validationFailed();
+            }
+
+            username = user.getUsername();
+            email = user.getEmail();
+            role = user.getRole();
+            logintype = user.getType();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return TokenResponseDto.success(username, email, logintype, role);
     }
 }
