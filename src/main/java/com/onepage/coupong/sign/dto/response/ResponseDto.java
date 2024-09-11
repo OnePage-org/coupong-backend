@@ -1,7 +1,7 @@
 package com.onepage.coupong.sign.dto.response;
 
-import com.onepage.coupong.common.ResponseCode;
-import com.onepage.coupong.common.ResponseMessage;
+import com.onepage.coupong.sign.common.ResponseCode;
+import com.onepage.coupong.sign.common.ResponseMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

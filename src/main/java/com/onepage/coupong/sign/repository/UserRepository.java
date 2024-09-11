@@ -1,6 +1,6 @@
 package com.onepage.coupong.sign.repository;
 
-import com.onepage.coupong.sign.entity.User;
+import com.onepage.coupong.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,8 @@
 package com.onepage.coupong.sign.service.implement;
 
+import com.onepage.coupong.entity.enums.Logintype;
 import com.onepage.coupong.sign.entity.CustomOAuth2User;
-import com.onepage.coupong.sign.entity.User;
+import com.onepage.coupong.entity.User;
 import com.onepage.coupong.sign.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -41,7 +42,7 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
         /* 카카오로 로그인했을 경우 유저명을 받아오는 과정 */
         if (oauthClientName.equals("kakao")) {
             username = "kakao_" + oAuth2User.getAttributes().get("id");
-            user = new User(username, email, "kakao");
+            user = new User(username, email, Logintype.KAKAO);
         }
 
         /* 네이버로 로그인했을 경우 유저명을 받아오는 과정 + 유저의 이메일 정보 */
@@ -49,7 +50,7 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
             Map<String, String> responseMap = (Map<String, String>) oAuth2User.getAttributes().get("response");
             username = "naver_" + responseMap.get("id").substring(0, 14);
             email = responseMap.get("email");
-            user = new User(username, email, "naver");
+            user = new User(username, email, Logintype.NAVER);
         }
 
         /* 새로운 유저 정보를 등록해준다. */

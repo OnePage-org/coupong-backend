@@ -1,6 +1,6 @@
 package com.onepage.coupong.sign.service.implement;
 
-import com.onepage.coupong.common.RandomNumber;
+import com.onepage.coupong.sign.common.RandomNumber;
 import com.onepage.coupong.sign.dto.request.auth.CheckEmailCertificationRequestDto;
 import com.onepage.coupong.sign.dto.request.auth.EmailCertificationRequestDto;
 import com.onepage.coupong.sign.dto.response.ResponseDto;

@@ -8,7 +8,7 @@ import com.onepage.coupong.sign.dto.response.auth.IdCheckResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignInResponseDto;
 import com.onepage.coupong.sign.dto.response.auth.SignUpResponseDto;
 import com.onepage.coupong.sign.entity.Certification;
-import com.onepage.coupong.sign.entity.User;
+import com.onepage.coupong.entity.User;
 import com.onepage.coupong.sign.provider.JwtProvider;
 import com.onepage.coupong.sign.repository.CertificationRepository;
 import com.onepage.coupong.sign.repository.UserRepository;
