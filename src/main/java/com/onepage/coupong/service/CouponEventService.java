@@ -1,8 +1,16 @@
 package com.onepage.coupong.service;
 
 import com.onepage.coupong.dto.UserRequestDto;
+import com.onepage.coupong.entity.Coupon;
+import com.onepage.coupong.entity.CouponEvent;
+import com.onepage.coupong.entity.User;
+import com.onepage.coupong.entity.enums.CouponEventState;
+import com.onepage.coupong.repository.CouponEventRepository;
+import com.onepage.coupong.sign.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
@@ -10,9 +18,13 @@ import java.util.Set;
 public class CouponEventService {
 
     private final CouponQueueService couponQueueService;
+    private final CouponEventRepository couponEventRepository;
+    private final UserRepository userRepository;
 
-    public CouponEventService(CouponQueueService couponQueueService) {
+    public CouponEventService(CouponQueueService couponQueueService, CouponEventRepository couponEventRepository, UserRepository userRepository) {
         this.couponQueueService = couponQueueService;
+        this.couponEventRepository = couponEventRepository;
+        this.userRepository = userRepository;
     }
 
     public boolean addUserToQueue (UserRequestDto userRequestDto) {
@@ -36,6 +48,10 @@ public class CouponEventService {
     }
 
     private void publishCouponForUser(Object userId) {
-        // 쿠폰 발행 성공 로직: DB 저장 등
+        CouponEvent couponEvent;
+        User user = userRepository.getById((Long) userId);
+        couponEvent = new CouponEvent();
+
+        couponEventRepository.save(couponEvent);
     }
 }
