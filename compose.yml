@@ -13,7 +13,7 @@ services:
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: pwd1234
-      MYSQL_DATABASE: coupong
+      MYSQL_DATABASE: coupong-docker
     volumes:
       - ./mysql_data:/var/lib/mysql
     ports:
