@@ -1,57 +1,55 @@
 package com.onepage.coupong.service;
 
 import com.onepage.coupong.dto.UserRequestDto;
-import com.onepage.coupong.entity.Coupon;
 import com.onepage.coupong.entity.CouponEvent;
+import com.onepage.coupong.entity.EventManager;
 import com.onepage.coupong.entity.User;
-import com.onepage.coupong.entity.enums.CouponEventState;
+import com.onepage.coupong.entity.enums.CouponCategory;
 import com.onepage.coupong.repository.CouponEventRepository;
 import com.onepage.coupong.sign.repository.UserRepository;
+import jdk.jfr.EventType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class CouponEventService {
-
-    private final CouponQueueService couponQueueService;
+    private final RedisQueueService redisQueueService;
     private final CouponEventRepository couponEventRepository;
-    private final UserRepository userRepository;
+    private EventManager eventManager;
 
-    public CouponEventService(CouponQueueService couponQueueService, CouponEventRepository couponEventRepository, UserRepository userRepository) {
-        this.couponQueueService = couponQueueService;
-        this.couponEventRepository = couponEventRepository;
-        this.userRepository = userRepository;
+    public void setEventManager(EventType eventType, int couponCount, int endNums) {
+        this.eventManager = new EventManager(eventType, couponCount, endNums);
+    }
+
+    public void setEventManager(EventType eventType, int couponCount) {
+        this.eventManager = new EventManager(eventType, couponCount);
     }
 
     public boolean addUserToQueue (UserRequestDto userRequestDto) {
-        return couponQueueService.addToQueue(userRequestDto);
+        return redisQueueService.addToQueue(userRequestDto);
     }
 
-    public void publishCoupons(int couponCount) {
-        Set<Object> sortedUsers = couponQueueService.getSortedSet();
+    public void publishCoupons(int scheduleCount) {
 
-        int publishedCoupons = 0;
-        for (Object userId : sortedUsers) {
-            if (publishedCoupons >= couponCount) {
-                break;
-            }
-            // 실제 쿠폰 발급 로직 수행 (DB 저장 등)
-            // 쿠폰 발급 후 Redis에서 해당 유저 제거
-            publishCouponForUser(userId);
-            couponQueueService.removeUserFromQueue(userId);
-            publishedCoupons++;
+        Set<Object> queue = redisQueueService.getTopRankSet(scheduleCount);
+
+        for (Object userId : queue) {
+            CouponEvent couponEvent = (CouponEvent) userId;
+            couponEventRepository.save(couponEvent);
+            redisQueueService.removeUserFromQueue(userId);
+            eventManager.decreaseCouponCount();
         }
     }
 
-    private void publishCouponForUser(Object userId) {
-        CouponEvent couponEvent;
-        User user = userRepository.getById((Long) userId);
-        couponEvent = new CouponEvent();
+    //쿠폰 발행된 사람들 데이터 RDB 영속
+    private void persistEventAttemptData (CouponEvent couponEvent) {
 
-        couponEventRepository.save(couponEvent);
+    }
+
+    public boolean validEnd() {
+        return this.eventManager != null && this.eventManager.eventEnd();
     }
 }

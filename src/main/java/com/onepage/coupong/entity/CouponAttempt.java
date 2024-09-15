@@ -25,5 +25,5 @@ public class CouponAttempt {
 
     private CouponCategory couponCategory;
 
-    private boolean success;
+    private boolean isSuccess;
 }

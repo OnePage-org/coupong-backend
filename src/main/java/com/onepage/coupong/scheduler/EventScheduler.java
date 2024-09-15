@@ -1,10 +1,10 @@
-package com.onepage.coupong.service;
+package com.onepage.coupong.scheduler;
 
+import com.onepage.coupong.service.CouponEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @Component
@@ -15,6 +15,10 @@ public class EventScheduler {
 
     @Scheduled(fixedRate = 1000)
     public void couponEventScheduler() {
+        if(couponEventService.validEnd()) {
+            log.info("이벤트 쿠폰 발행 가능 개수 충족");
+            return;
+        }
         couponEventService.publishCoupons(10);
     }
 }
