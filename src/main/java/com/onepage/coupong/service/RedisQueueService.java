@@ -20,7 +20,7 @@ public class RedisQueueService {
     //유저 요청 큐에 추가
     public boolean addToQueue(UserRequestDto userRequestDto) {
         try {
-            queueKey = String.valueOf(userRequestDto.getEventType());
+            queueKey = String.valueOf(userRequestDto.getCouponCategory());
             redisTemplate.opsForZSet().add(queueKey, userRequestDto.getId(), userRequestDto.getAttemptAt());
             return true;
         } catch (Exception e) {
@@ -34,11 +34,12 @@ public class RedisQueueService {
     }
 
     public Set<Object> getTopRankSet(int end) {
-        return redisTemplate.opsForZSet().range(String.valueOf(queueKey), 0, end);
+        return redisTemplate.opsForZSet().range(String.valueOf(queueKey), 0, end-1);
     }
 
     //쿠폰 발행 후 큐에서 제거
     public void removeUserFromQueue(Object userId) {
+        System.out.println("삭제합니다 유저 큐에서 " + userId);
         redisTemplate.opsForZSet().remove(queueKey, userId);
     }
 }

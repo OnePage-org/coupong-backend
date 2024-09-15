@@ -3,12 +3,14 @@ package com.onepage.coupong.scheduler;
 import com.onepage.coupong.service.CouponEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@EnableScheduling
 public class EventScheduler {
 
     private final CouponEventService couponEventService;
@@ -20,5 +22,6 @@ public class EventScheduler {
             return;
         }
         couponEventService.publishCoupons(10);
+        log.info("쿠폰 발행 완료");
     }
 }
