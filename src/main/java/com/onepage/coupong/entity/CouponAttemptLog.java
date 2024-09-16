@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CouponAttempt {
+public class CouponAttemptLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

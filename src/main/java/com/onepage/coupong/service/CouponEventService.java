@@ -1,11 +1,11 @@
 package com.onepage.coupong.service;
 
 import com.onepage.coupong.dto.UserRequestDto;
-import com.onepage.coupong.entity.CouponEvent;
+import com.onepage.coupong.entity.CouponWinningLog;
 import com.onepage.coupong.entity.EventManager;
 import com.onepage.coupong.entity.enums.CouponCategory;
-import com.onepage.coupong.repository.CouponEventRepository;
-import jdk.jfr.EventType;
+import com.onepage.coupong.entity.enums.WinningCouponState;
+import com.onepage.coupong.repository.CouponWinningRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CouponEventService {
     private final RedisQueueService redisQueueService;
-    private final CouponEventRepository couponEventRepository;
+    private final CouponWinningRepository couponWinningRepository;
     private EventManager eventManager;
 
     public void setEventManager(CouponCategory couponCategory, int couponCount, int endNums) {
@@ -41,8 +41,12 @@ public class CouponEventService {
 
             System.out.println("반목문 돌립니다 큐에서 유저 id 꺼내옴 " + userId);
 
-            CouponEvent couponEvent = CouponEvent.builder().eventDate(LocalDateTime.now()).build();
-            couponEventRepository.save(couponEvent);
+            CouponWinningLog couponWinningLog = CouponWinningLog.builder()
+                    .winningCouponState(WinningCouponState.COMPLETED)
+                    .winningDate(LocalDateTime.now())
+                    .build();
+
+            couponWinningRepository.save(couponWinningLog);
 
             redisQueueService.removeUserFromQueue(userId);
             eventManager.decreaseCouponCount();
@@ -54,7 +58,7 @@ public class CouponEventService {
     }
 
     //쿠폰 발행된 사람들 데이터 RDB 영속
-    private void persistEventAttemptData (CouponEvent couponEvent) {
+    private void persistEventAttemptData (CouponWinningLog couponWinningLog) {
 
     }
 

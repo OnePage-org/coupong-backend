@@ -19,9 +19,9 @@ public class CouponEventController {
         this.couponEventService = couponEventService;
     }
 
-    @PostMapping("/request")
+    @PostMapping("/attempt")
     public ResponseEntity<String> requestCoupon(@RequestBody UserRequestDto userRequestDto) {
-        boolean publishSuccess = couponEventService.addUserToQueue(userRequestDto);
+        boolean publishSuccess = couponEventService.addUserToQueue(userRequestDto);  //JWT 토큰으로 user_id 받도록 해야됨
 
         if (publishSuccess) {
             return ResponseEntity.ok("쿠폰 발급 요청에 성공했습니다 - 대기열 등록 -");

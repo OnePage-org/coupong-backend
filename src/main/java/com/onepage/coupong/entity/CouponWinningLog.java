@@ -1,6 +1,6 @@
 package com.onepage.coupong.entity;
 
-import com.onepage.coupong.entity.enums.CouponEventState;
+import com.onepage.coupong.entity.enums.WinningCouponState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,19 +14,16 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CouponEvent {
+public class CouponWinningLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coupon_event_id")
     private Long id;
 
-    @Column(name = "coupon_event_date")
-    private LocalDateTime eventDate;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "coupon_event_state")
-    private CouponEventState eventState;
+    private WinningCouponState winningCouponState;
 
     private LocalDateTime winningDate;
 
