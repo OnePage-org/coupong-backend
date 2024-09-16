@@ -16,14 +16,21 @@ public class CouponAttemptLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coupon_attempt_id")
+    @Column(name = "coupon_attempt_log_id")
     private Long id;
-
-    private String userId;
 
     private LocalDateTime attemptAt;
 
-    private CouponCategory couponCategory;
+    @Column(name = "coupon_category")
+    private CouponCategory category;
 
     private boolean isSuccess;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id")
+    private Coupon coupon;
 }

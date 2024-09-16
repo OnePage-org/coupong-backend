@@ -31,4 +31,7 @@ public class Coupon {
 
     private LocalDateTime expirationDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_event_id")
+    private CouponEvent couponEvent;
 }

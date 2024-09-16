@@ -25,3 +25,38 @@ public class EventScheduler {
         log.info("쿠폰 발행 완료");
     }
 }
+
+/*
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class EventScheduler {
+    private final CouponEventService couponEventService;
+    private final TaskScheduler taskScheduler;
+    private ScheduledFuture<?> scheduledFuture;
+
+    public void scheduleEvent(LocalDateTime startTime, LocalDateTime endTime) {
+        long delay = Duration.between(LocalDateTime.now(), startTime).toMillis();
+        long period = 10000; // 10초마다 실행
+
+        // 이벤트 시작 시간에 스케줄러 시작
+        scheduledFuture = taskScheduler.scheduleAtFixedRate(() -> {
+            if (LocalDateTime.now().isAfter(endTime)) {
+                log.info("이벤트 시간이 종료되었습니다. 스케줄러를 중지합니다.");
+                stopScheduler();
+                return;
+            }
+            if (!couponEventService.validEnd()) {
+                couponEventService.publishCoupons(10);
+            }
+        }, new Date(System.currentTimeMillis() + delay), period);
+    }
+
+    public void stopScheduler() {
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(false); // 스케줄러 중지
+        }
+    }
+
+}
+ */

@@ -18,11 +18,11 @@ public class CouponWinningLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coupon_event_id")
+    @Column(name = "coupon_winning_log_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "coupon_event_state")
+    @Column(name = "winning_coupon_state")
     private WinningCouponState winningCouponState;
 
     private LocalDateTime winningDate;
