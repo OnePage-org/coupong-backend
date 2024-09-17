@@ -24,4 +24,7 @@ public interface AuthService {
 
     /* 요청 헤더로부터 받은 Authorization 복호화 후 유저 정보 반환 서비스 */
     ResponseEntity<? super TokenResponseDto> tokenDecryption(String token);
+
+    /* 요청 헤더로부터 받은 JWT 토큰을 복호화 후 유저 ID로 반환 서비스 */
+    Long tokenDecryptionId(String token);
 }
