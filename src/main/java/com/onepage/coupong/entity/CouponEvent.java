@@ -1,17 +1,16 @@
 package com.onepage.coupong.entity;
 
-import com.onepage.coupong.entity.enums.CouponEventState;
+import com.onepage.coupong.entity.enums.CouponCategory;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CouponEvent {
 
     @Id
@@ -19,21 +18,19 @@ public class CouponEvent {
     @Column(name = "coupon_event_id")
     private Long id;
 
+    @Setter  //테스트용
     @Column(name = "coupon_event_date")
-    private LocalDateTime eventDate;
+    private LocalDateTime date;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "coupon_event_state")
-    private CouponEventState eventState;
+    @Setter //테스트용
+    private int coupon_publish_nums;
 
-    private LocalDateTime winningDate;
+    @Column(name = "coupon_category")
+    private CouponCategory category;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id")
-    private Coupon coupon;
+    @Column(name = "coupon_event_duration")
+    private String duration;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "winner_id")
-    private User winner;
-
+    @OneToMany(mappedBy = "couponEventId")
+    private List<Coupon> couponList = new ArrayList<>();
 }
