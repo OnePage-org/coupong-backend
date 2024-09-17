@@ -1,5 +1,6 @@
 package com.onepage.coupong.entity;
 
+import com.onepage.coupong.entity.enums.CouponCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,10 +25,12 @@ public class CouponEvent {
     @Setter //테스트용
     private int coupon_publish_nums;
 
+    @Column(name = "coupon_category")
+    private CouponCategory category;
+
     @Column(name = "coupon_event_duration")
     private String duration;
 
-    @OneToMany(mappedBy = "couponEvent")
+    @OneToMany(mappedBy = "couponEventId")
     private List<Coupon> couponList = new ArrayList<>();
-
 }

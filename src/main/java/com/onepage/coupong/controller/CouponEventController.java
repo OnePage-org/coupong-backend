@@ -4,10 +4,7 @@ import com.onepage.coupong.dto.UserRequestDto;
 import com.onepage.coupong.service.CouponEventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/coupon")
@@ -20,7 +17,7 @@ public class CouponEventController {
     }
 
     @PostMapping("/attempt")
-    public ResponseEntity<String> requestCoupon(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<String> requestCoupon(@RequestBody UserRequestDto userRequestDto, @RequestHeader("Authorization") String token) {
         boolean publishSuccess = couponEventService.addUserToQueue(userRequestDto);  //JWT 토큰으로 user_id 받도록 해야됨
 
         if (publishSuccess) {
