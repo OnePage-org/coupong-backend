@@ -24,6 +24,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
+import java.util.List;
 
 @Configurable
 @Configuration
@@ -51,6 +52,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         /* 이메일을 보내기 위한 API 허용 */
                         .requestMatchers("/api/v1/mail/**").permitAll()
+                        .requestMatchers("/chat/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 /* OAuth2 관련 */
@@ -72,9 +74,11 @@ public class WebSecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         /* 모든 Header, Method, Origin에 대해 허용해주겠다. */
-        configuration.addAllowedOrigin("*");
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+//        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         /* 모든 패턴에 대해 */
