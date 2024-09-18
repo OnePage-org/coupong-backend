@@ -1,12 +1,13 @@
 package com.onepage.coupong.service;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
-public class LeaderBoardQueueService  implements  RedisZSetService {
+public class LeaderBoardQueueService implements RedisZSetService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final String queueKeySeparator = "LEADERBOARD QUEUE:";
@@ -31,8 +32,13 @@ public class LeaderBoardQueueService  implements  RedisZSetService {
     }
 
     @Override
+    public Set<ZSetOperations.TypedTuple<Object>> getTopRankSetWithScore(String couponCategory, int limit) {
+        return redisTemplate.opsForZSet().rangeWithScores(queueKeySeparator + couponCategory, 0, limit - 1);
+    }
+
+    @Override
     public Set<Object> getTopRankSet(String couponCategory, int limit) {
-        return redisTemplate.opsForZSet().range(String.valueOf(queueKeySeparator + couponCategory), 0, limit - 1);
+        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, limit - 1);
     }
 
     @Override

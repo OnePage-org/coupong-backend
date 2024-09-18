@@ -15,6 +15,7 @@ public class EventScheduler {
 
     private final CouponEventService couponEventService;
 
+    // RDB 쿠폰이벤트 테이블에서 이벤트 정보 들고와서 동적으로 스케줄 세팅하기
     @Scheduled(fixedRate = 1000) // 1초마다 실행
     public void couponEventScheduler() {
         try {

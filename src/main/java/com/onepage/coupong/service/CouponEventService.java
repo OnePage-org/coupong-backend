@@ -9,6 +9,8 @@ import com.onepage.coupong.repository.CouponWinningRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.DefaultTypedTuple;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CouponEventService {
     private final IssuanceQueueService issuanceQueueService;
+    private final LeaderBoardQueueService leaderBoardQueueService;
     private final CouponWinningRepository couponWinningRepository;
     private EventManager eventManager;
 
@@ -55,22 +58,35 @@ public class CouponEventService {
             return;
         }
 
-        Set<Object> queue = issuanceQueueService.getTopRankSet(String.valueOf(eventManager.getCouponCategory()), scheduleCount);
+        Set<ZSetOperations.TypedTuple<Object>> queueWithScores = issuanceQueueService.getTopRankSetWithScore(String.valueOf(eventManager.getCouponCategory()), scheduleCount);
 
-        System.out.println(queue.size() +" 큐 사이즈 !");
+        System.out.println(queueWithScores.size() +" 큐 사이즈 !");
 
+        for (ZSetOperations.TypedTuple<Object> item : queueWithScores) {
+
+            System.out.println( eventManager.getCouponCategory() +" " + item.getValue() +" "+ item.getScore());
+
+        /*
         for (Object userId : queue) {
 
             System.out.println("반목문 돌립니다 큐에서 유저 id 꺼내옴 " + userId);
+
 
             CouponWinningLog couponWinningLog = CouponWinningLog.builder()
                     .winningCouponState(WinningCouponState.COMPLETED)
                     .winningDate(LocalDateTime.now())
                     .build();
 
-            couponWinningRepository.save(couponWinningLog);
+            couponWinningRepository.save(couponWinningLog);  쿠폰 발행 성공자 Set 자료구조 mySQl RDB -> Redis ZSet
+             */
 
-            issuanceQueueService.removeItemFromZSet(String.valueOf(eventManager.getCouponCategory()), userId.toString());
+            // 쿠폰 발행 성공자 정보를 Redis ZSet에 추가
+
+            // 이때, 기존 발행 성공자 대기열에 해당 유저가 있을 경우 빡구 시킬지 말지 ? 한 카테고리 내에서는 한번만 받을 수 있게 하자 ! 이거 추가 필요
+
+            leaderBoardQueueService.addToZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()), item.getScore());
+
+            issuanceQueueService.removeItemFromZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()));
             eventManager.decreaseCouponCount();
         }
     }
