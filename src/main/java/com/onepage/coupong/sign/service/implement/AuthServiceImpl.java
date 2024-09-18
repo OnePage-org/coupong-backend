@@ -114,8 +114,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 
-        /* 로그인이 성공적으로 되면 token을 생성해서 보내줘야함. */
+        /* 로그인이 성공적으로 되면 token과 권한에 대한 정보를 생성해서 보내줘야함. */
         String token = null;
+        UserRole role;
 
         try {
             /* 로그인 요청에 입력한 username이 DB에 존재하지 않으면 로그인 실패 에러를 보내준다. */
@@ -137,13 +138,15 @@ public class AuthServiceImpl implements AuthService {
             /* 로그인이 성공한 경우 토큰 생성 */
             token = jwtProvider.create(username);
 
+            role = user.getRole();
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();
         }
 
         /* 성공 코드, 메시지와 토큰을 함께 보내준다. */
-        return SignInResponseDto.success(token);
+        return SignInResponseDto.success(token, role);
     }
 
     @Override
@@ -182,5 +185,34 @@ public class AuthServiceImpl implements AuthService {
             return ResponseDto.databaseError();
         }
         return TokenResponseDto.success(username, email, logintype, role);
+    }
+
+    @Override
+    public Long tokenDecryptionId(String token) {
+        Long userId = null;
+        try {
+            boolean isBearer = token.startsWith("Bearer ");
+            if (!isBearer) {
+                return null;
+            }
+            token = token.substring(7);
+
+            /* jjwt 라이브러리와 개인키(secretKey)를 이용해서 signature를 복호화하는 과정으로
+             *  setSigngKey()가 개인키를 복호화해준다. */
+            Claims claim =
+                    Jwts.parserBuilder().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8)).build().parseClaimsJws(token).getBody();
+
+            String getUsername = claim.getSubject();
+            User user = userRepository.findUserByUsername(getUsername);
+
+            if (user == null) {
+                return null;
+            }
+            userId = user.getId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return userId;
     }
 }
