@@ -30,7 +30,7 @@ public class CouponEventServiceIntegrationTest {
         final int couponCount = 30;
         final int endNums = 0;
         final CountDownLatch countDownLatch = new CountDownLatch(attempt);
-        couponEventService.setEventManager(couponCategory, couponCount, endNums);
+        couponEventService.initializeEvent(couponCategory, couponCount, endNums);
 
         List<Thread> workers = Stream
                 .generate(() -> new Thread(new AddQueueWorker(countDownLatch, couponCategory)))
@@ -41,7 +41,7 @@ public class CouponEventServiceIntegrationTest {
         countDownLatch.await();
         Thread.sleep(5000);
 
-        final long failEventPeopleNums = couponEventService.getQueue().size();
+        final long failEventPeopleNums = couponEventService.getQueue(String.valueOf(couponCategory)).size();
         assertEquals(attempt - couponCount, failEventPeopleNums);
 
     }
@@ -58,8 +58,6 @@ public class CouponEventServiceIntegrationTest {
             try {
                 UserRequestDto userRequestDto = UserRequestDto.builder()
                         .id(userId++)
-                        .username("test")
-                        .email("test@test.com")
                         .couponCategory(CouponCategory.CHICKEN)
                         .build();
                 couponEventService.addUserToQueue(userRequestDto);

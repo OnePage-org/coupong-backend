@@ -11,8 +11,6 @@ import lombok.Setter;
 @Builder
 public class UserRequestDto {
     private Long id;
-    private String username;
-    private String email;
     private CouponCategory couponCategory;
     private final long attemptAt = System.currentTimeMillis();
 }

@@ -11,9 +11,9 @@
 
     - 
 
-> ## 💾&nbsp;&nbsp;RDB 업데이트 여부
+> ## 💾&nbsp;&nbsp;RDB 변경사항 여부
 
-    - [마이그레이션_APP] : No
+    - [업데이트] : No
 
 > ## 📚&nbsp;&nbsp;추가된 라이브러리
 
