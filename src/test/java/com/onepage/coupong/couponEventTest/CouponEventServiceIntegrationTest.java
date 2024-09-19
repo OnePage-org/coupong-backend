@@ -27,7 +27,7 @@ public class CouponEventServiceIntegrationTest {
     void 선착순_100명에게_30개_쿠폰_발행() throws InterruptedException {
         final CouponCategory couponCategory = CouponCategory.CHICKEN;
         final int attempt = 100;
-        final int couponCount = 30;
+        final int couponCount = 37;
         final int endNums = 0;
         final CountDownLatch countDownLatch = new CountDownLatch(attempt);
         couponEventService.initializeEvent(couponCategory, couponCount, endNums);

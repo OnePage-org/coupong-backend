@@ -28,6 +28,7 @@ public class CouponEvent {
     @Column(name = "coupon_category")
     private CouponCategory category;
 
+    @Setter //테스트용
     @Column(name = "coupon_event_duration")
     private String duration;
 

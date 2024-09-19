@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @EnableScheduling
-public class EventScheduler {
+public class EventScheduler {      //v1 스케줄러
 
     private final CouponEventService couponEventService;
 
