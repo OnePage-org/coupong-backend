@@ -74,7 +74,7 @@ public class WebSecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         /* 모든 Header, Method, Origin에 대해 허용해주겠다. */
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("https://chatstomp1.netlify.app", "http://localhost:3000"));
 //        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
