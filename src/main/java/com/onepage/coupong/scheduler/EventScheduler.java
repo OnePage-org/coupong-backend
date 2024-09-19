@@ -15,14 +15,24 @@ public class EventScheduler {
 
     private final CouponEventService couponEventService;
 
-    @Scheduled(fixedRate = 1000)
+    // RDB 쿠폰이벤트 테이블에서 이벤트 정보 들고와서 동적으로 스케줄 세팅하기
+    @Scheduled(fixedRate = 1000) // 1초마다 실행
     public void couponEventScheduler() {
-        if(couponEventService.validEnd()) {
-            log.info("이벤트 쿠폰 발행 가능 개수 충족");
-            return;
+        try {
+            if (!couponEventService.isEventInitialized()) {
+                log.info("이벤트가 초기화되지 않았습니다.");
+                return;
+            }
+            if (couponEventService.validEnd()) {
+                log.info("이벤트 쿠폰 발행 가능 개수 충족");
+                return;
+            }
+
+            couponEventService.publishCoupons(10);
+            log.info("쿠폰 발행 완료");
+        } catch (Exception e) {
+            log.error("스케줄러에서 오류 발생", e);
         }
-        couponEventService.publishCoupons(10);
-        log.info("쿠폰 발행 완료");
     }
 }
 
