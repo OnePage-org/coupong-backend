@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CouponEventRepository extends JpaRepository<CouponEvent, Long> {
-    List<CouponEvent> findAllByDate(LocalDateTime date);
+    List<CouponEvent> findAllByDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

@@ -20,11 +20,21 @@ import java.util.concurrent.ScheduledFuture;
 public class CouponEventScheduler {
 
     private final ThreadPoolTaskScheduler taskScheduler;
-    // 추가: 스케줄된 작업을 반환하는 getter 메서드
+
     @Getter
     private ScheduledFuture<?> scheduledTask;
 
     public void scheduleEvent(CouponEvent event, CouponEventService couponEventService) {
+        log.info(event.getCategory()+" "+
+                event.getCoupon_publish_nums()+" "+
+                event.getCoupon_publish_nums());
+        // 스케줄 등록 전에 이벤트를 먼저 초기화
+        couponEventService.initializeEvent(
+                event.getCategory(),
+                event.getCoupon_publish_nums(),
+                0
+        );
+
         // 이벤트 시작 시간과 종료 시간을 계산
         LocalDateTime eventStart = event.getDate();
         LocalDateTime eventEnd = event.getDate().plusMinutes(Long.parseLong(event.getDuration()));
@@ -32,6 +42,7 @@ public class CouponEventScheduler {
         long initialDelay = Duration.between(LocalDateTime.now(), eventStart).toMillis();
         long eventDuration = Duration.between(eventStart, eventEnd).toMillis();
 
+        // 스케줄링
         scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
             try {
                 if (!couponEventService.isEventInitialized()) {

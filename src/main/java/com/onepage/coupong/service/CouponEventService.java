@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -36,9 +37,22 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "0 0 0 * * ?")  // 자정에 실행
+@Scheduled(cron = "0 11 11 * * ?")  // 매일 오후 11시 50분에 실행
 public void scheduleDailyEvents() {
-    List<CouponEvent> events = couponEventRepository.findAllByDate(LocalDate.now().atStartOfDay());
+
+    LocalDate tomorrow = LocalDate.now().plusDays(1);
+
+    LocalDateTime startOfDay = tomorrow.atStartOfDay();  // 내일 00:00:00
+    LocalDateTime endOfDay = tomorrow.atTime(23, 59, 59);
+
+    // 내일 진행될 이벤트 조회
+    List<CouponEvent> events = couponEventRepository.findAllByDateBetween(startOfDay, endOfDay);
+
+
+
+    log.info("!!!!!!!!! \n\n\n\n   "+"!!!!!!");
+
+    log.info("!!!!!!!!! "+LocalDate.now().plusDays(1).atStartOfDay()+ "  " + events);
 
     for (CouponEvent event : events) {
         log.info("이벤트 초기화: 카테고리 = {}, 쿠폰 수 = {}, 시작 시간 = {}",
