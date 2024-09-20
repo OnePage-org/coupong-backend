@@ -49,6 +49,8 @@ public class CouponEventScheduler {
             // 이벤트 초기화
             couponEventService.initializeEvent(event.getCategory(), event.getCoupon_publish_nums(), 0);
 
+            //레디스 대기열에 뭔가 대기자가 남아있으면 안됨 비워줘야해 !!!!
+
             // 이벤트 종료 전까지 10초 간격으로 쿠폰 발행 시도
             scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
                 try {
@@ -67,7 +69,7 @@ public class CouponEventScheduler {
                 } catch (Exception e) {
                     log.error("스케줄러 오류 발생", e);
                 }
-            }, 1000);  // 10초마다 실행 //테스트 위해 1초로 수정
+            }, 10000);  // 10초마다 실행 //테스트 위해 1초로 수정
 
         }, new Date(System.currentTimeMillis() + initialDelay));  // 이벤트 시작 시간에 맞춰 스케줄 시작
 
@@ -79,7 +81,7 @@ public class CouponEventScheduler {
     public void stopEvent() {
         if (scheduledTask != null && !scheduledTask.isCancelled()) {
             scheduledTask.cancel(false);
-            log.info("이벤트 스케줄러 중단");
+            log.info("이벤트 진행 시간 끝, 이벤트 스케줄러 중단");
         }
     }
 

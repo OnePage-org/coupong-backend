@@ -37,7 +37,7 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "50 29 15 * * ?")  // 매일 오후 11시 50분에 실행
+@Scheduled(cron = "50 35 16 * * ?")  // 매일 오후 11시 50분에 실행
 public void scheduleDailyEvents() {
 
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -121,8 +121,12 @@ public void publishCoupons(int scheduleCount) {
     }
 }
 
-public Set<Object> getQueue(String queueCategory) {
-    return issuanceQueueService.getZSet(queueCategory);
+public Set<Object> getLeaderBoardQueue(String queueCategory) {
+    return leaderBoardQueueService.getZSet(queueCategory);
+}
+
+public Set<Object> getIssuanceQueue(String queueCategory) {
+        return issuanceQueueService.getZSet(queueCategory);
 }
 
 //쿠폰 발행된 사람들 데이터 RDB 영속

@@ -39,9 +39,9 @@ public class CouponEventServiceIntegrationTest {
 
         workers.forEach(Thread::start);
         countDownLatch.await();
-        Thread.sleep(5000);
+        Thread.sleep(3000);
 
-        final long failEventPeopleNums = couponEventService.getQueue(String.valueOf(couponCategory)).size();
+        final long failEventPeopleNums = couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).size();
         assertEquals(attempt - couponCount, failEventPeopleNums);
 
     }
@@ -60,10 +60,12 @@ public class CouponEventServiceIntegrationTest {
 
         workers.forEach(Thread::start);
         countDownLatch.await();
-        Thread.sleep(30000);
+        Thread.sleep(50000);
 
-        final long failEventPeopleNums = couponEventService.getQueue(String.valueOf(couponCategory)).size();
-        assertEquals(attempt - 30, failEventPeopleNums);
+        final long failEventPeopleNums = couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).size();
+        final long successEventPeopleNums = couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).size();
+
+        assertEquals(attempt - successEventPeopleNums, failEventPeopleNums);
 
     }
 
