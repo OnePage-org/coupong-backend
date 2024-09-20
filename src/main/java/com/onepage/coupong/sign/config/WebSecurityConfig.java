@@ -53,6 +53,7 @@ public class WebSecurityConfig {
                         /* 이메일을 보내기 위한 API 허용 */
                         .requestMatchers("/api/v1/mail/**").permitAll()
                         .requestMatchers("/chat/**").permitAll()
+                        .requestMatchers("/api/v1/filtering").permitAll()
                         .anyRequest().authenticated()
                 )
                 /* OAuth2 관련 */
