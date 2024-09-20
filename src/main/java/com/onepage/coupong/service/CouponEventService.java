@@ -37,7 +37,7 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "00 20 14 * * ?")  // 매일 오후 11시 50분에 실행
+@Scheduled(cron = "50 29 15 * * ?")  // 매일 오후 11시 50분에 실행
 public void scheduleDailyEvents() {
 
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -46,8 +46,10 @@ public void scheduleDailyEvents() {
     LocalDateTime endOfDay = tomorrow.atTime(23, 59, 59);
 
     // 내일 진행될 이벤트 조회
-    List<CouponEvent> events = couponEventRepository.findAllByDateBetween(startOfDay, endOfDay);
+    //List<CouponEvent> events = couponEventRepository.findAllByDateBetween(startOfDay, endOfDay);
 
+    //테스트용
+    List<CouponEvent> events = couponEventRepository.findAllByDateBetween(LocalDate.now().atStartOfDay(), LocalDate.now().atTime(23, 59, 59));
 
 
     log.info("!!!!!!!!! \n\n\n\n   "+"!!!!!!");
