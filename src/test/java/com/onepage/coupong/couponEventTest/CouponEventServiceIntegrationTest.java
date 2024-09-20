@@ -46,6 +46,27 @@ public class CouponEventServiceIntegrationTest {
 
     }
 
+    @Test
+    void 선착순_100명에게_30개_쿠폰_발행_스케줄_동적_할당() throws InterruptedException {
+        final CouponCategory couponCategory = CouponCategory.DEFAULT;
+        final int attempt = 100;
+
+        final CountDownLatch countDownLatch = new CountDownLatch(attempt);
+
+        List<Thread> workers = Stream
+                .generate(() -> new Thread(new AddQueueWorker(countDownLatch, couponCategory)))
+                .limit(attempt)
+                .collect(Collectors.toList());
+
+        workers.forEach(Thread::start);
+        countDownLatch.await();
+        Thread.sleep(30000);
+
+        final long failEventPeopleNums = couponEventService.getQueue(String.valueOf(couponCategory)).size();
+        assertEquals(attempt - 30, failEventPeopleNums);
+
+    }
+
     private class AddQueueWorker implements Runnable {
         private CountDownLatch countDownLatch;
 
@@ -58,8 +79,10 @@ public class CouponEventServiceIntegrationTest {
             try {
                 UserRequestDto userRequestDto = UserRequestDto.builder()
                         .id(userId++)
-                        .couponCategory(CouponCategory.CHICKEN)
+                        .couponCategory(CouponCategory.DEFAULT)
                         .build();
+
+
                 couponEventService.addUserToQueue(userRequestDto);
             } finally {
                 countDownLatch.countDown();

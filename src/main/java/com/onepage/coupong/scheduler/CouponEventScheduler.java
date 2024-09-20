@@ -56,7 +56,7 @@ public class CouponEventScheduler {
                 }
 
                 couponEventService.publishCoupons(10);
-                log.info("쿠폰 발행 완료");
+                log.info("쿠폰 발행 시도 완료");
             } catch (Exception e) {
                 log.error("스케줄러 오류 발생", e);
             }
