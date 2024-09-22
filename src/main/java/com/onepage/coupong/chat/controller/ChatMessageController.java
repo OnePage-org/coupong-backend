@@ -1,9 +1,13 @@
 package com.onepage.coupong.chat.controller;
 
 
+import com.onepage.coupong.chat.ChatService;
+import com.onepage.coupong.chat.dto.FilteringRequestDTO;
 import com.onepage.coupong.chat.entity.ChatMessage;
 import com.onepage.coupong.chat.response.ChatResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,6 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller @RequiredArgsConstructor
 public class ChatMessageController {
+
+    @Autowired
+    private ChatService chatService;
+
     private final SimpMessagingTemplate template;
     private final Map<String, Boolean> users = new ConcurrentHashMap<>(); // 참여자 Map -> 동시성을 위한 ConcurrentHashMap사용
 
@@ -57,17 +65,22 @@ public class ChatMessageController {
     }
 
     @PostMapping("/api/v1/filtering")
-    public ResponseEntity<?> filterMessage(@RequestBody ChatResponseDto chatResponseDto) {
+    public ResponseEntity<?> filterMessage(@RequestBody FilteringRequestDTO filteringRequestDTO) throws Exception {
 
-        ChatMessage message = chatResponseDto.getData();
+        String message = filteringRequestDTO.getMessage();
         
-        if (message.getMessage().trim().length() == 0){ // 공백만 가면 
-            return ChatResponseDto.noChat(chatResponseDto.getData());
-        } else if (message.getMessage().length() > 200) { // 200글자가 넘어가면
-            return ChatResponseDto.tooLongChat(chatResponseDto.getData());
+        if (message.trim().isEmpty()){ // 공백만 가면
+            return ResponseEntity.status(400).body("공백 문자열 감지");
+        } else if (message.length() > 200) { // 200글자가 넘어가면
+            return ResponseEntity.status(413).body("200자 초과 문자열 감지");
         }
-        
-        return ChatResponseDto.successChat(chatResponseDto.getData()); // 정상
+
+        if(chatService.filteringChatMessage(message)) {
+            return ResponseEntity.status(200).body("fail"); //욕설 필터에 걸림
+        } else {
+            return ResponseEntity.status(200).body("success"); // 정상
+        }
+
     }
 
     @MessageMapping(value = "/exit") // 퇴장 메시지
