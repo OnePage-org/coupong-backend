@@ -1,6 +1,7 @@
 package com.onepage.coupong.service;
 
 import com.onepage.coupong.dto.UserRequestDto;
+import com.onepage.coupong.entity.Coupon;
 import com.onepage.coupong.entity.CouponEvent;
 import com.onepage.coupong.entity.CouponWinningLog;
 import com.onepage.coupong.entity.EventManager;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -29,6 +31,8 @@ public class CouponEventService {
     private final CouponEventRepository couponEventRepository;
     private EventManager eventManager;
     private final CouponEventScheduler couponEventScheduler;
+    private CouponEvent couponEvent;   //추후 단일 쿠폰 이벤트가 아닌 다중 쿠폰 이벤트가 가능하도록 리펙터링 필요
+    private int couponListIndex = 0;
 
     /*
     1.	Event Lifecycle 관리: 이벤트가 시작되고 종료되는 라이프사이클을 명확히 관리하는 것이 중요합니다. 이벤트가 실행되기 전에 eventManager를 미리 준비해두고, 이벤트 상태를 유지하는 방법이 필요합니다.
@@ -37,7 +41,7 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "50 35 16 * * ?")  // 매일 오후 11시 50분에 실행
+@Scheduled(cron = "10 32 22 * * ?")  // 매일 오후 11시 50분에 실행
 public void scheduleDailyEvents() {
 
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -57,6 +61,8 @@ public void scheduleDailyEvents() {
     log.info("!!!!!!!!! "+LocalDate.now().plusDays(1).atStartOfDay()+ "  " + events);
 
     for (CouponEvent event : events) {
+        couponEvent = event;
+
         log.info("이벤트 초기화: 카테고리 = {}, 쿠폰 수 = {}, 시작 시간 = {}",
                 event.getCategory(), event.getCoupon_publish_nums(), event.getDate());
 
@@ -70,6 +76,11 @@ public void initializeEvent(CouponCategory couponCategory, int couponCount, int 
     if (this.eventManager != null) {
         throw new IllegalStateException("이미 초기화된 이벤트가 있습니다.");
     }
+
+    if (couponEvent.getCouponList().size() != couponCount) {
+        throw new IllegalStateException("RDB에서 이벤트 객체와의 연관관계 오류 발생"); //나중에 에러 처리 리펙터링 필요
+    }
+
     this.eventManager = new EventManager(couponCategory, couponCount, endNums);
     log.info("이벤트 초기화: 카테고리 = {}, 쿠폰 수 = {}, 종료 조건 = {}", couponCategory, couponCount, endNums);
 }
@@ -92,7 +103,18 @@ public void publishCoupons(int scheduleCount) {
     System.out.println(queueWithScores.size() +" 큐 사이즈 !");
 
     for (ZSetOperations.TypedTuple<Object> item : queueWithScores) {
-        if(eventManager.eventEnd()) return;
+        if(eventManager.eventEnd()) {
+
+            System.out.println("\n\n발행이 모두 끝이 났습니다. 데이터 확인\n\n");
+
+            Map<Object, Coupon> temp = eventManager.getUserCouponMap();
+
+            for (Map.Entry<Object, Coupon> entry : temp.entrySet()) {
+                System.out.println(entry.getKey() + " : " + entry.getValue());
+            }
+
+            return;
+        }
 
         System.out.println( eventManager.getCouponCategory() +" " + item.getValue() +" "+ item.getScore());
 
@@ -118,6 +140,8 @@ public void publishCoupons(int scheduleCount) {
 
         issuanceQueueService.removeItemFromZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()));
         eventManager.decreaseCouponCount();
+
+        eventManager.addUserCoupon(String.valueOf(item.getValue()), couponEvent.getCouponList().get(couponListIndex++));
     }
 }
 

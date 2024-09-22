@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +31,7 @@ public class CouponEventServiceIntegrationTest {
         final int couponCount = 37;
         final int endNums = 0;
         final CountDownLatch countDownLatch = new CountDownLatch(attempt);
-        couponEventService.initializeEvent(couponCategory, couponCount, endNums);
+        //couponEventService.initializeEvent( couponCategory, couponCount, endNums);
 
         List<Thread> workers = Stream
                 .generate(() -> new Thread(new AddQueueWorker(countDownLatch, couponCategory)))
@@ -60,7 +61,7 @@ public class CouponEventServiceIntegrationTest {
 
         workers.forEach(Thread::start);
         countDownLatch.await();
-        Thread.sleep(50000);
+        Thread.sleep(30000);
 
         final long failEventPeopleNums = couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).size();
         final long successEventPeopleNums = couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).size();
