@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,10 +28,10 @@ public class CouponEventServiceIntegrationTest {
     void 선착순_100명에게_30개_쿠폰_발행() throws InterruptedException {
         final CouponCategory couponCategory = CouponCategory.CHICKEN;
         final int attempt = 100;
-        final int couponCount = 30;
+        final int couponCount = 37;
         final int endNums = 0;
         final CountDownLatch countDownLatch = new CountDownLatch(attempt);
-        couponEventService.initializeEvent(couponCategory, couponCount, endNums);
+        //couponEventService.initializeEvent( couponCategory, couponCount, endNums);
 
         List<Thread> workers = Stream
                 .generate(() -> new Thread(new AddQueueWorker(countDownLatch, couponCategory)))
@@ -39,10 +40,33 @@ public class CouponEventServiceIntegrationTest {
 
         workers.forEach(Thread::start);
         countDownLatch.await();
-        Thread.sleep(5000);
+        Thread.sleep(3000);
 
-        final long failEventPeopleNums = couponEventService.getQueue(String.valueOf(couponCategory)).size();
+        final long failEventPeopleNums = couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).size();
         assertEquals(attempt - couponCount, failEventPeopleNums);
+
+    }
+
+    @Test
+    void 선착순_100명에게_30개_쿠폰_발행_스케줄_동적_할당() throws InterruptedException {
+        final CouponCategory couponCategory = CouponCategory.DEFAULT;
+        final int attempt = 100;
+
+        final CountDownLatch countDownLatch = new CountDownLatch(attempt);
+
+        List<Thread> workers = Stream
+                .generate(() -> new Thread(new AddQueueWorker(countDownLatch, couponCategory)))
+                .limit(attempt)
+                .collect(Collectors.toList());
+
+        workers.forEach(Thread::start);
+        countDownLatch.await();
+        Thread.sleep(30000);
+
+        final long failEventPeopleNums = couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).size();
+        final long successEventPeopleNums = couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).size();
+
+        assertEquals(attempt - successEventPeopleNums, failEventPeopleNums);
 
     }
 
@@ -58,8 +82,10 @@ public class CouponEventServiceIntegrationTest {
             try {
                 UserRequestDto userRequestDto = UserRequestDto.builder()
                         .id(userId++)
-                        .couponCategory(CouponCategory.CHICKEN)
+                        .couponCategory(CouponCategory.DEFAULT)
                         .build();
+
+
                 couponEventService.addUserToQueue(userRequestDto);
             } finally {
                 countDownLatch.countDown();
