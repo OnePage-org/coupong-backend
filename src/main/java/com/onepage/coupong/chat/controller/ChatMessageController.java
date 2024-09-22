@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatMessageController {
     private final SimpMessagingTemplate template;
     private final Map<String, Boolean> users = new ConcurrentHashMap<>(); // 참여자 Map -> 동시성을 위한 ConcurrentHashMap사용
-    private final int MAX_MESSAGE_LENGTH = 200;
 
     public void updateUserCnt() { // 참여자 수 갱신
         int userCnt = users.size();
@@ -38,7 +37,7 @@ public class ChatMessageController {
 
         users.put(message.getWriter(), Boolean.TRUE);
 
-        ChatMessage chatMessage = new ChatMessage("알림", message.getMessage(), message.getCreatedDate());
+        ChatMessage chatMessage = new ChatMessage("알림", message.getMessage(), "");
         template.convertAndSend("/sub/chat", chatMessage);
 
         updateUserCnt(); // 참여자 갱신
