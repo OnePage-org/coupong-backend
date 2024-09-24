@@ -1,29 +1,58 @@
 package com.onepage.coupong.service;
 
+import com.onepage.coupong.dto.LeaderboardUpdateDTO;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class LeaderBoardQueueService implements RedisZSetService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final LeaderboardService leaderboardService; // 리더보드 서비스 주입
+
     private final String queueKeySeparator = "LEADERBOARD QUEUE:";
 
-    public LeaderBoardQueueService(RedisTemplate<String, Object> redisTemplate) {
+    @Autowired
+    public LeaderBoardQueueService(RedisTemplate<String, Object> redisTemplate, LeaderboardService leaderboardService) {
         this.redisTemplate = redisTemplate;
+        this.leaderboardService = leaderboardService;
     }
 
     @Override
     public boolean addToZSet(String couponCategory, String userId, double attemptAt) {
+        boolean isAdded = false;
         try {
-            redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
-            return true;
+            isAdded = redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
+            if (isAdded) {
+                // 리더보드 정보 가져오기
+                Set<Object> topWinners = getZSet(couponCategory);
+                List<String> winnerList = topWinners.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.toList());
+
+                // DTO 생성
+                LeaderboardUpdateDTO updateDTO = new LeaderboardUpdateDTO(couponCategory, winnerList);
+                log.info("Updating leaderboard with DTO: {}", updateDTO);
+
+                // 리더보드 업데이트 (sink를 통해 데이터 발행)
+                leaderboardService.updateLeaderboard(updateDTO); // Flux로 전송
+
+                // sink 발행 상태 확인
+                if (leaderboardService.getSink().currentSubscriberCount() == 0) {
+                    log.warn("No active subscribers for SSE.");
+                }
+            }
         } catch (Exception e) {
-            return false;
+            log.error("Error while adding to ZSet: ", e);
         }
+        return isAdded;
     }
 
     @Override
@@ -43,7 +72,11 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
     @Override
     public void removeItemFromZSet(String couponCategory, String itemValue) {
-        System.out.println("삭제합니다 유저 큐에서 " + itemValue);
+        log.info("Removing user from queue: {}", itemValue);
         redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
+    }
+
+    public void clearLeaderboardQueue(String couponCategory) {
+        redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1);
     }
 }
