@@ -49,11 +49,13 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("api/v1/auth/**", "/oauth2/**").permitAll()
                         .requestMatchers("/").hasRole("USER")
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin").hasRole("ADMIN")
                         /* 이메일을 보내기 위한 API 허용 */
                         .requestMatchers("/api/v1/mail/**").permitAll()
                         .requestMatchers("/sse/**").permitAll()
                         .requestMatchers("/api/**").permitAll()  // 리더보드 API 허용
+                        .requestMatchers("/chat/**").permitAll()
+                        .requestMatchers("/api/v1/filtering").permitAll()
                         .anyRequest().authenticated()
                 )
                 /* OAuth2 관련 */
@@ -67,7 +69,7 @@ public class WebSecurityConfig {
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return httpSecurity.build();
+                return httpSecurity.build();
     }
 
     @Bean
@@ -75,7 +77,10 @@ public class WebSecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         /* 모든 Header, Method, Origin에 대해 허용해주겠다. */
-        configuration.setAllowedOrigins(List.of("https://coupong.netlify.app"));
+
+        configuration.setAllowedOrigins(List.of("https://coupong.netlify.app", "https://chatstomp1.netlify.app", "http://localhost:3000"));
+
+//        configuration.setAllowedOrigins(List.of("https://chatstomp1.netlify.app", "http://localhost:3000"));
 //        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
