@@ -20,6 +20,10 @@ public class CouponEvent {
     @Column(name = "coupon_event_id")
     private Long id;
 
+    @Setter
+    @Column(name = "coupon_event_name")
+    private String name;
+
     @Setter  //테스트용
     @Column(name = "coupon_event_date")
     private LocalDateTime date;
