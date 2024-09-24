@@ -49,11 +49,11 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("api/v1/auth/**", "/oauth2/**").permitAll()
                         .requestMatchers("/").hasRole("USER")
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         /* 이메일을 보내기 위한 API 허용 */
                         .requestMatchers("/api/v1/mail/**").permitAll()
-                        .requestMatchers("/chat/**").permitAll()
-                        .requestMatchers("/api/v1/filtering").permitAll()
+                        .requestMatchers("/sse/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()  // 리더보드 API 허용
                         .anyRequest().authenticated()
                 )
                 /* OAuth2 관련 */
@@ -67,7 +67,7 @@ public class WebSecurityConfig {
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-                return httpSecurity.build();
+        return httpSecurity.build();
     }
 
     @Bean
@@ -75,7 +75,7 @@ public class WebSecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         /* 모든 Header, Method, Origin에 대해 허용해주겠다. */
-        configuration.setAllowedOrigins(List.of("https://chatstomp1.netlify.app", "http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8080"));
 //        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
@@ -97,7 +97,7 @@ public class WebSecurityConfig {
             /* 권한 없음 */
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             /* {"code" : "NP", "message" : "No Permission."}
-            * 의 형식으로 응답이 됨 */
+             * 의 형식으로 응답이 됨 */
             response.getWriter().write("{\"code\": \"NP\", \"message\": \"No Permission.\"}");
         }
     }

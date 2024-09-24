@@ -25,31 +25,34 @@ public class LeaderBoardQueueService implements RedisZSetService {
         this.leaderboardService = leaderboardService;
     }
 
+    @Override
     public boolean addToZSet(String couponCategory, String userId, double attemptAt) {
+        boolean isAdded = false;
         try {
-            boolean isAdded = redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
+            isAdded = redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
             if (isAdded) {
                 // 리더보드 정보 가져오기
-                Set<Object> topRankSet = getZSet(couponCategory);
-                log.info("users for couponCategory {}: {}", couponCategory, topRankSet);
+                Set<Object> topWinners = getZSet(couponCategory);
+                List<String> winnerList = topWinners.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.toList());
 
                 // DTO 생성
-                LeaderboardUpdateDTO updateDTO = new LeaderboardUpdateDTO(
-                        couponCategory,
-                        topRankSet.stream()
-                                .map(Object::toString)
-                                .collect(Collectors.toList())
-                );
+                LeaderboardUpdateDTO updateDTO = new LeaderboardUpdateDTO(couponCategory, winnerList);
+                log.info("Updating leaderboard with DTO: {}", updateDTO);
 
-                // 리더보드 업데이트 전송 (SSE 전송)
+                // 리더보드 업데이트 (sink를 통해 데이터 발행)
                 leaderboardService.updateLeaderboard(updateDTO); // Flux로 전송
 
-                return true;
+                // sink 발행 상태 확인
+                if (leaderboardService.getSink().currentSubscriberCount() == 0) {
+                    log.warn("No active subscribers for SSE.");
+                }
             }
         } catch (Exception e) {
             log.error("Error while adding to ZSet: ", e);
         }
-        return false;
+        return isAdded;
     }
 
     @Override

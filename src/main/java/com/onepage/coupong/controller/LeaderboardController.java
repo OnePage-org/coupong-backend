@@ -9,10 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,28 +64,53 @@ public class LeaderboardController {
         return ResponseEntity.ok().build();
     }
 
-    // SSE를 통해 리더보드 업데이트 전송 (Flux 사용)
-//    @GetMapping(value = "/sse/leaderboard", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+
+//    @GetMapping(value = "/sse/leaderboard/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 //    public Flux<String> streamLeaderboardUpdates(@RequestParam String couponCategory) {
 //        log.info("SSE request received for category: {}", couponCategory);
+//
+//        // 구독이 발생하면 해당 카테고리의 리더보드 업데이트 메시지를 스트리밍
 //        return leaderboardService.getSink().asFlux()
+//                .doOnSubscribe(subscription -> {
+//                    log.info("Client subscribed to SSE");
+//                    // 초기 데이터 발행
+//                    Set<Object> topWinners = leaderBoardQueueService.getZSet(couponCategory);
+//                    List<String> winnerList = topWinners.stream()
+//                            .map(Object::toString)
+//                            .collect(Collectors.toList());
+//                    LeaderboardUpdateDTO updateDTO = new LeaderboardUpdateDTO(couponCategory, winnerList);
+//                    leaderboardService.updateLeaderboard(updateDTO);  // 초기 데이터 발행
+//                })
+//                .doOnCancel(() -> log.info("Client unsubscribed from SSE"))
 //                .replay(1)  // 마지막 1개의 이벤트를 캐시
-//                .autoConnect()  // 구독자가 생기면 연결
+//                .autoConnect()
 //                .doOnNext(data -> log.info("Sending data: {}", data))
 //                .doOnError(error -> log.error("Error in SSE: {}", error));
 //    }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/sse/leaderboard/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamLeaderboardUpdates(@RequestParam String couponCategory) {
-        log.info("SSE request received for category: {}", couponCategory);
+        // 5초마다 리더보드 업데이트 전송
+        Flux.interval(Duration.ofSeconds(5))
+                .doOnNext(tick -> {
+                    // 리더보드 조회
+                    Set<Object> topWinners = leaderBoardQueueService.getZSet(couponCategory);
+                    List<String> winnerList = topWinners.stream()
+                            .map(Object::toString)
+                            .collect(Collectors.toList());
 
-//        leaderboardService.getSink().tryEmitNext("{\"message\": \"Test update\"}");
+                    // 리더보드 업데이트를 sink에 발행
 
+                    leaderboardService.updateLeaderboard(new LeaderboardUpdateDTO(couponCategory, winnerList));
+
+                })
+                .subscribe();  // 주기적으로 리더보드 업데이트를 발행
+
+        // 클라이언트에게 sink를 통해 데이터 전송
         return leaderboardService.getSink().asFlux()
                 .doOnSubscribe(subscription -> log.info("Client subscribed to SSE"))
                 .doOnCancel(() -> log.info("Client unsubscribed from SSE"))
-                .replay(1)  // 마지막 1개의 이벤트를 캐시
+                .replay(1)  // 마지막 1개의 이벤트를 캐시하여 새로운 구독자에게 전달
                 .autoConnect()
                 .doOnNext(data -> log.info("Sending data: {}", data))
                 .doOnError(error -> log.error("Error in SSE: {}", error));
