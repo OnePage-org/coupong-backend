@@ -12,5 +12,5 @@ import lombok.Setter;
 public class UserRequestDto {
     private Long id;
     private CouponCategory couponCategory;
-    private final long attemptAt = System.currentTimeMillis();
+    private Long attemptAt;
 }

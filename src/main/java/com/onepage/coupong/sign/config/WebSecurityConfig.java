@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/mail/**").permitAll()
                         .requestMatchers("/chat/**").permitAll()
                         .requestMatchers("/api/v1/filtering").permitAll()
+                        //.requestMatchers("/api/v1/coupon-event/list").permitAll()
                         .anyRequest().authenticated()
                 )
                 /* OAuth2 관련 */
