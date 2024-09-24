@@ -17,7 +17,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final LeaderboardService leaderboardService; // 리더보드 서비스 주입
 
-    private final String queueKeySeparator = "LEADERBOARDQUEUE:";
+    private final String queueKeySeparator = "LEADERBOARD QUEUE:";
 
     @Autowired
     public LeaderBoardQueueService(RedisTemplate<String, Object> redisTemplate, LeaderboardService leaderboardService) {
