@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/mail/**").permitAll()
                         .requestMatchers("/sse/**").permitAll()
                         .requestMatchers("/api/**").permitAll()  // 리더보드 API 허용
+
                         .requestMatchers("/chat/**").permitAll()
                         .requestMatchers("/api/v1/filtering").permitAll()
                         .anyRequest().authenticated()
@@ -81,6 +82,7 @@ public class WebSecurityConfig {
         configuration.setAllowedOrigins(List.of("https://coupong.netlify.app", "https://chatstomp1.netlify.app", "http://localhost:3000"));
 
 //        configuration.setAllowedOrigins(List.of("https://chatstomp1.netlify.app", "http://localhost:3000"));
+
 //        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
