@@ -59,7 +59,6 @@ public class ChatMessageController {
         message.setCreatedDate(formattedDate);
 
         ChatResponseDto dto = new ChatResponseDto(message);
-        System.out.println(ResponseEntity.ok(dto));
 
         template.convertAndSend("/sub/chat", message);
     }
@@ -94,7 +93,7 @@ public class ChatMessageController {
         message.setMessage(message.getWriter()+"님이 퇴장하였습니다.");
         message.setCreatedDate(formattedDate);
 
-        ChatMessage chatMessage = new ChatMessage("알림", message.getMessage(), message.getCreatedDate());
+        ChatMessage chatMessage = new ChatMessage("알림", message.getMessage(), "");
         template.convertAndSend("/sub/chat", chatMessage);
         updateUserCnt(); // 참여자 갱신
 
