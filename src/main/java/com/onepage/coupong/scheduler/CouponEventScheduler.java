@@ -46,8 +46,8 @@ public class CouponEventScheduler {
         taskScheduler.schedule(() -> {
             log.info("이벤트가 시작되었습니다: 카테고리 = {}, 쿠폰 수 = {}", event.getCategory(), event.getCoupon_publish_nums());
 
-            // 이벤트 초기화
-            couponEventService.initializeEvent(event.getCategory(), event.getCoupon_publish_nums(), 0);
+            // 이벤트 초기화  (이벤트 시작 시간이 아닌, 전날 미리 초기화를 해놓자)
+            //couponEventService.initializeEvent(event.getName(), event.getCategory(), event.getDate(), event.getCoupon_publish_nums(), 0);
 
             //레디스 대기열에 뭔가 대기자가 남아있으면 안됨 비워줘야해 !!!!
 

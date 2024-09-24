@@ -8,6 +8,7 @@ import com.onepage.coupong.entity.EventManager;
 import com.onepage.coupong.entity.enums.CouponCategory;
 import com.onepage.coupong.repository.CouponEventRepository;
 import com.onepage.coupong.scheduler.CouponEventScheduler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +31,7 @@ public class CouponEventService {
     private final IssuanceQueueService issuanceQueueService;
     private final LeaderBoardQueueService leaderBoardQueueService;
     private final CouponEventRepository couponEventRepository;
+    @Getter
     private EventManager eventManager;
     private final CouponEventScheduler couponEventScheduler;
     private CouponEvent couponEvent;   //추후 단일 쿠폰 이벤트가 아닌 다중 쿠폰 이벤트가 가능하도록 리펙터링 필요
@@ -41,7 +44,7 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "10 32 22 * * ?")  // 매일 오후 11시 50분에 실행
+@Scheduled(cron = "00 05 18 * * ?")  // 매일 오후 11시 50분에 실행
 public void scheduleDailyEvents() {
 
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -68,11 +71,12 @@ public void scheduleDailyEvents() {
 
         // 각 이벤트마다 스케줄을 동적으로 등록
         couponEventScheduler.scheduleEvent(event, this);
+        initializeEvent(event.getName(), event.getCategory(), event.getDate(), event.getCoupon_publish_nums(), 0);  //전날 미리 초기화하자
     }
 }
 
 // 이벤트 초기화 메서드
-public void initializeEvent(CouponCategory couponCategory, int couponCount, int endNums) {
+public void initializeEvent(String couponName, CouponCategory couponCategory, LocalDateTime startTime, int couponCount, int endNums) {
     if (this.eventManager != null) {
         throw new IllegalStateException("이미 초기화된 이벤트가 있습니다.");
     }
@@ -81,8 +85,9 @@ public void initializeEvent(CouponCategory couponCategory, int couponCount, int 
         throw new IllegalStateException("RDB에서 이벤트 객체와의 연관관계 오류 발생"); //나중에 에러 처리 리펙터링 필요
     }
 
-    this.eventManager = new EventManager(couponCategory, couponCount, endNums);
+    this.eventManager = new EventManager(couponName, couponCategory, startTime, couponCount, endNums);
     log.info("이벤트 초기화: 카테고리 = {}, 쿠폰 수 = {}, 종료 조건 = {}", couponCategory, couponCount, endNums);
+    log.info("이벤트는 초기화 되었는가{}", isEventInitialized());
 }
 
 // 이벤트 초기화 여부 확인
