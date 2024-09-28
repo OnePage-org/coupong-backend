@@ -44,7 +44,8 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "00 00 10 * * ?")  // 매일 오후 11시 50분에 실행
+//@Scheduled(cron = "00 33 15 * * ?")  // 매일 오후 11시 50분에 실행
+@Scheduled(fixedDelay = 100000) //테스트용
 public void scheduleDailyEvents() {
 
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -77,9 +78,19 @@ public void scheduleDailyEvents() {
 
 // 이벤트 초기화 메서드
 public void initializeEvent(String couponName, CouponCategory couponCategory, LocalDateTime startTime, int couponCount, int endNums) {
+
+
     if (this.eventManager != null) {
         throw new IllegalStateException("이미 초기화된 이벤트가 있습니다.");
     }
+
+    System.out.println(couponEvent.getClass().getName());
+
+    //temp.get(0)
+
+//    Hibernate.initialize(temp.get(0));
+//    System.out.println(temp.get(0).getClass().getName());
+
 
     if (couponEvent.getCouponList().size() != couponCount) {
         throw new IllegalStateException("RDB에서 이벤트 객체와의 연관관계 오류 발생"); //나중에 에러 처리 리펙터링 필요

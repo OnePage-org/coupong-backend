@@ -59,7 +59,7 @@ public class CouponEventController {
         Map<Object, Coupon> userCouponMap = eventManager.getUserCouponMap();
         LocalDateTime startTime = eventManager.getStartTime();
 
-
+        // 여기 에러 발생시킴 (이벤트 진행 중에는)
         if(!couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).isEmpty() || !couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

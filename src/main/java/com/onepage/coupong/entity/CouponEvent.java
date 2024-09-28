@@ -40,5 +40,5 @@ public class CouponEvent {
     private String duration;
 
     @OneToMany(mappedBy = "couponEventId", fetch = FetchType.EAGER)  //Lazy로 하면 이벤트 세팅할때 에러가 남, 어차피 세팅은 막 전날 어유로울 때하는거니까 미리 리스트를 만들어 놓는게 나을 듯, 서비스 운영중에 뒤늦게 쿼리문 날리는 거보다.
-    private List<Coupon> couponList = new ArrayList<>();
+    private List<Coupon> couponList;
 }
