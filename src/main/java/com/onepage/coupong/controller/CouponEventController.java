@@ -60,9 +60,9 @@ public class CouponEventController {
         LocalDateTime startTime = eventManager.getStartTime();
 
 
-        if(!couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).isEmpty() || !couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+//        if(!couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).isEmpty() || !couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
 
         CouponEventListDto couponEventListDto = CouponEventListDto.builder().eventName(eventName).eventCategory(String.valueOf(couponCategory)).startTime(startTime).build();
         return new ResponseEntity<>(couponEventListDto, HttpStatus.OK);

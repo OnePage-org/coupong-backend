@@ -69,7 +69,7 @@ public class CouponEventScheduler {
                 } catch (Exception e) {
                     log.error("스케줄러 오류 발생", e);
                 }
-            }, 10000);  // 10초마다 실행 //테스트 위해 1초로 수정
+            }, 3000);  // 10초마다 실행 //테스트 위해 1초로 수정
 
         }, new Date(System.currentTimeMillis() + initialDelay));  // 이벤트 시작 시간에 맞춰 스케줄 시작
 

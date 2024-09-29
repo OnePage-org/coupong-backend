@@ -39,15 +39,10 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
                 // DTO 생성
                 LeaderboardUpdateDTO updateDTO = new LeaderboardUpdateDTO(couponCategory, winnerList);
-                log.info("Updating leaderboard with DTO: {}", updateDTO);
 
                 // 리더보드 업데이트 (sink를 통해 데이터 발행)
                 leaderboardService.updateLeaderboard(updateDTO); // Flux로 전송
 
-                // sink 발행 상태 확인
-                if (leaderboardService.getSink().currentSubscriberCount() == 0) {
-                    log.warn("No active subscribers for SSE.");
-                }
             }
         } catch (Exception e) {
             log.error("Error while adding to ZSet: ", e);

@@ -13,4 +13,5 @@ public class UserRequestDto {
     private Long id;
     private CouponCategory couponCategory;
     private Long attemptAt;
+    private String username;
 }

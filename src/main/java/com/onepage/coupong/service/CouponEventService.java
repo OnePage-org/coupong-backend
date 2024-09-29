@@ -44,7 +44,7 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "00 20 10 * * ?")  // 매일 오후 11시 50분에 실행
+@Scheduled(cron = "00 30 14 * * ?")  // 매일 오후 11시 50분에 실행
 public void scheduleDailyEvents() {
 
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -98,7 +98,7 @@ public boolean isEventInitialized() {
 public boolean addUserToQueue (UserRequestDto userRequestDto) {
     return issuanceQueueService.addToZSet(
             String.valueOf(userRequestDto.getCouponCategory()),
-            String.valueOf(userRequestDto.getId()),
+            String.valueOf(userRequestDto.getUsername()),
             userRequestDto.getAttemptAt());
 }
 
@@ -140,6 +140,7 @@ public void publishCoupons(int scheduleCount) {
         // 쿠폰 발행 성공자 정보를 Redis ZSet에 추가
 
         // 이때, 기존 발행 성공자 대기열에 해당 유저가 있을 경우 빡구 시킬지 말지 ? 한 카테고리 내에서는 한번만 받을 수 있게 하자 ! 이거 추가 필요
+
 
         leaderBoardQueueService.addToZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()), item.getScore());
 

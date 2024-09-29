@@ -72,6 +72,7 @@ public class LeaderboardController {
                 .doOnNext(tick -> {
                     // 리더보드 조회
                     Set<Object> topWinners = leaderBoardQueueService.getZSet(couponCategory);
+
                     List<String> winnerList = topWinners.stream()
                             .map(Object::toString)
                             .collect(Collectors.toList());
@@ -85,11 +86,7 @@ public class LeaderboardController {
 
         // 클라이언트에게 sink를 통해 데이터 전송
         return leaderboardService.getSink().asFlux()
-                .doOnSubscribe(subscription -> log.info("Client subscribed to SSE"))
-                .doOnCancel(() -> log.info("Client unsubscribed from SSE"))
                 .replay(1)  // 마지막 1개의 이벤트를 캐시하여 새로운 구독자에게 전달
-                .autoConnect()
-                .doOnNext(data -> log.info("Sending data: {}", data))
-                .doOnError(error -> log.error("Error in SSE: {}", error));
+                .autoConnect();
     }
 }
