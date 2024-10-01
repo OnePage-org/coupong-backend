@@ -1,6 +1,6 @@
 package com.onepage.coupong.coupon.domain;
 
-import com.onepage.coupong.entity.User;
+import com.onepage.coupong.user.domain.User;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

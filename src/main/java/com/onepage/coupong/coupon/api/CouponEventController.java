@@ -6,7 +6,7 @@ import com.onepage.coupong.coupon.domain.Coupon;
 import com.onepage.coupong.coupon.domain.EventManager;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import com.onepage.coupong.coupon.service.CouponEventService;
-import com.onepage.coupong.sign.service.AuthService;
+import com.onepage.coupong.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
