@@ -1,13 +1,11 @@
-package com.onepage.coupong.chat.controller;
+package com.onepage.coupong.chat.api;
 
 
-import com.onepage.coupong.chat.ChatService;
+import com.onepage.coupong.chat.service.ChatService;
 import com.onepage.coupong.chat.dto.FilteringRequestDTO;
-import com.onepage.coupong.chat.entity.ChatMessage;
-import com.onepage.coupong.chat.response.ChatResponseDto;
+import com.onepage.coupong.chat.dto.ChatMessageDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -36,7 +34,7 @@ public class ChatMessageController {
         template.convertAndSend("/sub/users", userCnt);
     }
     @MessageMapping(value = "/enter") // 입장 메시지
-    public void userEnter(ChatMessage message) {
+    public void userEnter(ChatMessageDTO message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
         String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
 
@@ -45,20 +43,18 @@ public class ChatMessageController {
 
         users.put(message.getWriter(), Boolean.TRUE);
 
-        ChatMessage chatMessage = new ChatMessage("알림", message.getMessage(), "");
-        template.convertAndSend("/sub/chat", chatMessage);
+        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("알림", message.getMessage(), "");
+        template.convertAndSend("/sub/chat", chatMessageDTO);
 
         updateUserCnt(); // 참여자 갱신
     }
 
     @MessageMapping(value = "/messages") // 메시지 전송
-    public void sendMessage(ChatMessage message) {
+    public void sendMessage(ChatMessageDTO message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
         String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
 
         message.setCreatedDate(formattedDate);
-
-        ChatResponseDto dto = new ChatResponseDto(message);
 
         template.convertAndSend("/sub/chat", message);
     }
@@ -83,7 +79,7 @@ public class ChatMessageController {
     }
 
     @MessageMapping(value = "/exit") // 퇴장 메시지
-    public void userExit(ChatMessage message) {
+    public void userExit(ChatMessageDTO message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
         String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
 
@@ -93,8 +89,8 @@ public class ChatMessageController {
         message.setMessage(message.getWriter()+"님이 퇴장하였습니다.");
         message.setCreatedDate(formattedDate);
 
-        ChatMessage chatMessage = new ChatMessage("알림", message.getMessage(), "");
-        template.convertAndSend("/sub/chat", chatMessage);
+        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("알림", message.getMessage(), "");
+        template.convertAndSend("/sub/chat", chatMessageDTO);
         updateUserCnt(); // 참여자 갱신
 
     }

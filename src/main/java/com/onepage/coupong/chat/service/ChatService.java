@@ -1,7 +1,7 @@
-package com.onepage.coupong.chat;
+package com.onepage.coupong.chat.service;
 
-import com.onepage.coupong.filtering.PatternFiltering;
-import com.onepage.coupong.filtering.WordListLoader;
+import com.onepage.coupong.global.filtering.PatternFiltering;
+import com.onepage.coupong.global.filtering.WordListLoader;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

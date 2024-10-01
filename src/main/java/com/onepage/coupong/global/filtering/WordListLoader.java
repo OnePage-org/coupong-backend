@@ -1,4 +1,4 @@
-package com.onepage.coupong.filtering;
+package com.onepage.coupong.global.filtering;
 
 import java.io.BufferedReader;
 import java.io.IOException;
