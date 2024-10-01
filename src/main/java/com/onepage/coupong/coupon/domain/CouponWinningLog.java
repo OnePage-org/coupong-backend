@@ -1,6 +1,7 @@
-package com.onepage.coupong.entity;
+package com.onepage.coupong.coupon.domain;
 
-import com.onepage.coupong.entity.enums.WinningCouponState;
+import com.onepage.coupong.entity.User;
+import com.onepage.coupong.coupon.domain.enums.WinningCouponState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

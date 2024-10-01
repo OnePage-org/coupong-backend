@@ -1,7 +1,7 @@
 package com.onepage.coupong.scheduler;
 
-import com.onepage.coupong.entity.CouponEvent;
-import com.onepage.coupong.service.CouponEventService;
+import com.onepage.coupong.coupon.domain.CouponEvent;
+import com.onepage.coupong.coupon.service.CouponEventService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
 

@@ -1,13 +1,14 @@
-package com.onepage.coupong.service;
+package com.onepage.coupong.coupon.service;
 
 import com.onepage.coupong.dto.UserRequestDto;
-import com.onepage.coupong.entity.Coupon;
-import com.onepage.coupong.entity.CouponEvent;
-import com.onepage.coupong.entity.CouponWinningLog;
-import com.onepage.coupong.entity.EventManager;
-import com.onepage.coupong.entity.enums.CouponCategory;
-import com.onepage.coupong.repository.CouponEventRepository;
+import com.onepage.coupong.coupon.domain.Coupon;
+import com.onepage.coupong.coupon.domain.CouponEvent;
+import com.onepage.coupong.coupon.domain.CouponWinningLog;
+import com.onepage.coupong.coupon.domain.EventManager;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
+import com.onepage.coupong.coupon.repository.CouponEventRepository;
 import com.onepage.coupong.scheduler.CouponEventScheduler;
+import com.onepage.coupong.service.LeaderBoardQueueService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

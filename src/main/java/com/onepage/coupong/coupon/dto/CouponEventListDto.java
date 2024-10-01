@@ -1,10 +1,9 @@
-package com.onepage.coupong.dto;
+package com.onepage.coupong.coupon.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Builder
 @Getter

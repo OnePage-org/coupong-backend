@@ -1,27 +1,9 @@
 package com.onepage.coupong.couponEventTest;
 
 
-import com.onepage.coupong.entity.CouponEvent;
 //import com.onepage.coupong.scheduler.CouponEventScheduler;
-import com.onepage.coupong.entity.enums.CouponCategory;
-import com.onepage.coupong.repository.CouponEventRepository;
-import com.onepage.coupong.scheduler.CouponEventScheduler;
-import com.onepage.coupong.service.CouponEventService;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.LocalDateTime;
-import java.util.concurrent.ScheduledFuture;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
 
 //@SpringBootTest
 //@ExtendWith(SpringExtension.class)

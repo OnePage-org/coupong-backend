@@ -1,11 +1,10 @@
-package com.onepage.coupong.entity;
+package com.onepage.coupong.coupon.domain;
 
-import com.onepage.coupong.entity.enums.CouponCategory;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity

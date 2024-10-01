@@ -1,6 +1,6 @@
-package com.onepage.coupong.repository;
+package com.onepage.coupong.coupon.repository;
 
-import com.onepage.coupong.entity.CouponWinningLog;
+import com.onepage.coupong.coupon.domain.CouponWinningLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
