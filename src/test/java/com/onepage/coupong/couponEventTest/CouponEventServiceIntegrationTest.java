@@ -1,16 +1,14 @@
 package com.onepage.coupong.couponEventTest;
 
-import com.onepage.coupong.dto.UserRequestDto;
-import com.onepage.coupong.entity.enums.CouponCategory;
-import com.onepage.coupong.service.CouponEventService;
-import org.junit.jupiter.api.Assertions;
+import com.onepage.coupong.coupon.dto.UserRequestDto;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
+import com.onepage.coupong.coupon.service.CouponEventService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
