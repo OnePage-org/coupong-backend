@@ -1,23 +1,19 @@
-package com.onepage.coupong.controller;
+package com.onepage.coupong.coupon.api;
 
-import com.onepage.coupong.dto.CouponEventListDto;
+import com.onepage.coupong.coupon.dto.CouponEventListDto;
 import com.onepage.coupong.dto.UserRequestDto;
-import com.onepage.coupong.entity.Coupon;
-import com.onepage.coupong.entity.EventManager;
-import com.onepage.coupong.entity.enums.CouponCategory;
-import com.onepage.coupong.service.CouponEventService;
+import com.onepage.coupong.coupon.domain.Coupon;
+import com.onepage.coupong.coupon.domain.EventManager;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
+import com.onepage.coupong.coupon.service.CouponEventService;
 import com.onepage.coupong.sign.service.AuthService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Map;
 
 @Slf4j
@@ -59,10 +55,10 @@ public class CouponEventController {
         Map<Object, Coupon> userCouponMap = eventManager.getUserCouponMap();
         LocalDateTime startTime = eventManager.getStartTime();
 
-
-//        if(!couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).isEmpty() || !couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
+        // 여기 에러 발생시킴 (이벤트 진행 중에는)
+        if(!couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).isEmpty() || !couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         CouponEventListDto couponEventListDto = CouponEventListDto.builder().eventName(eventName).eventCategory(String.valueOf(couponCategory)).startTime(startTime).build();
         return new ResponseEntity<>(couponEventListDto, HttpStatus.OK);

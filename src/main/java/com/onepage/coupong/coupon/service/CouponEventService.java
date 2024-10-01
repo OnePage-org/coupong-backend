@@ -1,13 +1,14 @@
-package com.onepage.coupong.service;
+package com.onepage.coupong.coupon.service;
 
 import com.onepage.coupong.dto.UserRequestDto;
-import com.onepage.coupong.entity.Coupon;
-import com.onepage.coupong.entity.CouponEvent;
-import com.onepage.coupong.entity.CouponWinningLog;
-import com.onepage.coupong.entity.EventManager;
-import com.onepage.coupong.entity.enums.CouponCategory;
-import com.onepage.coupong.repository.CouponEventRepository;
+import com.onepage.coupong.coupon.domain.Coupon;
+import com.onepage.coupong.coupon.domain.CouponEvent;
+import com.onepage.coupong.coupon.domain.CouponWinningLog;
+import com.onepage.coupong.coupon.domain.EventManager;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
+import com.onepage.coupong.coupon.repository.CouponEventRepository;
 import com.onepage.coupong.scheduler.CouponEventScheduler;
+import com.onepage.coupong.service.LeaderBoardQueueService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +44,8 @@ public class CouponEventService {
      */
 
 // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-@Scheduled(cron = "00 30 14 * * ?")  // 매일 오후 11시 50분에 실행
+//@Scheduled(cron = "00 33 15 * * ?")  // 매일 오후 11시 50분에 실행
+@Scheduled(fixedDelay = 100000) //테스트용
 public void scheduleDailyEvents() {
 
     LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -77,9 +78,19 @@ public void scheduleDailyEvents() {
 
 // 이벤트 초기화 메서드
 public void initializeEvent(String couponName, CouponCategory couponCategory, LocalDateTime startTime, int couponCount, int endNums) {
+
+
     if (this.eventManager != null) {
         throw new IllegalStateException("이미 초기화된 이벤트가 있습니다.");
     }
+
+    System.out.println(couponEvent.getClass().getName());
+
+    //temp.get(0)
+
+//    Hibernate.initialize(temp.get(0));
+//    System.out.println(temp.get(0).getClass().getName());
+
 
     if (couponEvent.getCouponList().size() != couponCount) {
         throw new IllegalStateException("RDB에서 이벤트 객체와의 연관관계 오류 발생"); //나중에 에러 처리 리펙터링 필요
@@ -98,7 +109,7 @@ public boolean isEventInitialized() {
 public boolean addUserToQueue (UserRequestDto userRequestDto) {
     return issuanceQueueService.addToZSet(
             String.valueOf(userRequestDto.getCouponCategory()),
-            String.valueOf(userRequestDto.getUsername()),
+            String.valueOf(userRequestDto.getId()),
             userRequestDto.getAttemptAt());
 }
 
@@ -140,7 +151,6 @@ public void publishCoupons(int scheduleCount) {
         // 쿠폰 발행 성공자 정보를 Redis ZSet에 추가
 
         // 이때, 기존 발행 성공자 대기열에 해당 유저가 있을 경우 빡구 시킬지 말지 ? 한 카테고리 내에서는 한번만 받을 수 있게 하자 ! 이거 추가 필요
-
 
         leaderBoardQueueService.addToZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()), item.getScore());
 

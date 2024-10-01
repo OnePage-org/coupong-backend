@@ -1,5 +1,6 @@
-package com.onepage.coupong.service;
+package com.onepage.coupong.coupon.service;
 
+import com.onepage.coupong.service.RedisZSetService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;

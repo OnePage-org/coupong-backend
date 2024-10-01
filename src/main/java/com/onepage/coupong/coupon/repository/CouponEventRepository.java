@@ -1,9 +1,8 @@
-package com.onepage.coupong.repository;
+package com.onepage.coupong.coupon.repository;
 
-import com.onepage.coupong.entity.CouponEvent;
+import com.onepage.coupong.coupon.domain.CouponEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

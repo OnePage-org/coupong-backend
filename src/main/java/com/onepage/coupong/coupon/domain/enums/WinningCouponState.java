@@ -1,4 +1,4 @@
-package com.onepage.coupong.entity.enums;
+package com.onepage.coupong.coupon.domain.enums;
 
 public enum WinningCouponState {
     PENDING, COMPLETED, EXPIRED, INVALID

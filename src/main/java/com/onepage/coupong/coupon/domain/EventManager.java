@@ -1,14 +1,10 @@
-package com.onepage.coupong.entity;
+package com.onepage.coupong.coupon.domain;
 
-import com.onepage.coupong.entity.enums.CouponCategory;
-import jdk.jfr.EventType;
-import lombok.AllArgsConstructor;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,7 +1,6 @@
 package com.onepage.coupong.dto;
 
-import com.onepage.coupong.entity.enums.CouponCategory;
-import jdk.jfr.EventType;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
