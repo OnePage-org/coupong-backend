@@ -1,6 +1,6 @@
-package com.onepage.coupong.service;
+package com.onepage.coupong.leaderboard.service;
 
-import com.onepage.coupong.dto.LeaderboardUpdateDTO;
+import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDTO;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.onepage.coupong.dto;
+package com.onepage.coupong.leaderboard.dto;
 
 import java.util.List;
 

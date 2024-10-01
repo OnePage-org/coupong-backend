@@ -8,7 +8,7 @@ import com.onepage.coupong.coupon.domain.EventManager;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import com.onepage.coupong.coupon.repository.CouponEventRepository;
 import com.onepage.coupong.scheduler.CouponEventScheduler;
-import com.onepage.coupong.service.LeaderBoardQueueService;
+import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

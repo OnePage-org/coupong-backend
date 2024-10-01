@@ -1,19 +1,15 @@
-package com.onepage.coupong.controller;
+package com.onepage.coupong.leaderboard.api;
 
-import com.onepage.coupong.dto.LeaderboardUpdateDTO;
-import com.onepage.coupong.service.LeaderBoardQueueService;
-import com.onepage.coupong.service.LeaderboardService;
+import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDTO;
+import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
+import com.onepage.coupong.leaderboard.service.LeaderboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
