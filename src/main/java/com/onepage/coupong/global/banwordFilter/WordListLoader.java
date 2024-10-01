@@ -1,4 +1,4 @@
-package com.onepage.coupong.global.filtering;
+package com.onepage.coupong.global.banwordFilter;
 
 import java.io.BufferedReader;
 import java.io.IOException;

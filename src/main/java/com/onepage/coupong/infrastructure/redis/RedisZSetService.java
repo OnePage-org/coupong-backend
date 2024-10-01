@@ -1,7 +1,6 @@
-package com.onepage.coupong.service;
+package com.onepage.coupong.infrastructure.redis;
 import org.springframework.data.redis.core.ZSetOperations;
 
-import java.util.Map;
 import java.util.Set;
 
 public interface RedisZSetService {

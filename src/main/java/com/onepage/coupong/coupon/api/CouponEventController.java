@@ -1,7 +1,7 @@
 package com.onepage.coupong.coupon.api;
 
 import com.onepage.coupong.coupon.dto.CouponEventListDto;
-import com.onepage.coupong.dto.UserRequestDto;
+import com.onepage.coupong.coupon.dto.UserRequestDto;
 import com.onepage.coupong.coupon.domain.Coupon;
 import com.onepage.coupong.coupon.domain.EventManager;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;

@@ -1,6 +1,5 @@
-package com.onepage.coupong.config;
+package com.onepage.coupong.infrastructure.redis;
 
-import com.onepage.coupong.property.RedisProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

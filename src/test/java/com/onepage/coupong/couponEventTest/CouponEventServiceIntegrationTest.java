@@ -1,6 +1,6 @@
 package com.onepage.coupong.couponEventTest;
 
-import com.onepage.coupong.dto.UserRequestDto;
+import com.onepage.coupong.coupon.dto.UserRequestDto;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import com.onepage.coupong.coupon.service.CouponEventService;
 import org.junit.jupiter.api.Test;

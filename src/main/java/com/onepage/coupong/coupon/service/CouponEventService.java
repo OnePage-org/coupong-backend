@@ -1,13 +1,13 @@
 package com.onepage.coupong.coupon.service;
 
-import com.onepage.coupong.dto.UserRequestDto;
+import com.onepage.coupong.coupon.dto.UserRequestDto;
 import com.onepage.coupong.coupon.domain.Coupon;
 import com.onepage.coupong.coupon.domain.CouponEvent;
-import com.onepage.coupong.coupon.domain.CouponWinningLog;
+import com.onepage.coupong.leaderboard.domain.CouponWinningLog;
 import com.onepage.coupong.coupon.domain.EventManager;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import com.onepage.coupong.coupon.repository.CouponEventRepository;
-import com.onepage.coupong.scheduler.CouponEventScheduler;
+import com.onepage.coupong.global.scheduler.CouponEventScheduler;
 import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

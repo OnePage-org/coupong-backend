@@ -1,4 +1,4 @@
-package com.onepage.coupong.scheduler;
+package com.onepage.coupong.global.scheduler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

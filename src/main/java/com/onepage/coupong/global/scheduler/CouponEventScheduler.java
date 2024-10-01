@@ -1,4 +1,4 @@
-package com.onepage.coupong.scheduler;
+package com.onepage.coupong.global.scheduler;
 
 import com.onepage.coupong.coupon.domain.CouponEvent;
 import com.onepage.coupong.coupon.service.CouponEventService;

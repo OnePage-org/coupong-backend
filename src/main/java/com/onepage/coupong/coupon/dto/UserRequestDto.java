@@ -1,4 +1,4 @@
-package com.onepage.coupong.dto;
+package com.onepage.coupong.coupon.dto;
 
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import lombok.Builder;

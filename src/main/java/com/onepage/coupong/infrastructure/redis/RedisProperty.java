@@ -1,4 +1,4 @@
-package com.onepage.coupong.property;
+package com.onepage.coupong.infrastructure.redis;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.onepage.coupong.scheduler;
+package com.onepage.coupong.global.scheduler;
 
 //@Slf4j
 //@Component
