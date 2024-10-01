@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.repository;
+package com.onepage.coupong.infrastructure.mail;
 
 import com.onepage.coupong.user.domain.Certification;
 import jakarta.transaction.Transactional;

@@ -2,12 +2,12 @@ package com.onepage.coupong.leaderboard.dto;
 
 import java.util.List;
 
-public class LeaderboardUpdateDTO {
+public class LeaderboardUpdateDto {
     private String couponCategory;
     private List<String> winners;
 
     // 생성자
-    public LeaderboardUpdateDTO(String couponCategory, List<String> winners) {
+    public LeaderboardUpdateDto(String couponCategory, List<String> winners) {
         this.couponCategory = couponCategory;
         this.winners = winners;
     }

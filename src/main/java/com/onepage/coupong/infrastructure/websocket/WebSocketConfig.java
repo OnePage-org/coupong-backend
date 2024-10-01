@@ -1,4 +1,4 @@
-package com.onepage.coupong.chat.config;
+package com.onepage.coupong.infrastructure.websocket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -1,10 +1,9 @@
-package com.onepage.coupong.user.api;
+package com.onepage.coupong.infrastructure.mail;
 
 import com.onepage.coupong.user.dto.request.CheckEmailCertificationRequestDto;
 import com.onepage.coupong.user.dto.request.EmailCertificationRequestDto;
 import com.onepage.coupong.user.dto.response.CheckEmailCertificationResponseDto;
 import com.onepage.coupong.user.dto.response.EmailCertificationResponseDto;
-import com.onepage.coupong.user.service.MailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.onepage.coupong.global.config;
+package com.onepage.coupong.infrastructure.mail;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

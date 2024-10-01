@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.service;
+package com.onepage.coupong.infrastructure.mail;
 
 import com.onepage.coupong.user.dto.request.CheckEmailCertificationRequestDto;
 import com.onepage.coupong.user.dto.request.EmailCertificationRequestDto;

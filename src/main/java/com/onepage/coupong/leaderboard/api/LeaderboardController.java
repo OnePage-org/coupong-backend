@@ -1,6 +1,6 @@
 package com.onepage.coupong.leaderboard.api;
 
-import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDTO;
+import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDto;
 import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
 import com.onepage.coupong.leaderboard.service.LeaderboardService;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,7 @@ public class LeaderboardController {
                 .map(Object::toString)
                 .collect(Collectors.toList());
 
-        LeaderboardUpdateDTO updateDTO = new LeaderboardUpdateDTO(couponCategory, winnerList);
+        LeaderboardUpdateDto updateDTO = new LeaderboardUpdateDto(couponCategory, winnerList);
         leaderboardService.updateLeaderboard(updateDTO);
         return ResponseEntity.ok().build();
     }
@@ -75,7 +75,7 @@ public class LeaderboardController {
 
                     // 리더보드 업데이트를 sink에 발행
 
-                    leaderboardService.updateLeaderboard(new LeaderboardUpdateDTO(couponCategory, winnerList));
+                    leaderboardService.updateLeaderboard(new LeaderboardUpdateDto(couponCategory, winnerList));
 
                 })
                 .subscribe();  // 주기적으로 리더보드 업데이트를 발행

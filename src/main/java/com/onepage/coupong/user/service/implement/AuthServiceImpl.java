@@ -13,7 +13,7 @@ import com.onepage.coupong.user.dto.response.TokenResponseDto;
 import com.onepage.coupong.user.domain.Certification;
 import com.onepage.coupong.user.domain.User;
 import com.onepage.coupong.infrastructure.auth.provider.JwtProvider;
-import com.onepage.coupong.user.repository.CertificationRepository;
+import com.onepage.coupong.infrastructure.mail.CertificationRepository;
 import com.onepage.coupong.user.repository.UserRepository;
 import com.onepage.coupong.user.service.AuthService;
 import io.jsonwebtoken.Claims;

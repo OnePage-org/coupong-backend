@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.domain;
+package com.onepage.coupong.infrastructure.auth.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

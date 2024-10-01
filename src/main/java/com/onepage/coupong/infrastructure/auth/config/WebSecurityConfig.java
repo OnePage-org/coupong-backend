@@ -1,7 +1,7 @@
 package com.onepage.coupong.infrastructure.auth.config;
 
 import com.onepage.coupong.infrastructure.auth.filter.JwtAuthenticationFilter;
-import com.onepage.coupong.user.service.implement.OAuth2UserServiceImpl;
+import com.onepage.coupong.infrastructure.auth.service.OAuth2UserServiceImpl;
 import com.onepage.coupong.infrastructure.auth.handler.OAuth2SuccessHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

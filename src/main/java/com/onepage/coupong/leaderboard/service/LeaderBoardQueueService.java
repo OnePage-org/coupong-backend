@@ -1,6 +1,6 @@
 package com.onepage.coupong.leaderboard.service;
 
-import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDTO;
+import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDto;
 import com.onepage.coupong.infrastructure.redis.RedisZSetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
                         .collect(Collectors.toList());
 
                 // DTO 생성
-                LeaderboardUpdateDTO updateDTO = new LeaderboardUpdateDTO(couponCategory, winnerList);
+                LeaderboardUpdateDto updateDTO = new LeaderboardUpdateDto(couponCategory, winnerList);
 
                 // 리더보드 업데이트 (sink를 통해 데이터 발행)
                 leaderboardService.updateLeaderboard(updateDTO); // Flux로 전송

@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.service.implement;
+package com.onepage.coupong.infrastructure.mail;
 
 import com.onepage.coupong.user.dto.request.CheckEmailCertificationRequestDto;
 import com.onepage.coupong.user.dto.request.EmailCertificationRequestDto;
@@ -6,8 +6,6 @@ import com.onepage.coupong.user.dto.response.ResponseDto;
 import com.onepage.coupong.user.dto.response.CheckEmailCertificationResponseDto;
 import com.onepage.coupong.user.dto.response.EmailCertificationResponseDto;
 import com.onepage.coupong.user.domain.Certification;
-import com.onepage.coupong.user.repository.CertificationRepository;
-import com.onepage.coupong.user.service.MailService;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

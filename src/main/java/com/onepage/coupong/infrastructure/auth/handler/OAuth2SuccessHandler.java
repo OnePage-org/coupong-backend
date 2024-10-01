@@ -1,6 +1,6 @@
 package com.onepage.coupong.infrastructure.auth.handler;
 
-import com.onepage.coupong.user.domain.CustomOAuth2User;
+import com.onepage.coupong.infrastructure.auth.domain.CustomOAuth2User;
 import com.onepage.coupong.infrastructure.auth.provider.JwtProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,7 +1,7 @@
-package com.onepage.coupong.user.service.implement;
+package com.onepage.coupong.infrastructure.auth.service;
 
 import com.onepage.coupong.user.domain.enums.Logintype;
-import com.onepage.coupong.user.domain.CustomOAuth2User;
+import com.onepage.coupong.infrastructure.auth.domain.CustomOAuth2User;
 import com.onepage.coupong.user.domain.User;
 import com.onepage.coupong.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
