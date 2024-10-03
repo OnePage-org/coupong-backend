@@ -1,7 +1,7 @@
 package com.onepage.coupong.leaderboard.api;
 
-import com.onepage.coupong.leaderboard.dto.AddToZSetRequest;
-import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDto;
+import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateRequestDto;
+import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateResponseDto;
 import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
 import com.onepage.coupong.leaderboard.service.LeaderboardService;
 import lombok.extern.slf4j.Slf4j;
@@ -51,14 +51,14 @@ public class LeaderboardController {
                 .map(Object::toString)
                 .collect(Collectors.toList());
 
-        LeaderboardUpdateDto updateDTO = new LeaderboardUpdateDto(couponCategory, winnerList);
+        LeaderboardUpdateResponseDto updateDTO = new LeaderboardUpdateResponseDto(couponCategory, winnerList);
         leaderboardService.updateLeaderboard(updateDTO);
         return ResponseEntity.ok().build();
     }
 
     // 리더보드에 추가
     @PostMapping("/leaderboardqueueservice/addtozset")
-    public ResponseEntity<Boolean> addToZSet(@RequestBody AddToZSetRequest request) {
+    public ResponseEntity<Boolean> addToZSet(@RequestBody LeaderboardUpdateRequestDto request) {
         String couponCategory = request.getCouponCategory();
         String userId = request.getUserId();
         double attemptAt = request.getAttemptAt();

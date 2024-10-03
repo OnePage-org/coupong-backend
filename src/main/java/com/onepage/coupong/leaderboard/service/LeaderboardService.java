@@ -1,6 +1,6 @@
 package com.onepage.coupong.leaderboard.service;
 
-import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDto;
+import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateResponseDto;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class LeaderboardService {
         });
     }
 
-    public void updateLeaderboard(LeaderboardUpdateDto updateDTO) {
+    public void updateLeaderboard(LeaderboardUpdateResponseDto updateDTO) {
         String winnerList = updateDTO.getWinners().isEmpty()
                 ? ""
                 : String.join("\", \"", updateDTO.getWinners());

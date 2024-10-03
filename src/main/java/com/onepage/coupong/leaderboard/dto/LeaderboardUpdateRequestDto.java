@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddToZSetRequest {
+public class LeaderboardUpdateRequestDto {
     private String couponCategory;
     private String userId;
     private double attemptAt;
