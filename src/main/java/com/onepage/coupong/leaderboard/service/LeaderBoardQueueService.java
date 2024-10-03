@@ -71,7 +71,6 @@ public class LeaderBoardQueueService implements RedisZSetService {
         log.info("Removing user from queue: {}", itemValue);
         redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
     }
-
     public void clearLeaderboardQueue(String couponCategory) {
         redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1);
     }

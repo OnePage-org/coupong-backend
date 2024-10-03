@@ -1,31 +1,23 @@
 package com.onepage.coupong.leaderboard.dto;
 
+import lombok.Getter;
+
+import java.util.Collections;
 import java.util.List;
 
 public class LeaderboardUpdateDto {
-    private String couponCategory;
-    private List<String> winners;
+    // Getter
+    @Getter
+    private final String couponCategory; // 변경: final로 선언
+    private final List<String> winners;   // 변경: final로 선언
 
     // 생성자
     public LeaderboardUpdateDto(String couponCategory, List<String> winners) {
         this.couponCategory = couponCategory;
-        this.winners = winners;
-    }
-
-    // Getter 및 Setter
-    public String getCouponCategory() {
-        return couponCategory;
-    }
-
-    public void setCouponCategory(String couponCategory) {
-        this.couponCategory = couponCategory;
+        this.winners = winners != null ? List.copyOf(winners) : Collections.emptyList(); // 변경: 불변 리스트로 설정
     }
 
     public List<String> getWinners() {
-        return winners;
-    }
-
-    public void setWinners(List<String> winners) {
-        this.winners = winners;
+        return Collections.unmodifiableList(winners); // 변경: 불변 리스트로 반환
     }
 }
