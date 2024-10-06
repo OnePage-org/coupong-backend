@@ -28,9 +28,11 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
     @Override
     public boolean addToZSet(String couponCategory, String userId, double attemptAt) {
+        log.info("Adding user to leaderboard ZSet: {}", userId);
+
         boolean isAdded = false;
         try {
-            isAdded = redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
+            isAdded = Boolean.TRUE.equals(redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt));
             if (isAdded) {
                 // 리더보드 정보 가져오기
                 Set<Object> topWinners = getZSet(couponCategory);
@@ -46,7 +48,8 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
             }
         } catch (Exception e) {
-            log.error("Error while adding to ZSet: ", e);
+            log.error("Error " +
+                    "while adding to ZSet: ", e);
         }
         return isAdded;
     }
