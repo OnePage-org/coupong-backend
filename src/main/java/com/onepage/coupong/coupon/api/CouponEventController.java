@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -40,28 +42,40 @@ public class CouponEventController {
 
 
     @GetMapping("/list")
-    public ResponseEntity<CouponEventListDto> getCouponEventList() {
+    public ResponseEntity<List<CouponEventListDto>> getCouponEventList() {
+        log.info("이벤트 목록 요청 들어옴");
 
-        log.info("요청 들어옴");
+        // 현재 초기화된 모든 이벤트의 카테고리별 EventManager 가져오기
+        Map<CouponCategory, EventManager> activeEvents = couponEventService.getAllInitializedEvents();
 
-        if(!couponEventService.isEventInitialized()) {
-            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        if (activeEvents.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // 현재 초기화된 이벤트가 없을 경우
         }
 
-        EventManager eventManager = couponEventService.getEventManager();
-        String eventName = eventManager.getCouponName();
-        CouponCategory couponCategory = eventManager.getCouponCategory();
-        int couponCount = eventManager.getCouponCount();
-        Map<Object, Coupon> userCouponMap = eventManager.getUserCouponMap();
-        LocalDateTime startTime = eventManager.getStartTime();
+        // 각 이벤트 정보를 CouponEventListDto로 변환하여 리스트에 추가
+        List<CouponEventListDto> eventListDtos = new ArrayList<>();
+        for (Map.Entry<CouponCategory, EventManager> entry : activeEvents.entrySet()) {
+            EventManager eventManager = entry.getValue();
 
-        // 여기 에러 발생시킴 (이벤트 진행 중에는)
-        if(!couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).isEmpty() || !couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            /*// 대기열에 데이터가 남아 있으면 해당 카테고리 이벤트는 제외 (이벤트 도중에는 에러를 일으키는 코드)
+            if (!couponEventService.getIssuanceQueue(String.valueOf(eventManager.getCouponCategory())).isEmpty() ||
+                    !couponEventService.getLeaderBoardQueue(String.valueOf(eventManager.getCouponCategory())).isEmpty()) {
+                log.warn("이벤트 진행 중: 카테고리 = {}", eventManager.getCouponCategory());
+                continue;  // 대기열에 데이터가 남아 있으면 건너뜀
+            }*/
+
+            // 이벤트 정보 DTO 변환
+            CouponEventListDto eventDto = CouponEventListDto.builder()
+                    .eventName(eventManager.getCouponName())
+                    .eventCategory(String.valueOf(eventManager.getCouponCategory()))
+                    .startTime(eventManager.getStartTime())
+                    .build();
+
+            eventListDtos.add(eventDto);
         }
 
-        CouponEventListDto couponEventListDto = CouponEventListDto.builder().eventName(eventName).eventCategory(String.valueOf(couponCategory)).startTime(startTime).build();
-        return new ResponseEntity<>(couponEventListDto, HttpStatus.OK);
+        // 이벤트 목록 반환
+        return new ResponseEntity<>(eventListDtos, HttpStatus.OK);
     }
 
 

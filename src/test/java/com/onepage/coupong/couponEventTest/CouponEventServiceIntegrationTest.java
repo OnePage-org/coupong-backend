@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
@@ -47,7 +49,7 @@ public class CouponEventServiceIntegrationTest {
 
     @Test
     void 선착순_100명에게_30개_쿠폰_발행_스케줄_동적_할당() throws InterruptedException {
-        final CouponCategory couponCategory = CouponCategory.DEFAULT;
+        final CouponCategory couponCategory = CouponCategory.COFFEE;
         final int attempt = 100;
 
         final CountDownLatch countDownLatch = new CountDownLatch(attempt);
@@ -78,9 +80,17 @@ public class CouponEventServiceIntegrationTest {
         @Override
         public void run() {
             try {
+
+                LocalDateTime localDateTime
+                        = LocalDateTime.now();
+
+                String localDateTimeFormat1
+                        = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+
                 UserRequestDto userRequestDto = UserRequestDto.builder()
                         .id(userId++)
-                        .couponCategory(CouponCategory.DEFAULT)
+                        .couponCategory(CouponCategory.COFFEE)
+                        .attemptAt(Long.valueOf(localDateTimeFormat1))
                         .build();
 
 

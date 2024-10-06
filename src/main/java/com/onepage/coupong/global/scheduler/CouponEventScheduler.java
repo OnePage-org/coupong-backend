@@ -1,6 +1,7 @@
 package com.onepage.coupong.global.scheduler;
 
 import com.onepage.coupong.coupon.domain.CouponEvent;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import com.onepage.coupong.coupon.service.CouponEventService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
@@ -20,8 +23,8 @@ public class CouponEventScheduler {
 
     private final ThreadPoolTaskScheduler taskScheduler;
 
-    @Getter
-    private ScheduledFuture<?> scheduledTask;
+    // 각 카테고리별 스케줄 관리
+    private Map<CouponCategory, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
     public void scheduleEvent(CouponEvent event, CouponEventService couponEventService) {
         log.info(event.getCategory() + " " + event.getCoupon_publish_nums());
@@ -41,47 +44,47 @@ public class CouponEventScheduler {
             return;  // 현재 시간이 이벤트 시작 시간보다 뒤이면 스케줄링하지 않음
         }
 
-        // 이벤트 시작 시간에 맞춰 스케줄링 설정
-        taskScheduler.schedule(() -> {
-            log.info("이벤트가 시작되었습니다: 카테고리 = {}, 쿠폰 수 = {}", event.getCategory(), event.getCoupon_publish_nums());
+        // 이벤트 시작 시점에 스케줄링
+        ScheduledFuture<?> scheduledTask = taskScheduler.schedule(() -> {
+            log.info("이벤트 시작: 카테고리 = {}, 쿠폰 수 = {}", event.getCategory(), event.getCoupon_publish_nums());
+            couponEventService.startEvent(event);
 
-            // 이벤트 초기화  (이벤트 시작 시간이 아닌, 전날 미리 초기화를 해놓자)
-            //couponEventService.initializeEvent(event.getName(), event.getCategory(), event.getDate(), event.getCoupon_publish_nums(), 0);
-
-            //레디스 대기열에 뭔가 대기자가 남아있으면 안됨 비워줘야해 !!!!
-
-            // 이벤트 종료 전까지 10초 간격으로 쿠폰 발행 시도
-            scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
+            // 이벤트 종료 전까지 일정 간격으로 쿠폰 발행
+            ScheduledFuture<?> publishTask = taskScheduler.scheduleWithFixedDelay(() -> {
                 try {
-                    if (!couponEventService.isEventInitialized()) {
+                    if (!couponEventService.isEventInitialized(event.getCategory())) {
                         log.info("이벤트가 초기화되지 않았습니다.");
                         return;
                     }
-                    if (couponEventService.validEnd()) {
+                    if (couponEventService.validEnd(event.getCategory())) {
                         log.info("이벤트 종료: 쿠폰 발행 가능 개수 충족");
-                        stopEvent();
+                        stopEvent(event.getCategory());
                         return;
                     }
 
-                    couponEventService.publishCoupons(10);
+                    couponEventService.publishCoupons(event.getCategory(), 10);
                     log.info("쿠폰 발행 시도 완료");
                 } catch (Exception e) {
                     log.error("스케줄러 오류 발생", e);
                 }
-            }, 3000);  // 10초마다 실행 //테스트 위해 1초로 수정
+            }, 3000);
 
-        }, new Date(System.currentTimeMillis() + initialDelay));  // 이벤트 시작 시간에 맞춰 스케줄 시작
+            // 카테고리별로 스케줄 관리
+            scheduledTasks.put(event.getCategory(), publishTask);
 
-        // 이벤트 종료 시간에 스케줄러 중단 설정
-        taskScheduler.schedule(this::stopEvent, new Date(System.currentTimeMillis() + initialDelay + eventDuration));
+        }, new Date(System.currentTimeMillis() + initialDelay));
+
+        // 종료 시점에 스케줄러 중단
+        taskScheduler.schedule(() -> stopEvent(event.getCategory()), new Date(System.currentTimeMillis() + initialDelay + eventDuration));
     }
 
-
-    public void stopEvent() {
+    // 카테고리별로 이벤트 스케줄 중단
+    public void stopEvent(CouponCategory category) {
+        ScheduledFuture<?> scheduledTask = scheduledTasks.get(category);
         if (scheduledTask != null && !scheduledTask.isCancelled()) {
             scheduledTask.cancel(false);
-            log.info("이벤트 진행 시간 끝, 이벤트 스케줄러 중단");
+            log.info("이벤트 스케줄러 중단: 카테고리 = {}", category);
+            scheduledTasks.remove(category);
         }
     }
-
 }
