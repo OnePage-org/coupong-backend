@@ -1,12 +1,14 @@
 package com.onepage.coupong.coupon.service;
 
 import com.onepage.coupong.infrastructure.redis.RedisZSetService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 public class IssuanceQueueService implements RedisZSetService {
 
@@ -48,7 +50,7 @@ public class IssuanceQueueService implements RedisZSetService {
     //쿠폰 발행 후 큐에서 제거
     @Override
     public void removeItemFromZSet(String couponCategory, String itemValue) {
-        System.out.println("삭제합니다 유저 큐에서 " + itemValue);
+        log.info("삭제합니다 유저 큐에서 " + itemValue);
         redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
     }
 }

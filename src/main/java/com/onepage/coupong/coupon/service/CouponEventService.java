@@ -34,9 +34,9 @@ public class CouponEventService {
     private final CouponEventRepository couponEventRepository;
     // 카테고리별로 이벤트 매니저 관리
     private Map<CouponCategory, EventManager> eventManagers = new ConcurrentHashMap<>();
+    private Map<CouponCategory, CouponEvent> couponEvents = new ConcurrentHashMap<>();   //추후 단일 쿠폰 이벤트가 아닌 다중 쿠폰 이벤트가 가능하도록 리펙터링 필요
     private final CouponEventScheduler couponEventScheduler;
-    private CouponEvent couponEvent;   //추후 단일 쿠폰 이벤트가 아닌 다중 쿠폰 이벤트가 가능하도록 리펙터링 필요
-    private int couponListIndex = 0;
+    private int couponListIndex = 0;  // 이거 떄문에 에러 발생. 다중 쿠폰 이벤트 상황에서는 이게 문제
 
     /*
     1.	Event Lifecycle 관리: 이벤트가 시작되고 종료되는 라이프사이클을 명확히 관리하는 것이 중요합니다. 이벤트가 실행되기 전에 eventManager를 미리 준비해두고, 이벤트 상태를 유지하는 방법이 필요합니다.
@@ -45,7 +45,7 @@ public class CouponEventService {
      */
 
     // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-    @Scheduled(cron = "00 27 01 * * ?")  // 매일 오후 11시 50분에 실행
+    @Scheduled(cron = "00 49 02 * * ?")  // 매일 오후 11시 50분에 실행
     //@Scheduled(fixedDelay = 100000) //테스트용
     public void scheduleDailyEvents() {
 
@@ -66,7 +66,7 @@ public class CouponEventService {
         log.info("!!!!!!!!! "+LocalDate.now().plusDays(1).atStartOfDay()+ "  " + events);
 
         for (CouponEvent event : events) {
-            couponEvent = event;
+            couponEvents.put(event.getCategory(), event);
 
             log.info("이벤트 초기화: 카테고리 = {}, 쿠폰 수 = {}, 시작 시간 = {}",
                     event.getCategory(), event.getCoupon_publish_nums(), event.getDate());
@@ -102,6 +102,10 @@ public class CouponEventService {
 
     public void publishCoupons(CouponCategory category, int scheduleCount) {
         EventManager eventManager = eventManagers.get(category);
+        CouponEvent couponEvent = couponEvents.get(category);  // 발급하고 있는 해당 쿠폰이벤트 리스트에서 쿠폰 id를 받아와야함
+
+        log.info( " \n 남은 쿠폰 개수 :" +  String.valueOf(eventManager.getCouponCount()) +" \n");
+
         if (eventManager == null) {
             throw new IllegalStateException("이벤트 매니저가 초기화되지 않았습니다: 카테고리 = " + category);
         }
@@ -123,33 +127,18 @@ public class CouponEventService {
 
                 return;
             }
-
             System.out.println( eventManager.getCouponCategory() +" " + item.getValue() +" "+ item.getScore());
-
-        /*
-        for (Object userId : queue) {
-
-            System.out.println("반목문 돌립니다 큐에서 유저 id 꺼내옴 " + userId);
-
-
-            CouponWinningLog couponWinningLog = CouponWinningLog.builder()
-                    .winningCouponState(WinningCouponState.COMPLETED)
-                    .winningDate(LocalDateTime.now())
-                    .build();
-
-            couponWinningRepository.save(couponWinningLog);  쿠폰 발행 성공자 Set 자료구조 mySQl RDB -> Redis ZSet
-             */
-
-            // 쿠폰 발행 성공자 정보를 Redis ZSet에 추가
-
-            // 이때, 기존 발행 성공자 대기열에 해당 유저가 있을 경우 빡구 시킬지 말지 ? 한 카테고리 내에서는 한번만 받을 수 있게 하자 ! 이거 추가 필요
 
             leaderBoardQueueService.addToZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()), item.getScore());
 
             issuanceQueueService.removeItemFromZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()));
             eventManager.decreaseCouponCount();
 
-            eventManager.addUserCoupon(String.valueOf(item.getValue()), couponEvent.getCouponList().get(couponListIndex++));
+            int eventManagerListIndex =  eventManager.getPublish_nums() - (eventManager.getCouponCount() + 1);  // 계산 잘 해야됨.
+
+            log.info("쿠폰 발급 성공자 리스트 생성 중" + eventManagerListIndex+"인덱스에 " +couponEvent.getCategory()+" 이벤트 리스트");
+
+            eventManager.addUserCoupon(String.valueOf(item.getValue()), couponEvent.getCouponList().get(eventManagerListIndex));  // couponListIndex 이게 문제를 일으킴 다중 이벤트 환경에서
         }
     }
 

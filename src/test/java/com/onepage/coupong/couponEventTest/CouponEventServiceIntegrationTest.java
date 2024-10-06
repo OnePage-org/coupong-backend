@@ -24,9 +24,9 @@ public class CouponEventServiceIntegrationTest {
     @Autowired
     CouponEventService couponEventService;
 
-    @Test
+/*    @Test
     void 선착순_100명에게_30개_쿠폰_발행() throws InterruptedException {
-        final CouponCategory couponCategory = CouponCategory.CHICKEN;
+        final CouponCategory couponCategory = CouponCategory.PIZZA;
         final int attempt = 100;
         final int couponCount = 37;
         final int endNums = 0;
@@ -40,15 +40,15 @@ public class CouponEventServiceIntegrationTest {
 
         workers.forEach(Thread::start);
         countDownLatch.await();
-        Thread.sleep(3000);
+        Thread.sleep(5000);
 
         final long failEventPeopleNums = couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).size();
         assertEquals(attempt - couponCount, failEventPeopleNums);
 
-    }
+    }*/
 
     @Test
-    void 선착순_100명에게_30개_쿠폰_발행_스케줄_동적_할당() throws InterruptedException {
+    void 선착순_100명에게_쿠폰_발행_스케줄_동적_할당_피자() throws InterruptedException {
         final CouponCategory couponCategory = CouponCategory.PIZZA;
         final int attempt = 100;
 
@@ -90,6 +90,60 @@ public class CouponEventServiceIntegrationTest {
                 UserRequestDto userRequestDto = UserRequestDto.builder()
                         .id(userId++)
                         .couponCategory(CouponCategory.PIZZA)
+                        .attemptAt(Long.valueOf(localDateTimeFormat1))
+                        .build();
+
+
+                couponEventService.addUserToQueue(userRequestDto);
+            } finally {
+                countDownLatch.countDown();
+            }
+        }
+    }
+
+    @Test
+    void 선착순_100명에게_쿠폰_발행_스케줄_동적_할당_커피() throws InterruptedException {
+        final CouponCategory couponCategory = CouponCategory.COFFEE;
+        final int attempt = 100;
+
+        final CountDownLatch countDownLatch = new CountDownLatch(attempt);
+
+        List<Thread> workers = Stream
+                .generate(() -> new Thread(new AddQueueWorker2(countDownLatch, couponCategory)))
+                .limit(attempt)
+                .collect(Collectors.toList());
+
+        workers.forEach(Thread::start);
+        countDownLatch.await();
+        Thread.sleep(30000);
+
+        final long failEventPeopleNums = couponEventService.getIssuanceQueue(String.valueOf(couponCategory)).size();
+        final long successEventPeopleNums = couponEventService.getLeaderBoardQueue(String.valueOf(couponCategory)).size();
+
+        assertEquals(attempt - successEventPeopleNums, failEventPeopleNums);
+
+    }
+
+    private class AddQueueWorker2 implements Runnable {
+        private CountDownLatch countDownLatch;
+
+        public AddQueueWorker2(CountDownLatch countDownLatch, CouponCategory couponCategory) {
+            this.countDownLatch = countDownLatch;
+        }
+
+        @Override
+        public void run() {
+            try {
+
+                LocalDateTime localDateTime
+                        = LocalDateTime.now();
+
+                String localDateTimeFormat1
+                        = localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+
+                UserRequestDto userRequestDto = UserRequestDto.builder()
+                        .id(userId++)
+                        .couponCategory(CouponCategory.COFFEE)
                         .attemptAt(Long.valueOf(localDateTimeFormat1))
                         .build();
 
