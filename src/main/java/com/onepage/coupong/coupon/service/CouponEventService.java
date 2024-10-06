@@ -45,7 +45,7 @@ public class CouponEventService {
      */
 
     // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-    @Scheduled(cron = "00 17 01 * * ?")  // 매일 오후 11시 50분에 실행
+    @Scheduled(cron = "00 27 01 * * ?")  // 매일 오후 11시 50분에 실행
     //@Scheduled(fixedDelay = 100000) //테스트용
     public void scheduleDailyEvents() {
 

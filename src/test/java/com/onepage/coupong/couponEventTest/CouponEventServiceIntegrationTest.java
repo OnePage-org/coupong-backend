@@ -49,7 +49,7 @@ public class CouponEventServiceIntegrationTest {
 
     @Test
     void 선착순_100명에게_30개_쿠폰_발행_스케줄_동적_할당() throws InterruptedException {
-        final CouponCategory couponCategory = CouponCategory.COFFEE;
+        final CouponCategory couponCategory = CouponCategory.PIZZA;
         final int attempt = 100;
 
         final CountDownLatch countDownLatch = new CountDownLatch(attempt);
@@ -89,7 +89,7 @@ public class CouponEventServiceIntegrationTest {
 
                 UserRequestDto userRequestDto = UserRequestDto.builder()
                         .id(userId++)
-                        .couponCategory(CouponCategory.COFFEE)
+                        .couponCategory(CouponCategory.PIZZA)
                         .attemptAt(Long.valueOf(localDateTimeFormat1))
                         .build();
 
