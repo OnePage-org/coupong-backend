@@ -3,6 +3,7 @@ package com.onepage.coupong.coupon.service;
 import com.onepage.coupong.coupon.dto.UserRequestDto;
 import com.onepage.coupong.coupon.domain.Coupon;
 import com.onepage.coupong.coupon.domain.CouponEvent;
+import com.onepage.coupong.coupon.exception.EventException;
 import com.onepage.coupong.leaderboard.domain.CouponWinningLog;
 import com.onepage.coupong.coupon.domain.EventManager;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
@@ -45,8 +46,8 @@ public class CouponEventService {
      */
 
     // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-    @Scheduled(cron = "00 37 10 * * ?")  // 매일 오후 11시 50분에 실행
-    //@Scheduled(fixedDelay = 100000) //테스트용
+    //@Scheduled(cron = "00 08 13 * * ?")  // 매일 오후 11시 50분에 실행
+    @Scheduled(fixedDelay = 10000000) //테스트용
     public void scheduleDailyEvents() {
 
         LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -94,6 +95,29 @@ public class CouponEventService {
     }
 
     public boolean addUserToQueue (UserRequestDto userRequestDto) {
+
+        log.info("1  : " + userRequestDto);
+
+        CouponCategory category = userRequestDto.getCouponCategory();
+
+        // 이벤트 초기화 확인
+        if (!isEventInitialized(category)) {
+            log.info("2  : " + category);
+            throw new IllegalStateException("이벤트가 초기화되지 않았습니다: 카테고리 = " + category);
+        }
+
+        // 이벤트 시작 여부 확인
+        if (!isEventStarted(category)) {
+            log.info("2-2  : " + category);
+            throw new EventException("이벤트가 아직 시작되지 않았습니다: 카테고리 = " + category);
+        }
+
+        /*// 이미 발급받은 유저는 리더보드에서 확인 후 중복 발급 방지
+        if (leaderBoardQueueService.isMember(String.valueOf(category), String.valueOf(userRequestDto.getId()))) {
+            log.warn("유저가 이미 쿠폰을 발급받았습니다. ID: {}", userRequestDto.getId());
+            return false;
+        }*/
+
         return issuanceQueueService.addToZSet(
                 String.valueOf(userRequestDto.getCouponCategory()),
                 String.valueOf(userRequestDto.getId()),
@@ -141,6 +165,19 @@ public class CouponEventService {
             eventManager.addUserCoupon(String.valueOf(item.getValue()), couponEvent.getCouponList().get(eventManagerListIndex));  // couponListIndex 이게 문제를 일으킴 다중 이벤트 환경에서
         }
     }
+
+    // 해당 카테고리의 이벤트가 시작했는지 확인하는 메서드
+    public boolean isEventStarted(CouponCategory category) {
+        CouponEvent couponEvent = couponEvents.get(category);
+        if (couponEvent == null) {
+            throw new IllegalStateException("쿠폰 이벤트가 존재하지 않습니다: 카테고리 = " + category);
+        }
+
+        // 현재 시간이 이벤트 시작 시간 이후인지 확인
+        LocalDateTime now = LocalDateTime.now();
+        return now.isAfter(couponEvent.getDate());
+    }
+
 
     public Set<Object> getLeaderBoardQueue(String queueCategory) {
         return leaderBoardQueueService.getZSet(queueCategory);

@@ -5,6 +5,7 @@ import com.onepage.coupong.coupon.dto.UserRequestDto;
 import com.onepage.coupong.coupon.domain.Coupon;
 import com.onepage.coupong.coupon.domain.EventManager;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
+import com.onepage.coupong.coupon.exception.EventException;
 import com.onepage.coupong.coupon.service.CouponEventService;
 import com.onepage.coupong.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -90,12 +91,21 @@ public class CouponEventController {
         try {
             boolean publishSuccess = couponEventService.addUserToQueue(userRequestDto);
             if (publishSuccess) {
+
+                log.info("대기열 등록 성공  요청 정보 ->"+ userRequestDto.getUsername() +" "+userRequestDto.getCouponCategory()+" "+userRequestDto.getAttemptAt());
+
                 return ResponseEntity.ok("쿠폰 발급 요청에 성공했습니다 - 대기열 등록 -");
             } else {
+                log.info("대기열 등록 실패 요청 정보 ->"+ userRequestDto.getUsername() +" "+userRequestDto.getCouponCategory()+" "+userRequestDto.getAttemptAt());
+
                 return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("쿠폰 발급 요청 실패");
             }
         } catch (IllegalStateException e) {
+            log.info("대기열 등록 시스템 에러 발생 요청 정보(이벤트 초기화안됨) -> "+ userRequestDto.getUsername() +" "+userRequestDto.getCouponCategory()+" "+userRequestDto.getAttemptAt());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이벤트 오류: " + e.getMessage());
+        } catch (EventException e) {
+            log.info("쿠폰 이벤트 아직 시작 안함 -> "+userRequestDto);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
