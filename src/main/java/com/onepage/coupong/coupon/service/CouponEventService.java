@@ -36,7 +36,7 @@ public class CouponEventService {
     private Map<CouponCategory, EventManager> eventManagers = new ConcurrentHashMap<>();
     private Map<CouponCategory, CouponEvent> couponEvents = new ConcurrentHashMap<>();   //추후 단일 쿠폰 이벤트가 아닌 다중 쿠폰 이벤트가 가능하도록 리펙터링 필요
     private final CouponEventScheduler couponEventScheduler;
-    private int couponListIndex = 0;  // 이거 떄문에 에러 발생. 다중 쿠폰 이벤트 상황에서는 이게 문제
+    //private int couponListIndex = 0;  // 이거 떄문에 에러 발생. 다중 쿠폰 이벤트 상황에서는 이게 문제
 
     /*
     1.	Event Lifecycle 관리: 이벤트가 시작되고 종료되는 라이프사이클을 명확히 관리하는 것이 중요합니다. 이벤트가 실행되기 전에 eventManager를 미리 준비해두고, 이벤트 상태를 유지하는 방법이 필요합니다.
@@ -45,7 +45,7 @@ public class CouponEventService {
      */
 
     // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
-    @Scheduled(cron = "00 49 02 * * ?")  // 매일 오후 11시 50분에 실행
+    @Scheduled(cron = "00 37 10 * * ?")  // 매일 오후 11시 50분에 실행
     //@Scheduled(fixedDelay = 100000) //테스트용
     public void scheduleDailyEvents() {
 
@@ -69,7 +69,7 @@ public class CouponEventService {
             couponEvents.put(event.getCategory(), event);
 
             log.info("이벤트 초기화: 카테고리 = {}, 쿠폰 수 = {}, 시작 시간 = {}",
-                    event.getCategory(), event.getCoupon_publish_nums(), event.getDate());
+                    event.getCategory(), event.getCoupon_publish_nums(), event.getDate() + "\n");
 
             // 각 이벤트마다 스케줄을 동적으로 등록
             couponEventScheduler.scheduleEvent(event, this);
@@ -127,7 +127,7 @@ public class CouponEventService {
 
                 return;
             }
-            System.out.println( eventManager.getCouponCategory() +" " + item.getValue() +" "+ item.getScore());
+            log.info("발급 정보 : "  + eventManager.getCouponCategory() +" " + item.getValue() +" "+ item.getScore());
 
             leaderBoardQueueService.addToZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()), item.getScore());
 
@@ -136,7 +136,7 @@ public class CouponEventService {
 
             int eventManagerListIndex =  eventManager.getPublish_nums() - (eventManager.getCouponCount() + 1);  // 계산 잘 해야됨.
 
-            log.info("쿠폰 발급 성공자 리스트 생성 중" + eventManagerListIndex+"인덱스에 " +couponEvent.getCategory()+" 이벤트 리스트");
+            log.info("쿠폰 발급 성공자 리스트 생성 중" + eventManagerListIndex+" 번째 인덱스에 " +couponEvent.getCategory()+" 이벤트 리스트");
 
             eventManager.addUserCoupon(String.valueOf(item.getValue()), couponEvent.getCouponList().get(eventManagerListIndex));  // couponListIndex 이게 문제를 일으킴 다중 이벤트 환경에서
         }

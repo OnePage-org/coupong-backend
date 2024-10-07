@@ -53,7 +53,7 @@ public class CouponEventController {
         }
 
         // 각 이벤트 정보를 CouponEventListDto로 변환하여 리스트에 추가
-        List<CouponEventListDto> eventListDtos = new ArrayList<>();
+        List<CouponEventListDto> eventListDto = new ArrayList<>();
         for (Map.Entry<CouponCategory, EventManager> entry : activeEvents.entrySet()) {
             EventManager eventManager = entry.getValue();
 
@@ -71,11 +71,11 @@ public class CouponEventController {
                     .startTime(eventManager.getStartTime())
                     .build();
 
-            eventListDtos.add(eventDto);
+            eventListDto.add(eventDto);
         }
 
         // 이벤트 목록 반환
-        return new ResponseEntity<>(eventListDtos, HttpStatus.OK);
+        return new ResponseEntity<>(eventListDto, HttpStatus.OK);
     }
 
 
