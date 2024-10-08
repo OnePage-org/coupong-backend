@@ -1,6 +1,5 @@
 package com.onepage.coupong.leaderboard.api;
 
-import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateRequestDto;
 import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
