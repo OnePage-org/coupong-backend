@@ -34,7 +34,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
             redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
 
             // 리더보드 정보 가져오기 및 업데이트
-            syncLeaderboardWithQueue(couponCategory); // 이름 변경
+            syncLeaderboardWithQueue(couponCategory, attemptAt); // 이름 변경
 
             return true; // 추가 성공
         } catch (Exception e) {
@@ -65,14 +65,16 @@ public class LeaderBoardQueueService implements RedisZSetService {
     }
 
     // 리더보드 큐와 동기화
-    private void syncLeaderboardWithQueue(String couponCategory) {
+    private void syncLeaderboardWithQueue(String couponCategory, Double attemptAt) {
         Set<Object> topWinners = getZSet(couponCategory);
-        leaderboardService.updateLeaderboard(couponCategory, topWinners); // 한 번에 처리
+        leaderboardService.updateLeaderboard(couponCategory, topWinners, attemptAt); // attemptAt도 함께 처리
+
     }
 
     // 리더보드 초기화
     public void clearLeaderboardQueue(String couponCategory) {
         redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1);
-        syncLeaderboardWithQueue(couponCategory); // 클리어 후 리더보드 업데이트
+        syncLeaderboardWithQueue(couponCategory, null); // 클리어 후 리더보드 업데이트 (attemptAt은 null로 전달)
     }
+
 }

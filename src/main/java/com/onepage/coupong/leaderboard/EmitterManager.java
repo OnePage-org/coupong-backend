@@ -41,6 +41,7 @@ public class EmitterManager {
             try {
                 // 이미터가 null이 아니면 메시지 전송
                 if (emitter != null) {
+                    log.info("Sending message to emitter: {}", emitter);
                     emitter.send(message);
                 }
             } catch (IOException e) {
