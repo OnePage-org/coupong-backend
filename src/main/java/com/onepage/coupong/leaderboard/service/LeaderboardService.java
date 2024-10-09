@@ -23,7 +23,7 @@ public class LeaderboardService {
     // 리더보드 업데이트
     public void updateLeaderboard(String couponCategory, Set<Object> topWinners, double entryTime) {
         String message = createLeaderboardUpdateMessage(couponCategory, topWinners, entryTime);
-        emitterManager.sendMessageToEmitters(message); // EmitterManager 사용
+        emitterManager.sendMessageToEmitters(message); // EmitterManager를 통해 메시지 전송
     }
 
     // 리더보드 업데이트 메시지 생성
@@ -32,8 +32,7 @@ public class LeaderboardService {
                 .map(Object::toString)
                 .collect(Collectors.toList());
 
-        // 메시지 생성
-        // 당첨자 리스트가 비었으면 빈배열을, 아니면 당첨자를 json 파싱 형식에 맞춰서 메시지 생성
+        // 당첨자 리스트가 비어있으면 빈 배열, 아니면 JSON 형식으로 메시지 생성
         String winnersJson = winners.isEmpty() ? "[]" : String.format("[\"%s\"]", String.join("\",\"", winners));
         String message = String.format("{\"couponCategory\": \"%s\", \"winners\": %s, \"entryTime\": %f}",
                 couponCategory, winnersJson, entryTime);

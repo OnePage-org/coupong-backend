@@ -14,15 +14,12 @@ public class EmitterManager {
 
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>(); // Emitter 목록
 
-
-    // Emitter를 추가, 유효하지 않은 Emitter는 제거
+    // Emitter 추가 및 유효하지 않은 Emitter 제거
     public void addEmitter(SseEmitter emitter) {
-        // 유효성 체크
-        removeInvalidEmitters();
-        // 이미터 추가
-        emitters.add(emitter);
+        removeInvalidEmitters(); // 유효성 체크
+        emitters.add(emitter); // Emitter 추가
 
-        // 완료와 타임아웃 처리
+        // 완료 및 타임아웃 처리
         emitter.onCompletion(() -> emitters.remove(emitter));
         emitter.onTimeout(() -> {
             emitter.complete();
@@ -30,31 +27,24 @@ public class EmitterManager {
         });
     }
 
-
-    // 모든 Emitter에 메시지를 전송
+    // 모든 Emitter에 메시지 전송
     public void sendMessageToEmitters(String message) {
-        // 유효성 처리
-        removeInvalidEmitters();
+        removeInvalidEmitters(); // 유효성 처리
 
-        // 관리되고있는 모든 이미터에 대해
+        // 모든 Emitter에 대해 메시지 전송
         for (SseEmitter emitter : emitters) {
             try {
-                // 이미터가 null이 아니면 메시지 전송
                 if (emitter != null) {
                     log.info("Sending message to emitter: {}", emitter);
-                    emitter.send(message);
+                    emitter.send(message); // 메시지 전송
                 }
             } catch (IOException e) {
-                // broken pipe 에러
-                log.error("Error while sending data: {}", e.getMessage(), e);
-                // 필요에 따라 예외를 다시 던질 수 있습니다.
+                log.error("Error while sending data: {}", e.getMessage(), e); // 전송 오류
             } catch (IllegalStateException e) {
-                // completed emitter 에러
-                log.error("Error with completed emitter: {}", e.getMessage(), e);
+                log.error("Error with completed emitter: {}", e.getMessage(), e); // 완료된 Emitter 오류
             }
         }
     }
-
 
     // 유효하지 않은 Emitter 제거
     private void removeInvalidEmitters() {
@@ -67,7 +57,7 @@ public class EmitterManager {
             return true; // null인 경우 제거
         }
         try {
-            emitter.send(""); // 유효성 검사 ( 메시지가 보내지나 확인 )
+            emitter.send(""); // 유효성 검사
             return false; // 유효한 경우 유지
         } catch (IOException e) {
             log.error("Invalid emitter detected and removed: {}", e.getMessage(), e);
@@ -75,11 +65,10 @@ public class EmitterManager {
         }
     }
 
-    // Emitter 제거 (sse 연결 후 확인 메시지를 보낼 때 오류가 발생하면 이미터를 바로 삭제하는 부분)
+    // Emitter 제거
     public void removeEmitter(SseEmitter emitter) {
         if (emitter != null) {
-            emitters.remove(emitter);
+            emitters.remove(emitter); // Emitter 제거
         }
     }
-
 }

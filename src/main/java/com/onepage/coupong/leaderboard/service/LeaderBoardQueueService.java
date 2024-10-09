@@ -15,8 +15,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final LeaderboardService leaderboardService;
-
-    private final String queueKeySeparator = "LEADERBOARD QUEUE:";
+    private final String queueKeySeparator = "LEADERBOARD QUEUE:"; // 큐 키 구분자
 
     @Autowired
     public LeaderBoardQueueService(RedisTemplate<String, Object> redisTemplate, LeaderboardService leaderboardService) {
@@ -30,11 +29,9 @@ public class LeaderBoardQueueService implements RedisZSetService {
         log.info("Adding user to leaderboard ZSet: {}", userId);
 
         try {
-            // Redis의 add 메서드 호출
+            // Redis에 사용자 추가
             redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
-
-            // 리더보드 정보 가져오기 및 업데이트
-            syncLeaderboardWithQueue(couponCategory, attemptAt); // 이름 변경
+            syncLeaderboardWithQueue(couponCategory, attemptAt); // 리더보드 동기화
 
             return true; // 추가 성공
         } catch (Exception e) {
@@ -45,36 +42,34 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
     @Override
     public Set<Object> getZSet(String couponCategory) {
-        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, -1);
+        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, -1); // 전체 사용자 가져오기
     }
 
     @Override
     public Set<ZSetOperations.TypedTuple<Object>> getTopRankSetWithScore(String couponCategory, int limit) {
-        return redisTemplate.opsForZSet().rangeWithScores(queueKeySeparator + couponCategory, 0, limit - 1);
+        return redisTemplate.opsForZSet().rangeWithScores(queueKeySeparator + couponCategory, 0, limit - 1); // 상위 사용자 및 점수 가져오기
     }
 
     @Override
     public Set<Object> getTopRankSet(String couponCategory, int limit) {
-        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, limit - 1);
+        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, limit - 1); // 상위 사용자 가져오기
     }
 
     @Override
     public void removeItemFromZSet(String couponCategory, String itemValue) {
         log.info("Removing user from queue: {}", itemValue);
-        redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
+        redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue); // 사용자 제거
     }
 
     // 리더보드 큐와 동기화
     private void syncLeaderboardWithQueue(String couponCategory, Double attemptAt) {
         Set<Object> topWinners = getZSet(couponCategory);
-        leaderboardService.updateLeaderboard(couponCategory, topWinners, attemptAt); // attemptAt도 함께 처리
-
+        leaderboardService.updateLeaderboard(couponCategory, topWinners, attemptAt); // 리더보드 업데이트
     }
 
     // 리더보드 초기화
     public void clearLeaderboardQueue(String couponCategory) {
-        redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1);
-        syncLeaderboardWithQueue(couponCategory, null); // 클리어 후 리더보드 업데이트 (attemptAt은 null로 전달)
+        redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1); // 모든 사용자 제거
+        syncLeaderboardWithQueue(couponCategory, null); // 리더보드 업데이트
     }
-
 }
