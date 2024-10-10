@@ -159,6 +159,8 @@ public class CouponEventServiceIntegrationTest {
                         .id(userId++)
                         .couponCategory(couponCategory)
                         .attemptAt(Long.valueOf(localDateTimeFormat1))
+                        .couponCategory(CouponCategory.DEFAULT)
+                        .attemptAt(System.currentTimeMillis())
                         .build();
 
 

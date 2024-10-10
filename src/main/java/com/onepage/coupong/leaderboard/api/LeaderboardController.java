@@ -1,88 +1,61 @@
 package com.onepage.coupong.leaderboard.api;
 
-import com.onepage.coupong.leaderboard.dto.LeaderboardUpdateDto;
+import com.onepage.coupong.coupon.domain.enums.CouponCategory;
 import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
-import com.onepage.coupong.leaderboard.service.LeaderboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
 @Slf4j
 public class LeaderboardController {
 
     private final LeaderBoardQueueService leaderBoardQueueService;
-    private final LeaderboardService leaderboardService;
 
     @Autowired
-    public LeaderboardController(LeaderBoardQueueService leaderBoardQueueService, LeaderboardService leaderboardService) {
+    public LeaderboardController(LeaderBoardQueueService leaderBoardQueueService) {
         this.leaderBoardQueueService = leaderBoardQueueService;
-        this.leaderboardService = leaderboardService;
     }
 
-    // 리더보드 데이터 가져오기
+    // 리더보드 데이터 출력 (초기 출력)
     @GetMapping("/sse/leaderboard")
-    public ResponseEntity<Map<String, Set<Object>>> getLeaderboard(@RequestParam String couponCategory) {
+    public ResponseEntity<Map<String, Map<Object, Double>>> getLeaderboard(@RequestParam String couponCategory) {
         if (couponCategory == null || couponCategory.isEmpty()) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build(); // 잘못된 요청 처리
         }
 
-        Map<String, Set<Object>> topWinners = new HashMap<>();
-        topWinners.put(couponCategory, leaderBoardQueueService.getZSet(couponCategory));
+        // 리더보드의 상위 승자 가져오기
+        Set<ZSetOperations.TypedTuple<Object>> topWinners = leaderBoardQueueService.getTopRankSetWithScore(couponCategory, 0);
+        Map<Object, Double> winnersWithScores = new HashMap<>();
 
-        if (topWinners.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        // 승자와 스코어를 맵에 추가
+        if (topWinners != null) {
+            for (ZSetOperations.TypedTuple<Object> tuple : topWinners) {
+                winnersWithScores.put(tuple.getValue(), tuple.getScore());
+            }
         }
-        return ResponseEntity.ok(topWinners);
+
+        return ResponseEntity.ok(Map.of(couponCategory, winnersWithScores)); // 결과 반환
     }
 
-    // 리더보드 클리어
+    // 리더보드 초기화
     @PostMapping("/sse/leaderboard/clear")
     public ResponseEntity<Void> clearLeaderboard(@RequestParam String couponCategory) {
-        leaderBoardQueueService.clearLeaderboardQueue(couponCategory);
-        Set<Object> topWinners = leaderBoardQueueService.getZSet(couponCategory);
-        List<String> winnerList = topWinners.stream()
-                .map(Object::toString)
-                .collect(Collectors.toList());
-
-        LeaderboardUpdateDto updateDTO = new LeaderboardUpdateDto(couponCategory, winnerList);
-        leaderboardService.updateLeaderboard(updateDTO);
+        leaderBoardQueueService.clearLeaderboardQueue(couponCategory); // 리더보드 큐 초기화
         return ResponseEntity.ok().build();
     }
 
-
-    @GetMapping(value = "/sse/leaderboard/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamLeaderboardUpdates(@RequestParam String couponCategory) {
-        // 5초마다 리더보드 업데이트 전송
-        Flux.interval(Duration.ofSeconds(5))
-                .doOnNext(tick -> {
-                    // 리더보드 조회
-                    Set<Object> topWinners = leaderBoardQueueService.getZSet(couponCategory);
-
-                    List<String> winnerList = topWinners.stream()
-                            .map(Object::toString)
-                            .collect(Collectors.toList());
-
-                    // 리더보드 업데이트를 sink에 발행
-
-                    leaderboardService.updateLeaderboard(new LeaderboardUpdateDto(couponCategory, winnerList));
-
-                })
-                .subscribe();  // 주기적으로 리더보드 업데이트를 발행
-
-        // 클라이언트에게 sink를 통해 데이터 전송
-        return leaderboardService.getSink().asFlux()
-                .replay(1)  // 마지막 1개의 이벤트를 캐시하여 새로운 구독자에게 전달
-                .autoConnect();
+    // 모든 카테고리 반환 (DEFAULT 제외)
+    @GetMapping("/api/categories")
+    public ResponseEntity<List<String>> getAllCategories() {
+        List<String> categories = Arrays.stream(CouponCategory.values())
+                .filter(category -> category != CouponCategory.DEFAULT)
+                .map(Enum::name)
+                .toList();
+        return ResponseEntity.ok(categories);
     }
 }
