@@ -72,4 +72,18 @@ public class LeaderBoardQueueService implements RedisZSetService {
         redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1); // 모든 사용자 제거
         syncLeaderboardWithQueue(couponCategory, null); // 리더보드 업데이트
     }
+
+    // 리더보드안에 사용자가 있는지 조회
+    public boolean isUserInQueue(String couponCategory, String userId) {
+        try {
+            // ZSet에서 유저 ID의 순위를 조회
+            Long rank = redisTemplate.opsForZSet().rank(queueKeySeparator + couponCategory, userId);
+            return rank != null; // 유저가 리더보드 큐에 있으면 true, 없으면 false 리턴
+        } catch (Exception e) {
+            // 예외 발생 시 로그를 남기고 false 반환
+            log.error("Error checking if user is in queue: ", e);
+            return false;
+        }
+    }
+
 }
