@@ -26,6 +26,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String username = oAuth2User.getName();
         String token = jwtProvider.create(username);
 
-        response.sendRedirect("https://coupong.netlify.app/auth/oauth-response/" + token + "/7200");
+        response.sendRedirect("https://coupong.netlify.app/auth/oauth-response/" + "Bearer " + token + "/7200");
     }
 }

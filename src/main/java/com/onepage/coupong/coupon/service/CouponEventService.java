@@ -121,14 +121,14 @@ public class CouponEventService {
         }
 
         // 이미 발급요청한 유저 or 발급 성공한 유저인지 확인
-        if (isAlreadyJoin(category, String.valueOf(userRequestDto.getId()))) {
+        if (isAlreadyJoin(category, userRequestDto.getUsername())) {
             log.info("4  : " + category);
             throw new EventException("이미 이벤트에 참여했습니다 : 카테고리 = " + category, ErrorCode.EVENT_ALREADY_JOIN);
         }
 
         return issuanceQueueService.addToZSet(
                 String.valueOf(userRequestDto.getCouponCategory()),
-                String.valueOf(userRequestDto.getId()),
+                String.valueOf(userRequestDto.getUsername()),
                 userRequestDto.getAttemptAt());
     }
 
@@ -190,11 +190,16 @@ public class CouponEventService {
         return couponEventScheduler.isSchedulerStopped(category);
     }
 
-    private boolean isAlreadyJoin(CouponCategory category, String userId) {
-        return issuanceQueueService.isUserInQueue(String.valueOf(category), userId);
+    private boolean isAlreadyJoin(CouponCategory category, String userName) {
+        //return issuanceQueueService.isUserInQueue(String.valueOf(category), userId);
 
         // 아래로 수정 필요
-        //return issuanceQueueService.isUserInQueue(String.valueOf(category), userId) || leaderBoardQueueService.isUserInQueue(String.valueOf(category), userId);
+
+        boolean iss = issuanceQueueService.isUserInQueue(String.valueOf(category), userName);
+        boolean lead = leaderBoardQueueService.isUserInQueue(String.valueOf(category), userName);
+        log.info( " iss : " + iss +"   lead : " + lead +"       이미 유저가 요청한 사실이 있는지");
+
+        return issuanceQueueService.isUserInQueue(String.valueOf(category), userName) || leaderBoardQueueService.isUserInQueue(String.valueOf(category), userName);
     }
 
     public Set<Object> getLeaderBoardQueue(String queueCategory) {
