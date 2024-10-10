@@ -22,7 +22,7 @@ public class JwtProvider {
     /* JWT를 만들어주는 메서드 */
     public String create(String username) {
 
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
+        Date expiredDate = Date.from(Instant.now().plus(2, ChronoUnit.HOURS));
         /* JWT에서 VERIFY SIGNATURE에 해당하는 key값을 만들어준다 */
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
