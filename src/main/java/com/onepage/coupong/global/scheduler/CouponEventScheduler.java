@@ -67,7 +67,7 @@ public class CouponEventScheduler {
                 } catch (Exception e) {
                     log.error("스케줄러 오류 발생", e);
                 }
-            }, 3000);
+            }, 5000);
 
             // 카테고리별로 스케줄 관리
             scheduledTasks.put(event.getCategory(), publishTask);
@@ -86,5 +86,10 @@ public class CouponEventScheduler {
             log.info("이벤트 스케줄러 중단: 카테고리 = {}", category);
             scheduledTasks.remove(category);
         }
+    }
+
+    public boolean isSchedulerStopped(CouponCategory category) {
+        ScheduledFuture<?> scheduledTask = scheduledTasks.get(category);
+        return scheduledTask == null || scheduledTask.isCancelled();
     }
 }

@@ -4,6 +4,7 @@ import com.onepage.coupong.coupon.dto.UserRequestDto;
 import com.onepage.coupong.coupon.domain.Coupon;
 import com.onepage.coupong.coupon.domain.CouponEvent;
 import com.onepage.coupong.coupon.exception.EventException;
+import com.onepage.coupong.coupon.exception.enums.ErrorCode;
 import com.onepage.coupong.leaderboard.domain.CouponWinningLog;
 import com.onepage.coupong.coupon.domain.EventManager;
 import com.onepage.coupong.coupon.domain.enums.CouponCategory;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 
 @Slf4j
@@ -109,14 +111,20 @@ public class CouponEventService {
         // 이벤트 시작 여부 확인
         if (!isEventStarted(category)) {
             log.info("2-2  : " + category);
-            throw new EventException("이벤트가 아직 시작되지 않았습니다: 카테고리 = " + category);
+            throw new EventException("이벤트가 아직 시작되지 않았습니다: 카테고리 = " + category, ErrorCode.EVENT_NOT_START);
         }
 
-        /*// 이미 발급받은 유저는 리더보드에서 확인 후 중복 발급 방지
-        if (leaderBoardQueueService.isMember(String.valueOf(category), String.valueOf(userRequestDto.getId()))) {
-            log.warn("유저가 이미 쿠폰을 발급받았습니다. ID: {}", userRequestDto.getId());
-            return false;
-        }*/
+        // 이벤트 종료 여부 (발급 개수 조건 충족 및 이벤트 시간 종료)
+        if (isEventEnded(category)) {
+            log.info("2-3  : " + category);
+            throw new EventException("이벤트가 종료되었습니다 : 카테고리 = " + category, ErrorCode.EVENT_ENDED);
+        }
+
+        // 이미 발급요청한 유저 or 발급 성공한 유저인지 확인
+        if (isAlreadyJoin(category, String.valueOf(userRequestDto.getId()))) {
+            log.info("4  : " + category);
+            throw new EventException("이미 이벤트에 참여했습니다 : 카테고리 = " + category, ErrorCode.EVENT_ALREADY_JOIN);
+        }
 
         return issuanceQueueService.addToZSet(
                 String.valueOf(userRequestDto.getCouponCategory()),
@@ -178,6 +186,16 @@ public class CouponEventService {
         return now.isAfter(couponEvent.getDate());
     }
 
+    private boolean isEventEnded(CouponCategory category) {
+        return couponEventScheduler.isSchedulerStopped(category);
+    }
+
+    private boolean isAlreadyJoin(CouponCategory category, String userId) {
+        return issuanceQueueService.isUserInQueue(String.valueOf(category), userId);
+
+        // 아래로 수정 필요
+        //return issuanceQueueService.isUserInQueue(String.valueOf(category), userId) || leaderBoardQueueService.isUserInQueue(String.valueOf(category), userId);
+    }
 
     public Set<Object> getLeaderBoardQueue(String queueCategory) {
         return leaderBoardQueueService.getZSet(queueCategory);

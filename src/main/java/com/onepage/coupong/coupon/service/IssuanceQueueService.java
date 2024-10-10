@@ -53,4 +53,17 @@ public class IssuanceQueueService implements RedisZSetService {
         log.info("삭제합니다 유저 큐에서 " + itemValue);
         redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
     }
+
+    // 대기열에 사용자가 있는지 조회
+    public boolean isUserInQueue(String couponCategory, String userId) {
+        try {
+            // ZSet에서 유저 ID의 순위를 조회
+            Long rank = redisTemplate.opsForZSet().rank(queueKeySeparator + couponCategory, userId);
+            return rank != null; // 유저가 리더보드 큐에 있으면 true, 없으면 false 리턴
+        } catch (Exception e) {
+            // 예외 발생 시 로그를 남기고 false 반환
+            log.error("Error checking if user is in queue: ", e);
+            return false;
+        }
+    }
 }

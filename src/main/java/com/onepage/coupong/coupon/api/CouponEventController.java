@@ -105,7 +105,7 @@ public class CouponEventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이벤트 오류: " + e.getMessage());
         } catch (EventException e) {
             log.info("쿠폰 이벤트 아직 시작 안함 -> "+userRequestDto);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
         }
     }
 
