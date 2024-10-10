@@ -15,6 +15,7 @@ public class EventManager {
     private CouponCategory couponCategory;
     private LocalDateTime startTime;
     private int couponCount;
+    private int publish_nums;  // 다중 이벤트 환경에서 당첨자 리스트 만들 때 아웃오브 인덱스 에러 막기 위해
     private int endNums = 0;  //이벤트 종료 조건 쿠폰 잔여 개수
     private Map<Object, Coupon> userCouponMap;
 
@@ -23,28 +24,9 @@ public class EventManager {
         this.couponCategory = couponCategory;
         this.startTime = startTime;
         this.couponCount = couponCount;
+        this.publish_nums = couponCount;
         this.endNums = endNums;
         this.userCouponMap = new HashMap<>();
-    }
-
-    public EventManager(String couponName, CouponCategory couponCategory, int couponCount, int endNums) {
-        this.couponName = couponName;
-        this.couponCategory = couponCategory;
-        this.couponCount = couponCount;
-        this.endNums = endNums;
-        this.userCouponMap = new HashMap<>();
-    }
-
-    public EventManager(CouponCategory couponCategory, int couponCount, int endNums) {
-        this.couponCategory = couponCategory;
-        this.couponCount = couponCount;
-        this.endNums = endNums;
-        this.userCouponMap = new HashMap<>();
-    }
-
-    public EventManager(CouponCategory couponCategory, int couponCount) {
-        this.couponCategory = couponCategory;
-        this.couponCount = couponCount;
     }
 
     public synchronized void decreaseCouponCount() {

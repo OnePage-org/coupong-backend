@@ -1,12 +1,14 @@
 package com.onepage.coupong.coupon.service;
 
 import com.onepage.coupong.infrastructure.redis.RedisZSetService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 public class IssuanceQueueService implements RedisZSetService {
 
@@ -48,7 +50,20 @@ public class IssuanceQueueService implements RedisZSetService {
     //쿠폰 발행 후 큐에서 제거
     @Override
     public void removeItemFromZSet(String couponCategory, String itemValue) {
-        System.out.println("삭제합니다 유저 큐에서 " + itemValue);
+        log.info("삭제합니다 유저 큐에서 " + itemValue);
         redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
+    }
+
+    // 대기열에 사용자가 있는지 조회
+    public boolean isUserInQueue(String couponCategory, String userId) {
+        try {
+            // ZSet에서 유저 ID의 순위를 조회
+            Long rank = redisTemplate.opsForZSet().rank(queueKeySeparator + couponCategory, userId);
+            return rank != null; // 유저가 리더보드 큐에 있으면 true, 없으면 false 리턴
+        } catch (Exception e) {
+            // 예외 발생 시 로그를 남기고 false 반환
+            log.error("Error checking if user is in queue: ", e);
+            return false;
+        }
     }
 }
