@@ -54,7 +54,6 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/mail/**").permitAll()
                         .requestMatchers("/sse/**").permitAll()
                         .requestMatchers("/api/**").permitAll()  // 리더보드 API 허용
-
                         .requestMatchers("/chat/**").permitAll()
                         .requestMatchers("/api/v1/filtering").permitAll()
                         //.requestMatchers("/api/v1/coupon-event/list").permitAll()

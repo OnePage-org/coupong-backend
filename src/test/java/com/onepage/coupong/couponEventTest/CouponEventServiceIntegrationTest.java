@@ -81,6 +81,7 @@ public class CouponEventServiceIntegrationTest {
                 UserRequestDto userRequestDto = UserRequestDto.builder()
                         .id(userId++)
                         .couponCategory(CouponCategory.DEFAULT)
+                        .attemptAt(System.currentTimeMillis())
                         .build();
 
 
