@@ -31,6 +31,7 @@ public class ChatMessageController {
 
     public void updateUserCnt() { // 참여자 수 갱신
         int userCnt = users.size();
+        template.convertAndSend("/sub/total", users);
         template.convertAndSend("/sub/users", userCnt);
     }
     @MessageMapping(value = "/enter") // 입장 메시지
@@ -43,7 +44,7 @@ public class ChatMessageController {
 
         users.put(message.getWriter(), Boolean.TRUE);
 
-        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("알림", message.getMessage(), "");
+        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("입장", message.getMessage(), "");
         template.convertAndSend("/sub/chat", chatMessageDTO);
 
         updateUserCnt(); // 참여자 갱신
@@ -89,7 +90,7 @@ public class ChatMessageController {
         message.setMessage(message.getWriter()+"님이 퇴장하였습니다.");
         message.setCreatedDate(formattedDate);
 
-        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("알림", message.getMessage(), "");
+        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("퇴장", message.getMessage(), "");
         template.convertAndSend("/sub/chat", chatMessageDTO);
         updateUserCnt(); // 참여자 갱신
 
