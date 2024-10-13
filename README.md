@@ -1,6 +1,4 @@
 
-<br/>
-<br/>
 
 # 0. Getting Started (시작하기)
 ```bash
