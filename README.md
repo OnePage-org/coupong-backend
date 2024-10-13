@@ -158,22 +158,25 @@ test
 <br/>
 
 # 8. ERD
-<img src="https://github.com/user-attachments/assets/25b6826f-99bc-4573-855c-c795f7f8dc47" alt="React" width="500">
+<img src="https://github.com/user-attachments/assets/25b6826f-99bc-4573-855c-c795f7f8dc47" alt="React" width="500"> <br/><br/>
 
 # 9. 시스템 아키텍처
-<img src="https://github.com/user-attachments/assets/c4d06585-0d93-481e-b14c-81b70ae594c3" alt="React" width="500">
+<img src="https://github.com/user-attachments/assets/c4d06585-0d93-481e-b14c-81b70ae594c3" alt="React" width="500"> <br/><br/>
 
 # 10. 인터페이스 설계
 <img src="https://github.com/user-attachments/assets/6e6238ea-3994-4eec-a1ad-d533b26a8971" alt="React" width="300">
 <img src="https://github.com/user-attachments/assets/0516008c-7991-4cd5-b089-daac5b4611aa" alt="React" width="300">
-<img src="https://github.com/user-attachments/assets/6185929c-0a1a-4250-94b8-d776ab0eca7c" alt="React" width="500">
+<img src="https://github.com/user-attachments/assets/6185929c-0a1a-4250-94b8-d776ab0eca7c" alt="React" width="500"> <br/><br/>
 
 # 11. 인증•인가 플로우
-<img src="https://github.com/user-attachments/assets/8e286e17-370a-4f67-b3cc-0e4ae29ed673" alt="React" width="300">
+<img src="https://github.com/user-attachments/assets/8e286e17-370a-4f67-b3cc-0e4ae29ed673" alt="React" width="300"> <br/><br/>
 
 # 12. 쿠폰 이벤트 시스템 프로세스
-<img src="https://github.com/user-attachments/assets/02529262-ea24-4386-bd41-639561d156ce" alt="React" width="500">
+<img src="https://github.com/user-attachments/assets/02529262-ea24-4386-bd41-639561d156ce" alt="React" width="500"> <br/><br/>
 
+# 13. 금칙어 필터링 시스템 프로세스
+<img src="https://github.com/user-attachments/assets/c9997e16-e455-4d31-8c9d-53ac4178406d" alt="React" width="500"> 
+<img src="https://github.com/user-attachments/assets/3daf3f6d-4248-46b3-915e-f0d4e895b1fb" alt="React" width="500"> 
 
 
 
