@@ -41,7 +41,6 @@ public class CouponEventController {
         }
     }*/
 
-
     @GetMapping("/list")
     public ResponseEntity<List<CouponEventListDto>> getCouponEventList() {
         log.info("이벤트 목록 요청 들어옴");
@@ -108,21 +107,4 @@ public class CouponEventController {
             return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
         }
     }
-
-    /*
-        @PostMapping("/stop")
-    public ResponseEntity<String> stopEvent(
-            @RequestHeader("Authorization") String token
-    ) {
-        // JWT 토큰 정보로 사용자 인증 및 권한 확인
-        Long userId = authService.tokenDecryptionId(token);
-
-        if (!couponEventService.isEventInitialized()) {
-            return ResponseEntity.badRequest().body("진행 중인 이벤트가 없습니다.");
-        }
-
-        couponEventService.stopEvent();
-        return ResponseEntity.ok("이벤트가 성공적으로 종료되었습니다.");
-    }
-     */
 }

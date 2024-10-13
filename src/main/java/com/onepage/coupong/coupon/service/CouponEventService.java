@@ -41,17 +41,10 @@ public class CouponEventService {
     private final CouponEventScheduler couponEventScheduler;
     //private int couponListIndex = 0;  // 이거 떄문에 에러 발생. 다중 쿠폰 이벤트 상황에서는 이게 문제
 
-    /*
-    1.	Event Lifecycle 관리: 이벤트가 시작되고 종료되는 라이프사이클을 명확히 관리하는 것이 중요합니다. 이벤트가 실행되기 전에 eventManager를 미리 준비해두고, 이벤트 상태를 유지하는 방법이 필요합니다.
-	2.	의존성 주입: eventManager와 같은 상태를 갖는 객체는 보통 서비스 레벨에서 명확하게 관리되거나, 싱글톤 패턴 또는 상태 관리 객체를 통해 이벤트 상태를 전역적으로 관리하는 방식이 현업에서는 더 선호됩니다.
-	3.	컨트롤러에서 이벤트 초기화 로직을 최소화: 컨트롤러는 비즈니스 로직보다는 요청을 처리하는 역할만 수행해야 하므로, 이벤트 초기화 같은 중요한 비즈니스 로직은 서비스 계층에서 다루는 것이 좋습니다.
-     */
-
     // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
     //@Scheduled(cron = "00 08 13 * * ?")  // 매일 오후 11시 50분에 실행
     @Scheduled(fixedDelay = 10000000) //테스트용
     public void scheduleDailyEvents() {
-
         LocalDate tomorrow = LocalDate.now().plusDays(1);
 
         LocalDateTime startOfDay = tomorrow.atStartOfDay();  // 내일 00:00:00
@@ -62,11 +55,6 @@ public class CouponEventService {
 
         //테스트용
         List<CouponEvent> events = couponEventRepository.findAllByDateBetween(LocalDate.now().atStartOfDay(), LocalDate.now().atTime(23, 59, 59));
-
-
-        log.info("!!!!!!!!! \n\n\n\n   "+"!!!!!!");
-
-        log.info("!!!!!!!!! "+LocalDate.now().plusDays(1).atStartOfDay()+ "  " + events);
 
         for (CouponEvent event : events) {
             couponEvents.put(event.getCategory(), event);
