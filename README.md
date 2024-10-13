@@ -145,7 +145,7 @@ test
   - 배포 가능한 상태의 코드를 유지합니다.
   - 모든 배포는 이 브랜치에서 이루어집니다.
   
-- {name} Branch
+- develop/{feature/release/refactoring...}
   - 팀원 각자의 개발 브랜치입니다.
   - 모든 기능 개발은 이 브랜치에서 이루어집니다.
 
