@@ -53,17 +53,17 @@ public class CouponEventScheduler {
             ScheduledFuture<?> publishTask = taskScheduler.scheduleWithFixedDelay(() -> {
                 try {
                     if (!couponEventService.isEventInitialized(event.getCategory())) {
-                        log.info("이벤트가 초기화되지 않았습니다.");
+                        //log.info("이벤트가 초기화되지 않았습니다.");
                         return;
                     }
                     if (couponEventService.validEnd(event.getCategory())) {
-                        log.info("이벤트 종료: 쿠폰 발행 가능 개수 충족");
+                        //log.info("이벤트 종료: 쿠폰 발행 가능 개수 충족");
                         stopEvent(event.getCategory());
                         return;
                     }
 
                     couponEventService.publishCoupons(event.getCategory(), 10);
-                    log.info("쿠폰 발행 시도 완료");
+                    //log.info("쿠폰 발행 시도 완료");
                 } catch (Exception e) {
                     log.error("스케줄러 오류 발생", e);
                 }

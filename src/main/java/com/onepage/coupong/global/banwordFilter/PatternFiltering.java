@@ -65,9 +65,9 @@ public class PatternFiltering {
             if (isBanWord) {
                 if(allowWordLastPosition < wordStartPosition) {
                     banWords.add(outputWords.get(outputWordPositionData[0]));
-                    System.out.println(outputWords.get(outputWordPositionData[0]));
+                    /*System.out.println(outputWords.get(outputWordPositionData[0]));
                     System.out.println("allowWordLastPosition : "+allowWordLastPosition +"  "+
-                            "wordStartPosition: " + wordStartPosition + " wordEndPosition: " + wordEndPosition );
+                            "wordStartPosition: " + wordStartPosition + " wordEndPosition: " + wordEndPosition );*/
                 }
                 //허용어임
             } else {

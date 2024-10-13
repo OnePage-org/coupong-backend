@@ -50,7 +50,7 @@ public class IssuanceQueueService implements RedisZSetService {
     //쿠폰 발행 후 큐에서 제거
     @Override
     public void removeItemFromZSet(String couponCategory, String itemValue) {
-        log.info("삭제합니다 유저 큐에서 " + itemValue);
+        //log.info("삭제합니다 유저 큐에서 " + itemValue);
         redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
     }
 
@@ -62,7 +62,7 @@ public class IssuanceQueueService implements RedisZSetService {
             return rank != null; // 유저가 리더보드 큐에 있으면 true, 없으면 false 리턴
         } catch (Exception e) {
             // 예외 발생 시 로그를 남기고 false 반환
-            log.error("Error checking if user is in queue: ", e);
+            //log.error("Error checking if user is in queue: ", e);
             return false;
         }
     }

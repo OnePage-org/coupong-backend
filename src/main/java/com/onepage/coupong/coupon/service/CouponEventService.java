@@ -49,7 +49,7 @@ public class CouponEventService {
 
     // 매일 자정에 호출되어 이벤트 목록을 조회하고 스케줄러에 등록
     //@Scheduled(cron = "00 08 13 * * ?")  // 매일 오후 11시 50분에 실행
-    @Scheduled(fixedDelay = 10000000) //테스트용
+    @Scheduled(fixedDelay = 20000000) //테스트용
     public void scheduleDailyEvents() {
 
         LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -98,31 +98,31 @@ public class CouponEventService {
 
     public boolean addUserToQueue (UserRequestDto userRequestDto) {
 
-        log.info("1  : " + userRequestDto);
+        //log.info("1  : " + userRequestDto);
 
         CouponCategory category = userRequestDto.getCouponCategory();
 
         // 이벤트 초기화 확인
         if (!isEventInitialized(category)) {
-            log.info("2  : " + category);
+            //log.info("2  : " + category);
             throw new IllegalStateException("이벤트가 초기화되지 않았습니다: 카테고리 = " + category);
         }
 
         // 이벤트 시작 여부 확인
         if (!isEventStarted(category)) {
-            log.info("2-2  : " + category);
+            //log.info("2-2  : " + category);
             throw new EventException("이벤트가 아직 시작되지 않았습니다: 카테고리 = " + category, ErrorCode.EVENT_NOT_START);
         }
 
         // 이벤트 종료 여부 (발급 개수 조건 충족 및 이벤트 시간 종료)
         if (isEventEnded(category)) {
-            log.info("2-3  : " + category);
+            //log.info("2-3  : " + category);
             throw new EventException("이벤트가 종료되었습니다 : 카테고리 = " + category, ErrorCode.EVENT_ENDED);
         }
 
         // 이미 발급요청한 유저 or 발급 성공한 유저인지 확인
         if (isAlreadyJoin(category, userRequestDto.getUsername())) {
-            log.info("4  : " + category);
+            //log.info("4  : " + category);
             throw new EventException("이미 이벤트에 참여했습니다 : 카테고리 = " + category, ErrorCode.EVENT_ALREADY_JOIN);
         }
 
@@ -136,7 +136,7 @@ public class CouponEventService {
         EventManager eventManager = eventManagers.get(category);
         CouponEvent couponEvent = couponEvents.get(category);  // 발급하고 있는 해당 쿠폰이벤트 리스트에서 쿠폰 id를 받아와야함
 
-        log.info( " \n 남은 쿠폰 개수 :" +  String.valueOf(eventManager.getCouponCount()) +" \n");
+        //log.info( " \n 남은 쿠폰 개수 :" +  String.valueOf(eventManager.getCouponCount()) +" \n");
 
         if (eventManager == null) {
             throw new IllegalStateException("이벤트 매니저가 초기화되지 않았습니다: 카테고리 = " + category);
@@ -144,7 +144,7 @@ public class CouponEventService {
 
         Set<ZSetOperations.TypedTuple<Object>> queueWithScores = issuanceQueueService.getTopRankSetWithScore(String.valueOf(eventManager.getCouponCategory()), scheduleCount);
 
-        System.out.println(queueWithScores.size() +" 큐 사이즈 !");
+        //System.out.println(queueWithScores.size() +" 큐 사이즈 !");
 
         for (ZSetOperations.TypedTuple<Object> item : queueWithScores) {
             if(eventManager.eventEnd()) {
@@ -159,7 +159,7 @@ public class CouponEventService {
 
                 return;
             }
-            log.info("발급 정보 : "  + eventManager.getCouponCategory() +" " + item.getValue() +" "+ item.getScore());
+            //log.info("발급 정보 : "  + eventManager.getCouponCategory() +" " + item.getValue() +" "+ item.getScore());
 
             leaderBoardQueueService.addToZSet(String.valueOf(eventManager.getCouponCategory()), String.valueOf(item.getValue()), item.getScore());
 
@@ -168,7 +168,7 @@ public class CouponEventService {
 
             int eventManagerListIndex =  eventManager.getPublish_nums() - (eventManager.getCouponCount() + 1);  // 계산 잘 해야됨.
 
-            log.info("쿠폰 발급 성공자 리스트 생성 중" + eventManagerListIndex+" 번째 인덱스에 " +couponEvent.getCategory()+" 이벤트 리스트");
+            //log.info("쿠폰 발급 성공자 리스트 생성 중" + eventManagerListIndex+" 번째 인덱스에 " +couponEvent.getCategory()+" 이벤트 리스트");
 
             eventManager.addUserCoupon(String.valueOf(item.getValue()), couponEvent.getCouponList().get(eventManagerListIndex));  // couponListIndex 이게 문제를 일으킴 다중 이벤트 환경에서
         }
@@ -197,7 +197,7 @@ public class CouponEventService {
 
         boolean iss = issuanceQueueService.isUserInQueue(String.valueOf(category), userName);
         boolean lead = leaderBoardQueueService.isUserInQueue(String.valueOf(category), userName);
-        log.info( " iss : " + iss +"   lead : " + lead +"       이미 유저가 요청한 사실이 있는지");
+        //log.info( " iss : " + iss +"   lead : " + lead +"       이미 유저가 요청한 사실이 있는지");
 
         return issuanceQueueService.isUserInQueue(String.valueOf(category), userName) || leaderBoardQueueService.isUserInQueue(String.valueOf(category), userName);
     }
@@ -226,6 +226,6 @@ public class CouponEventService {
     }
 
     public void startEvent(CouponEvent event) {
-        log.info("이벤트 시작: {}", event.getId());
+        //log.info("이벤트 시작: {}", event.getId());
     }
 }

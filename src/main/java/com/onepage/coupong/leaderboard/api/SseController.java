@@ -24,7 +24,7 @@ public class SseController {
     // 클라이언트에서 리더보드 업데이트를 위한 SSE 연결 설정
     @GetMapping(value = "/sse/leaderboard/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamLeaderboardUpdates(@RequestParam String couponCategory) {
-        log.info("Client connected to leaderboard stream for category: {}", couponCategory);
+        //log.info("Client connected to leaderboard stream for category: {}", couponCategory);
 
         // 클라이언트에게 emitter를 생성하고 등록
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
@@ -34,7 +34,7 @@ public class SseController {
             // 초기 메시지 전송
             emitter.send(INITIAL_MESSAGE);
         } catch (IOException e) {
-            log.error("Error sending initial message to emitter: ", e);
+            //log.error("Error sending initial message to emitter: ", e);
             emitterManager.removeEmitter(emitter); // Emitter 제거
         }
 

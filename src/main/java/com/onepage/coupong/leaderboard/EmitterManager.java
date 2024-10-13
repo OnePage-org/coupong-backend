@@ -35,13 +35,13 @@ public class EmitterManager {
         for (SseEmitter emitter : emitters) {
             try {
                 if (emitter != null) {
-                    log.info("Sending message to emitter: {}", emitter);
+                    //log.info("Sending message to emitter: {}", emitter);
                     emitter.send(message); // 메시지 전송
                 }
             } catch (IOException e) {
-                log.error("Error while sending data: {}", e.getMessage(), e); // 전송 오류
+                //log.error("Error while sending data: {}", e.getMessage(), e); // 전송 오류
             } catch (IllegalStateException e) {
-                log.error("Error with completed emitter: {}", e.getMessage(), e); // 완료된 Emitter 오류
+                //log.error("Error with completed emitter: {}", e.getMessage(), e); // 완료된 Emitter 오류
             }
         }
     }
@@ -60,7 +60,7 @@ public class EmitterManager {
             emitter.send(""); // 유효성 검사
             return false; // 유효한 경우 유지
         } catch (IOException e) {
-            log.error("Invalid emitter detected and removed: {}", e.getMessage(), e);
+            //log.error("Invalid emitter detected and removed: {}", e.getMessage(), e);
             return true; // 유효하지 않은 경우 제거
         }
     }

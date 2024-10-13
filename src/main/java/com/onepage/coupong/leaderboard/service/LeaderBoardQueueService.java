@@ -26,7 +26,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
     // 리더보드에 당첨자 추가
     @Override
     public boolean addToZSet(String couponCategory, String userId, double attemptAt) {
-        log.info("Adding user to leaderboard ZSet: {}", userId);
+        //log.info("Adding user to leaderboard ZSet: {}", userId);
 
         try {
             // Redis에 사용자 추가
@@ -35,7 +35,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
             return true; // 추가 성공
         } catch (Exception e) {
-            log.error("Error while adding to ZSet: ", e);
+            //log.error("Error while adding to ZSet: ", e);
             return false; // 예외 발생 시 false 반환
         }
     }
@@ -57,7 +57,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
 
     @Override
     public void removeItemFromZSet(String couponCategory, String itemValue) {
-        log.info("Removing user from queue: {}", itemValue);
+        //log.info("Removing user from queue: {}", itemValue);
         redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue); // 사용자 제거
     }
 
@@ -81,7 +81,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
             return rank != null; // 유저가 리더보드 큐에 있으면 true, 없으면 false 리턴
         } catch (Exception e) {
             // 예외 발생 시 로그를 남기고 false 반환
-            log.error("Error checking if user is in queue: ", e);
+            //log.error("Error checking if user is in queue: ", e);
             return false;
         }
     }
