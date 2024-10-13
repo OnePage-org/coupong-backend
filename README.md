@@ -1,6 +1,3 @@
-<a href="https://club-project-one.vercel.app/" target="_blank">
-<img width="1448" alt="coupong 메인 페이지@2x" src="https://github.com/user-attachments/assets/d797ff95-42d9-43a7-9301-7f41786aaf76">
-</a>
 
 <br/>
 <br/>
@@ -61,7 +58,7 @@ $ docker compose up --build -d
 | 강희준    |  <img src="https://avatars.githubusercontent.com/dhfkdlsj" alt="강희준" width="100">    | <ul><li>리더보드 시스템</li><li>인프라 구축 (Web Server)</li><li>QA</li></ul>    |
 
 <br/>
-<br/>
+
 
 # 5. Technology Stack (기술 스택)
 ## 5.1 Backend
