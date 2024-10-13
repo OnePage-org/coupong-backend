@@ -5,7 +5,7 @@
 $ ./gradlew clean build -x test 
 $ docker compose up --build -d
 ```
-[서비스 링크](https://coupong.netlify.app/)
+---->   [서비스 링크](https://coupong.netlify.app/)   <----
 
 <br/>
 <br/>
