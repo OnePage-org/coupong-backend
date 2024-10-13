@@ -167,7 +167,7 @@ test
 <img src="https://github.com/user-attachments/assets/8e286e17-370a-4f67-b3cc-0e4ae29ed673" alt="React" width="300"> <br/><br/>
 
 # 12. 쿠폰 이벤트 시스템 프로세스
-<img src="https://github.com/user-attachments/assets/02529262-ea24-4386-bd41-639561d156ce" alt="React" width="500"> <br/><br/>
+<img src="https://github.com/user-attachments/assets/4a5bf147-cd63-4eb0-97c6-f8fcffd91fa2" alt="React" width="500"> <br/><br/>
 
 # 13. 금칙어 필터링 시스템 프로세스
 <img src="https://github.com/user-attachments/assets/8df53e98-8da1-46fe-8830-e8914b587fb6" alt="React" width="500"> 
