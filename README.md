@@ -7,7 +7,7 @@
 
 # 0. Getting Started (시작하기)
 ```bash
-$ ./gradlew clean build -x test <br/>
+$ ./gradlew clean build -x test 
 $ docker compose up --build -d
 ```
 [서비스 링크](https://coupong.netlify.app/)
@@ -25,37 +25,29 @@ $ docker compose up --build -d
 # 2. Team Members (팀원 및 팀 소개)
 | 진명인 | 백효석 | 심지혜 | 강희준 |
 |:------:|:------:|:------:|:------:|
-| <img src="https://avatars.githubusercontent.com/myeonginjin" alt="진명인" width="150"> | <img src="https://github.com/alexization" alt="백효석" width="150"> | <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="심지혜" width="150"> | <img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="강희준" width="150"> |
-| PL | FE | FE | FE |
-| [GitHub](https://github.com/LDK1009) | [GitHub](https://github.com/SinYusi) | [GitHub](https://github.com/nay3on) | [GitHub](https://github.com/conconcc) |
+| <img src="https://avatars.githubusercontent.com/myeonginjin" alt="진명인" width="150"> | <img src="https://avatars.githubusercontent.com/alexization" alt="백효석" width="150"> | <img src="https://avatars.githubusercontent.com/sapientia1007" alt="심지혜" width="150"> | <img src="https://avatars.githubusercontent.com/dhfkdlsj" alt="강희준" width="150"> |
+| BE | BE | BE | BE |
+| [GitHub](https://github.com/myeonginjin) | [GitHub](https://github.com/alexization) | [GitHub](https://github.com/sapientia1007) | [GitHub](https://github.com/dhfkdlsj) |
 
 <br/>
 <br/>
 
 # 3. Key Features (주요 기능)
-- **회원가입**:
-  - 회원가입 시 DB에 유저정보가 등록됩니다.
+- **인증/인가**:
+  - 일반 유저는 쿠폰 이벤트 메인페이지, 관리자는 이벤트 등록 페이지로 이동합니다.
+  - 카카오톡, 네이버 그리고 플랫폼 자체 로그인 총 3가지의 로그인 방식이 있습니다.
 
-- **로그인**:
-  - 사용자 인증 정보를 통해 로그인합니다.
+- **쿠폰 이벤트**:
+  - 매일 밤 자정, 이벤트 목록이 초기화됩니다.
+  - 이벤트는 카테고리별(커피, 피자, 햄버거, 치킨)로 동일한 날짜, 동일한 시간대에 여러 이벤트가 진행될 수 있습니다.
 
-- **내 동아리 일정관리**:
-  - 캘린더 UI를 통해 동아리 관련 일정 추가&삭제가 가능합니다.
-  - 체크박스를 통해 종료되거나 이미 수행한 일정을 표시할 수 있습니다.
+- **실시간 채팅**:
+  - 이벤트가 진행 중이거나 진행 중이지 않을 때에도, 유저끼리 실시간 채팅 서비스를 즐길 수 있습니다.
+  - 금칙어 필터링 시스템이 실시간으로 부적절한 챗 메시지를 잡아냅니다. 이때, 허용어는 예외처리하고 우회단어는 동일하게 잡아냅니다.
 
-- **동아리 찾기**:
-  - 대학 내 동아리를 검색할 수 있습니다.
-  - 검색 시 해당 동아리가 업로드한 홍보글이 보여집니다.
-
-- **동아리 홍보**:
-  - 홍보글 등록을 통해 동아리를 홍보할 수 있습니다.
-
-- **동아리 만들기**:
-  - 새로운 동아리를 만들어 관리할 수 있습니다.
-
-- **동아리 프로필**:
-  - 동아리 홍보글에서 동아리 이름(링크)를 클릭하면 해당 동아리 프로필로 이동합니다.
-  - 동아리 프로필에서는 동아리 소개, 동아리 활동사진 갤러리, 동아리 홍보글 기록관 등을 볼 수 있습니다.
+- **리더보드**:
+  - 쿠폰 이벤트에 당첨된 사람은 실시간으로 리더보드에 등록됩니다.
+  - 이벤트 카테고리별로 당첨자들의 순위를 매깁니다. 기준은 발행 요청 시각입니다.
 
 <br/>
 <br/>
@@ -63,21 +55,20 @@ $ docker compose up --build -d
 # 4. Tasks & Responsibilities (작업 및 역할 분담)
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| 이동규    |  <img src="https://github.com/user-attachments/assets/c1c2b1e3-656d-4712-98ab-a15e91efa2da" alt="이동규" width="100"> | <ul><li>프로젝트 계획 및 관리</li><li>팀 리딩 및 커뮤니케이션</li><li>커스텀훅 개발</li></ul>     |
-| 신유승   |  <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100">| <ul><li>메인 페이지 개발</li><li>동아리 만들기 페이지 개발</li><li>커스텀훅 개발</li></ul> |
-| 김나연   |  <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100">    |<ul><li>홈 페이지 개발</li><li>로그인 페이지 개발</li><li>동아리 찾기 페이지 개발</li><li>동아리 프로필 페이지 개발</li><li>커스텀훅 개발</li></ul>  |
-| 이승준    |  <img src="https://github.com/user-attachments/assets/beea8c64-19de-4d91-955f-ed24b813a638" alt="이승준" width="100">    | <ul><li>회원가입 페이지 개발</li><li>마이 프로필 페이지 개발</li><li>커스텀훅 개발</li></ul>    |
+| 진명인    |  <img src="https://avatars.githubusercontent.com/myeonginjin" alt="진명인" width="100"> | <ul><li>프로젝트 기획 및 리딩</li><li>인프라 구축 (WAS)</li><li>쿠폰 이벤트 시스템</li><li>금칙어 필터링 시스템</li></ul>     |
+| 백효석   |  <img src="https://avatars.githubusercontent.com/alexization" alt="백효석" width="100">| <ul><li>인증/인가 시스템</li><li>서버 부하 테스트</li><li>금칙어 필터링 시스템</li></ul> |
+| 심지혜   |  <img src="https://avatars.githubusercontent.com/sapientia1007" alt="심지혜" width="100">    |<ul><li>실시간 채팅 시스템</li><li>개발 문서 정리</li><li>QA</li></ul>  |
+| 강희준    |  <img src="https://avatars.githubusercontent.com/dhfkdlsj" alt="강희준" width="100">    | <ul><li>리더보드 시스템</li><li>인프라 구축 (Web Server)</li><li>QA</li></ul>    |
 
 <br/>
 <br/>
 
 # 5. Technology Stack (기술 스택)
-## 5.1 Language
+## 5.1 Backend
 |  |  |
 |-----------------|-----------------|
-| HTML5    |<img src="https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31" alt="HTML5" width="100">| 
-| CSS3    |   <img src="https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13" alt="CSS3" width="100">|
-| Javascript    |  <img src="https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1" alt="Javascript" width="100"> | 
+| JAVA          |<img src="https://github.com/user-attachments/assets/5df80afe-5c3d-47c1-9f6d-1549d1b2fc42" alt="JAVA" width="200">| 
+| Spring Boot   |   <img src="https://github.com/user-attachments/assets/4d0c279a-0dfe-4253-b79e-c615935f9aff" alt="Spring Boot" width="200">|
 
 <br/>
 
@@ -85,13 +76,12 @@ $ docker compose up --build -d
 |  |  |  |
 |-----------------|-----------------|-----------------|
 | React    |  <img src="https://github.com/user-attachments/assets/e3b49dbb-981b-4804-acf9-012c854a2fd2" alt="React" width="100"> | 18.3.1    |
-| StyledComponents    |  <img src="https://github.com/user-attachments/assets/c9b26078-5d79-40cc-b120-69d9b3882786" alt="StyledComponents" width="100">| 6.1.12   |
-| MaterialUI    |  <img src="https://github.com/user-attachments/assets/75a46fa7-ebc0-4a9d-b648-c589f87c4b55" alt="MUI" width="100">    | 5.0.0  |
-| DayJs    |  <img src="https://github.com/user-attachments/assets/3632d7d6-8d43-4dd5-ba7a-501a2bc3a3e4" alt="DayJs" width="100">    | 1.11.12    |
+| CSS3    |   <img src="https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13" alt="CSS3" width="100">|
+| Javascript    |  <img src="https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1" alt="Javascript" width="100"> | 
 
 <br/>
 
-## 5.3 Backend
+## 5.3 DBMS
 |  |  |  |
 |-----------------|-----------------|-----------------|
 | Firebase    |  <img src="https://github.com/user-attachments/assets/1694e458-9bb0-4a0b-8fe6-8efc6e675fa1" alt="Firebase" width="100">    | 10.12.5    |
