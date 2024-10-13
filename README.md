@@ -170,8 +170,8 @@ test
 <img src="https://github.com/user-attachments/assets/02529262-ea24-4386-bd41-639561d156ce" alt="React" width="500"> <br/><br/>
 
 # 13. 금칙어 필터링 시스템 프로세스
-<img src="https://github.com/user-attachments/assets/c9997e16-e455-4d31-8c9d-53ac4178406d" alt="React" width="500"> 
-<img src="https://github.com/user-attachments/assets/3daf3f6d-4248-46b3-915e-f0d4e895b1fb" alt="React" width="500"> 
+<img src="https://github.com/user-attachments/assets/8df53e98-8da1-46fe-8830-e8914b587fb6" alt="React" width="500"> 
+<img src="https://github.com/user-attachments/assets/187da3cf-ffdc-47ed-beb5-1211146bfa4f" alt="React" width="500"> 
 
 
 
