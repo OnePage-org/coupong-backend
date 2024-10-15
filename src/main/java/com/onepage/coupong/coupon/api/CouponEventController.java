@@ -84,8 +84,8 @@ public class CouponEventController {
             @RequestBody UserRequestDto userRequestDto, @RequestHeader("Authorization") String token
     ) {
         /* 헤더로부터 받아온 JWT 토큰 정보로부터 유저 ID 반환 후 userRequestDto에 입력 */
-        Long userId = authService.tokenDecryptionId(token);
-        userRequestDto.setId(userId);
+        //Long userId = authService.tokenDecryptionId(token);
+        //userRequestDto.setId(userId);
 
         try {
             boolean publishSuccess = couponEventService.addUserToQueue(userRequestDto);
