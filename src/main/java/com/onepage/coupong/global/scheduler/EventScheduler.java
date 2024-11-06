@@ -6,7 +6,7 @@ package com.onepage.coupong.global.scheduler;
 //@EnableScheduling
 //public class EventScheduler {      //v1 스케줄러
 //
-//    private final CouponEventService couponEventService;
+//    private final CouponEventServiceImpl couponEventService;
 //
 //    // RDB 쿠폰이벤트 테이블에서 이벤트 정보 들고와서 동적으로 스케줄 세팅하기
 //    @Scheduled(fixedRate = 1000) // 1초마다 실행
@@ -34,7 +34,7 @@ package com.onepage.coupong.global.scheduler;
 @Component
 @RequiredArgsConstructor
 public class EventScheduler {
-    private final CouponEventService couponEventService;
+    private final CouponEventServiceImpl couponEventService;
     private final TaskScheduler taskScheduler;
     private ScheduledFuture<?> scheduledFuture;
 
