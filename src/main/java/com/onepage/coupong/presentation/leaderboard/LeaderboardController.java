@@ -1,7 +1,8 @@
-package com.onepage.coupong.leaderboard.api;
+package com.onepage.coupong.presentation.leaderboard;
 
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
-import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
+import com.onepage.coupong.business.leaderboard.LeaderboardQueueService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -12,14 +13,10 @@ import java.util.*;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class LeaderboardController {
 
-    private final LeaderBoardQueueService leaderBoardQueueService;
-
-    @Autowired
-    public LeaderboardController(LeaderBoardQueueService leaderBoardQueueService) {
-        this.leaderBoardQueueService = leaderBoardQueueService;
-    }
+    private final LeaderboardQueueService leaderBoardQueueService;
 
     // 리더보드 데이터 출력 (초기 출력)
     @GetMapping("/sse/leaderboard")

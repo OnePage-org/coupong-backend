@@ -1,6 +1,6 @@
-package com.onepage.coupong.leaderboard.repository;
+package com.onepage.coupong.persistence.leaderboard;
 
-import com.onepage.coupong.leaderboard.domain.CouponWinningLog;
+import com.onepage.coupong.jpa.leaderboard.CouponWinningLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

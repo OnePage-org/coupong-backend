@@ -1,6 +1,6 @@
-package com.onepage.coupong.leaderboard.api;
+package com.onepage.coupong.presentation.leaderboard;
 
-import com.onepage.coupong.leaderboard.EmitterManager;
+import com.onepage.coupong.implementation.leaderboard.EmitterManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
