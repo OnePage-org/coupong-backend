@@ -1,9 +1,9 @@
 package com.onepage.coupong.infrastructure.mail;
 
-import com.onepage.coupong.user.dto.request.CheckEmailCertificationRequestDto;
-import com.onepage.coupong.user.dto.request.EmailCertificationRequestDto;
-import com.onepage.coupong.user.dto.response.CheckEmailCertificationResponseDto;
-import com.onepage.coupong.user.dto.response.EmailCertificationResponseDto;
+import com.onepage.coupong.business.user.dto.request.CheckEmailCertificationRequestDto;
+import com.onepage.coupong.business.user.dto.request.EmailCertificationRequestDto;
+import com.onepage.coupong.business.user.dto.response.CheckEmailCertificationResponseDto;
+import com.onepage.coupong.business.user.dto.response.EmailCertificationResponseDto;
 import org.springframework.http.ResponseEntity;
 
 public interface MailService {

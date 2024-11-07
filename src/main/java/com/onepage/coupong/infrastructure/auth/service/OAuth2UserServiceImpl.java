@@ -1,9 +1,9 @@
 package com.onepage.coupong.infrastructure.auth.service;
 
-import com.onepage.coupong.user.domain.enums.Logintype;
+import com.onepage.coupong.jpa.user.enums.Logintype;
 import com.onepage.coupong.infrastructure.auth.domain.CustomOAuth2User;
-import com.onepage.coupong.user.domain.User;
-import com.onepage.coupong.user.repository.UserRepository;
+import com.onepage.coupong.jpa.user.User;
+import com.onepage.coupong.persistence.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

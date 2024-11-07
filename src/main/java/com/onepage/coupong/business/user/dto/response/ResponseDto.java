@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.dto.response;
+package com.onepage.coupong.business.user.dto.response;
 
 import com.onepage.coupong.global.response.ResponseCode;
 import com.onepage.coupong.global.response.ResponseMessage;

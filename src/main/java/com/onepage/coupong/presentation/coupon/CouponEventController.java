@@ -5,7 +5,7 @@ import com.onepage.coupong.business.coupon.dto.UserRequestDto;
 import com.onepage.coupong.jpa.coupon.EventManager;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
 import com.onepage.coupong.implementation.coupon.EventException;
-import com.onepage.coupong.user.service.AuthService;
+import com.onepage.coupong.presentation.user.UserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class CouponEventController {
 
     private final CouponEventUseCase couponEventUseCase;
-    private final AuthService authService;
+    private final UserUseCase userUseCase;
 
     @GetMapping("/list")
     public ResponseEntity<List<CouponEventListDto>> getCouponEventList() {

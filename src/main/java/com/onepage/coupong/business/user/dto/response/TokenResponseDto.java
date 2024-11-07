@@ -1,7 +1,7 @@
-package com.onepage.coupong.user.dto.response;
+package com.onepage.coupong.business.user.dto.response;
 
-import com.onepage.coupong.user.domain.enums.Logintype;
-import com.onepage.coupong.user.domain.enums.UserRole;
+import com.onepage.coupong.jpa.user.enums.Logintype;
+import com.onepage.coupong.jpa.user.enums.UserRole;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

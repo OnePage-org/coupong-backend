@@ -1,8 +1,8 @@
 package com.onepage.coupong.infrastructure.auth.filter;
 
-import com.onepage.coupong.user.domain.User;
+import com.onepage.coupong.jpa.user.User;
 import com.onepage.coupong.infrastructure.auth.provider.JwtProvider;
-import com.onepage.coupong.user.repository.UserRepository;
+import com.onepage.coupong.persistence.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

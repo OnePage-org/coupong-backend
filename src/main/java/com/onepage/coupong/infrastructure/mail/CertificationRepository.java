@@ -1,6 +1,6 @@
 package com.onepage.coupong.infrastructure.mail;
 
-import com.onepage.coupong.user.domain.Certification;
+import com.onepage.coupong.jpa.user.Certification;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
