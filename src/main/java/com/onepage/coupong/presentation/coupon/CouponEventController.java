@@ -1,6 +1,5 @@
 package com.onepage.coupong.presentation.coupon;
 
-import com.onepage.coupong.business.coupon.CouponEventService;
 import com.onepage.coupong.business.coupon.dto.CouponEventListDto;
 import com.onepage.coupong.business.coupon.dto.UserRequestDto;
 import com.onepage.coupong.jpa.coupon.EventManager;
@@ -23,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CouponEventController {
 
-    private final CouponEventService couponEventService;
+    private final CouponEventUseCase couponEventUseCase;
     private final AuthService authService;
 
     @GetMapping("/list")
@@ -31,7 +30,7 @@ public class CouponEventController {
         log.info("이벤트 목록 요청 들어옴");
 
         // 현재 초기화된 모든 이벤트의 카테고리별 EventManager 가져오기
-        Map<CouponCategory, EventManager> activeEvents = couponEventService.getAllInitializedEvents();
+        Map<CouponCategory, EventManager> activeEvents = couponEventUseCase.getAllInitializedEvents();
 
         if (activeEvents.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // 현재 초기화된 이벤트가 없을 경우
@@ -73,7 +72,7 @@ public class CouponEventController {
         //userRequestDto.setId(userId);
 
         try {
-            boolean publishSuccess = couponEventService.addUserToQueue(userRequestDto);
+            boolean publishSuccess = couponEventUseCase.addUserToQueue(userRequestDto);
             if (publishSuccess) {
 
                 log.info("대기열 등록 성공  요청 정보 ->"+ userRequestDto.getUsername() +" "+userRequestDto.getCouponCategory()+" "+userRequestDto.getAttemptAt());

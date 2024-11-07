@@ -11,6 +11,7 @@ import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
 import com.onepage.coupong.persistence.coupon.CouponEventRepository;
 import com.onepage.coupong.global.scheduler.CouponEventScheduler;
 import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
+import com.onepage.coupong.presentation.coupon.CouponEventUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -30,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CouponEventServiceImpl implements CouponEventService {
+public class CouponEventServiceImpl implements CouponEventUseCase {
     private final IssuanceQueueService issuanceQueueService;
     private final LeaderBoardQueueService leaderBoardQueueService;
     private final CouponEventRepository couponEventRepository;
