@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("api/v1/auth/**", "/oauth2/**").permitAll()
+                        .requestMatchers("api/v1/auth/**", "/oauth2/**", "/actuator/**").permitAll()
                         .requestMatchers("/").hasRole("USER")
                         .requestMatchers("/admin").hasRole("ADMIN")
                         /* 이메일을 보내기 위한 API 허용 */
