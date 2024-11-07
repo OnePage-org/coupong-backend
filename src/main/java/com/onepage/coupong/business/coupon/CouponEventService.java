@@ -5,12 +5,12 @@ import com.onepage.coupong.jpa.coupon.Coupon;
 import com.onepage.coupong.jpa.coupon.CouponEvent;
 import com.onepage.coupong.implementation.coupon.EventException;
 import com.onepage.coupong.implementation.coupon.enums.ErrorCode;
-import com.onepage.coupong.leaderboard.domain.CouponWinningLog;
+import com.onepage.coupong.jpa.leaderboard.CouponWinningLog;
 import com.onepage.coupong.jpa.coupon.EventManager;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
 import com.onepage.coupong.persistence.coupon.CouponEventRepository;
 import com.onepage.coupong.global.scheduler.CouponEventScheduler;
-import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
+import com.onepage.coupong.business.leaderboard.LeaderboardQueueService;
 import com.onepage.coupong.presentation.coupon.CouponEventUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class CouponEventService implements CouponEventUseCase {
     private final IssuanceQueueService issuanceQueueService;
-    private final LeaderBoardQueueService leaderBoardQueueService;
+    private final LeaderboardQueueService leaderBoardQueueService;
     private final CouponEventRepository couponEventRepository;
     // 카테고리별로 이벤트 매니저 관리
     private Map<CouponCategory, EventManager> eventManagers = new ConcurrentHashMap<>();

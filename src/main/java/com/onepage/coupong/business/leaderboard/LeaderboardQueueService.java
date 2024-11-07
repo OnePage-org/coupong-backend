@@ -1,8 +1,9 @@
-package com.onepage.coupong.leaderboard.service;
+package com.onepage.coupong.business.leaderboard;
 
 import com.onepage.coupong.infrastructure.redis.RedisZSetService;
+import com.onepage.coupong.presentation.leaderboard.LeaderboardUseCase;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -11,17 +12,12 @@ import java.util.Set;
 
 @Slf4j
 @Service
-public class LeaderBoardQueueService implements RedisZSetService {
+@RequiredArgsConstructor
+public class LeaderboardQueueService implements RedisZSetService {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final LeaderboardService leaderboardService;
+    private final LeaderboardUseCase leaderboardUsecase;
     private final String queueKeySeparator = "LEADERBOARD QUEUE:"; // 큐 키 구분자
-
-    @Autowired
-    public LeaderBoardQueueService(RedisTemplate<String, Object> redisTemplate, LeaderboardService leaderboardService) {
-        this.redisTemplate = redisTemplate;
-        this.leaderboardService = leaderboardService;
-    }
 
     // 리더보드에 당첨자 추가
     @Override
@@ -64,7 +60,7 @@ public class LeaderBoardQueueService implements RedisZSetService {
     // 리더보드 큐와 동기화
     private void syncLeaderboardWithQueue(String couponCategory, Double attemptAt) {
         Set<Object> topWinners = getZSet(couponCategory);
-        leaderboardService.updateLeaderboard(couponCategory, topWinners, attemptAt); // 리더보드 업데이트
+        leaderboardUsecase.updateLeaderboard(couponCategory, topWinners, attemptAt); // 리더보드 업데이트
     }
 
     // 리더보드 초기화
