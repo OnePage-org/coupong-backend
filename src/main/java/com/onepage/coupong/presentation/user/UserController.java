@@ -1,13 +1,12 @@
-package com.onepage.coupong.user.api;
+package com.onepage.coupong.presentation.user;
 
-import com.onepage.coupong.user.dto.request.IdCheckRequestDto;
-import com.onepage.coupong.user.dto.request.SignInRequestDto;
-import com.onepage.coupong.user.dto.request.SignUpRequestDto;
-import com.onepage.coupong.user.dto.response.IdCheckResponseDto;
-import com.onepage.coupong.user.dto.response.SignInResponseDto;
-import com.onepage.coupong.user.dto.response.SignUpResponseDto;
-import com.onepage.coupong.user.dto.response.TokenResponseDto;
-import com.onepage.coupong.user.service.AuthService;
+import com.onepage.coupong.business.user.dto.request.IdCheckRequestDto;
+import com.onepage.coupong.business.user.dto.request.SignInRequestDto;
+import com.onepage.coupong.business.user.dto.request.SignUpRequestDto;
+import com.onepage.coupong.business.user.dto.response.IdCheckResponseDto;
+import com.onepage.coupong.business.user.dto.response.SignInResponseDto;
+import com.onepage.coupong.business.user.dto.response.SignUpResponseDto;
+import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class UserController {
 
-    private final AuthService authService;
-
-    /* @@@@@@@@@@@@@@@ ResponseEntity에 대한 설명 필요 @@@@@@@@@@@@@@@@@@@ */
+    private final UserUseCase userUseCase;
 
     /* ID 중복 검사 요청 API */
     @PostMapping("/idCheck")
@@ -31,8 +28,7 @@ public class AuthController {
             * @Email : 인자로 들어온 값을 Email 형식을 갖춰야 한다. */
             @RequestBody @Valid IdCheckRequestDto requestBody
     ) {
-        ResponseEntity<? super IdCheckResponseDto> response = authService.idCheck(requestBody);
-        return response;
+        return userUseCase.idCheck(requestBody);
     }
 
     /* 회원가입 요청 API */
@@ -40,8 +36,7 @@ public class AuthController {
     public ResponseEntity<? super SignUpResponseDto> signUp(
             @RequestBody @Valid SignUpRequestDto requestBody
     ) {
-        ResponseEntity<? super SignUpResponseDto> response = authService.signUp(requestBody);
-        return response;
+        return userUseCase.signUp(requestBody);
     }
 
     /* 로그인 요청 API */
@@ -49,8 +44,7 @@ public class AuthController {
     public ResponseEntity<? super SignInResponseDto> signIn(
             @RequestBody @Valid SignInRequestDto requestBody
     ) {
-        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
-        return response;
+        return userUseCase.signIn(requestBody);
     }
 
     /* 요청 헤더로부터 받은 Authorization 복호화 후 유저 정보 반환 API */
@@ -58,7 +52,6 @@ public class AuthController {
     public ResponseEntity<? super TokenResponseDto> tokenDecryption(
             @RequestHeader("Authorization") String token
     ) {
-        ResponseEntity<? super TokenResponseDto> response = authService.tokenDecryption(token);
-        return response;
+        return userUseCase.tokenDecryption(token);
     }
 }

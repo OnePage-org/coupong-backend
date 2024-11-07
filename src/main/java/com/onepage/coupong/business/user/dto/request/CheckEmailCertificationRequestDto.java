@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.dto.request;
+package com.onepage.coupong.business.user.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

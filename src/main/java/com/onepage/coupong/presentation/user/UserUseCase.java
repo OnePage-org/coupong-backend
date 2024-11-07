@@ -1,15 +1,15 @@
-package com.onepage.coupong.user.service;
+package com.onepage.coupong.presentation.user;
 
-import com.onepage.coupong.user.dto.request.IdCheckRequestDto;
-import com.onepage.coupong.user.dto.request.SignInRequestDto;
-import com.onepage.coupong.user.dto.request.SignUpRequestDto;
-import com.onepage.coupong.user.dto.response.IdCheckResponseDto;
-import com.onepage.coupong.user.dto.response.SignInResponseDto;
-import com.onepage.coupong.user.dto.response.SignUpResponseDto;
-import com.onepage.coupong.user.dto.response.TokenResponseDto;
+import com.onepage.coupong.business.user.dto.request.IdCheckRequestDto;
+import com.onepage.coupong.business.user.dto.request.SignInRequestDto;
+import com.onepage.coupong.business.user.dto.request.SignUpRequestDto;
+import com.onepage.coupong.business.user.dto.response.IdCheckResponseDto;
+import com.onepage.coupong.business.user.dto.response.SignInResponseDto;
+import com.onepage.coupong.business.user.dto.response.SignUpResponseDto;
+import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
 import org.springframework.http.ResponseEntity;
 
-public interface AuthService {
+public interface UserUseCase {
 
     /* ? super -> 상속받은 부모(ResponseDto)까지 모두 가져온다. */
 
