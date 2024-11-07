@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CouponEventServiceImpl implements CouponEventUseCase {
+public class CouponEventService implements CouponEventUseCase {
     private final IssuanceQueueService issuanceQueueService;
     private final LeaderBoardQueueService leaderBoardQueueService;
     private final CouponEventRepository couponEventRepository;

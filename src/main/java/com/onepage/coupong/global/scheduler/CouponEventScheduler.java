@@ -2,7 +2,7 @@ package com.onepage.coupong.global.scheduler;
 
 import com.onepage.coupong.jpa.coupon.CouponEvent;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
-import com.onepage.coupong.business.coupon.CouponEventServiceImpl;
+import com.onepage.coupong.business.coupon.CouponEventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -25,7 +25,7 @@ public class CouponEventScheduler {
     // 각 카테고리별 스케줄 관리
     private Map<CouponCategory, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
-    public void scheduleEvent(CouponEvent event, CouponEventServiceImpl couponEventService) {
+    public void scheduleEvent(CouponEvent event, CouponEventService couponEventService) {
         log.info(event.getCategory() + " " + event.getCoupon_publish_nums());
 
         // 이벤트 시작 시간과 종료 시간을 계산

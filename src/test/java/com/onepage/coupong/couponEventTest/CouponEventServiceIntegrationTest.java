@@ -2,7 +2,7 @@ package com.onepage.coupong.couponEventTest;
 
 import com.onepage.coupong.business.coupon.dto.UserRequestDto;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
-import com.onepage.coupong.business.coupon.CouponEventServiceImpl;
+import com.onepage.coupong.business.coupon.CouponEventService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,7 @@ public class CouponEventServiceIntegrationTest {
     long userId = 1;
 
     @Autowired
-    CouponEventServiceImpl couponEventService;
+    CouponEventService couponEventService;
 
 /*    @Test
     void 선착순_100명에게_30개_쿠폰_발행() throws InterruptedException {
