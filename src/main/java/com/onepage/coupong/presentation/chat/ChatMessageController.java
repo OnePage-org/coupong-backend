@@ -6,6 +6,8 @@ import com.onepage.coupong.business.chat.dto.FilteringRequestDto;
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,6 +35,8 @@ public class ChatMessageController {
         int userCnt = users.size();
         template.convertAndSend("/sub/total", users);
         template.convertAndSend("/sub/users", userCnt);
+//        System.out.println(users);
+//        System.out.println(userCnt);
     }
     @MessageMapping(value = "/enter") // 입장 메시지
     public void userEnter(ChatMessageDto message) {
@@ -81,18 +85,31 @@ public class ChatMessageController {
 
     @MessageMapping(value = "/exit") // 퇴장 메시지
     public void userExit(ChatMessageDto message) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH);
         String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
 
         users.remove(message.getWriter());
 
         message.setWriter(message.getWriter());
-        message.setMessage(message.getWriter()+"님이 퇴장하였습니다.");
+        message.setMessage(message.getWriter() + "님이 퇴장하였습니다.");
         message.setCreatedDate(formattedDate);
 
         ChatMessageDto chatMessageDTO = new ChatMessageDto("퇴장", message.getMessage(), "");
         template.convertAndSend("/sub/chat", chatMessageDTO);
-        updateUserCnt(); // 참여자 갱신
+        template.convertAndSend("/sub/exit/" + message.getWriter(), "퇴장 ");
 
+        updateUserCnt();
+    }
+    public void clearUserList() {
+        users.clear(); // 사용자 목록 초기화
+        updateUserCnt();
+    }
+
+    @EventListener(ApplicationReadyEvent.class) //Spring Boot 애플리케이션이 모든 초기화 작업을 마친 후에 발생하는 이벤트
+    public void onApplicationStart() {
+        clearUserList();  // 서버 시작 시 사용자 목록 초기화
+
+        // WebSocket 강제 종료 로직 추가
+        template.convertAndSend("/sub/exit", "서버 재시작");
     }
 }
