@@ -1,9 +1,9 @@
-package com.onepage.coupong.chat.api;
+package com.onepage.coupong.presentation.chat;
 
 
-import com.onepage.coupong.chat.service.ChatService;
-import com.onepage.coupong.chat.dto.FilteringRequestDTO;
-import com.onepage.coupong.chat.dto.ChatMessageDTO;
+import com.onepage.coupong.business.chat.ChatService;
+import com.onepage.coupong.business.chat.dto.FilteringRequestDto;
+import com.onepage.coupong.business.chat.dto.ChatMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class ChatMessageController {
         template.convertAndSend("/sub/users", userCnt);
     }
     @MessageMapping(value = "/enter") // 입장 메시지
-    public void userEnter(ChatMessageDTO message) {
+    public void userEnter(ChatMessageDto message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
         String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
 
@@ -44,14 +44,14 @@ public class ChatMessageController {
 
         users.put(message.getWriter(), Boolean.TRUE);
 
-        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("입장", message.getMessage(), "");
+        ChatMessageDto chatMessageDTO = new ChatMessageDto("입장", message.getMessage(), "");
         template.convertAndSend("/sub/chat", chatMessageDTO);
 
         updateUserCnt(); // 참여자 갱신
     }
 
     @MessageMapping(value = "/messages") // 메시지 전송
-    public void sendMessage(ChatMessageDTO message) {
+    public void sendMessage(ChatMessageDto message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
         String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
 
@@ -61,7 +61,7 @@ public class ChatMessageController {
     }
 
     @PostMapping("/api/v1/filtering")
-    public ResponseEntity<?> filterMessage(@RequestBody FilteringRequestDTO filteringRequestDTO) throws Exception {
+    public ResponseEntity<?> filterMessage(@RequestBody FilteringRequestDto filteringRequestDTO) throws Exception {
 
         String message = filteringRequestDTO.getMessage();
         
@@ -80,7 +80,7 @@ public class ChatMessageController {
     }
 
     @MessageMapping(value = "/exit") // 퇴장 메시지
-    public void userExit(ChatMessageDTO message) {
+    public void userExit(ChatMessageDto message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
         String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
 
@@ -90,7 +90,7 @@ public class ChatMessageController {
         message.setMessage(message.getWriter()+"님이 퇴장하였습니다.");
         message.setCreatedDate(formattedDate);
 
-        ChatMessageDTO chatMessageDTO = new ChatMessageDTO("퇴장", message.getMessage(), "");
+        ChatMessageDto chatMessageDTO = new ChatMessageDto("퇴장", message.getMessage(), "");
         template.convertAndSend("/sub/chat", chatMessageDTO);
         updateUserCnt(); // 참여자 갱신
 
