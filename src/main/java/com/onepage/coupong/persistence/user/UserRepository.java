@@ -1,6 +1,6 @@
-package com.onepage.coupong.user.repository;
+package com.onepage.coupong.persistence.user;
 
-import com.onepage.coupong.user.domain.User;
+import com.onepage.coupong.jpa.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package com.onepage.coupong.leaderboard.domain;
 
 import com.onepage.coupong.jpa.coupon.Coupon;
-import com.onepage.coupong.user.domain.User;
+import com.onepage.coupong.jpa.user.User;
 import com.onepage.coupong.leaderboard.domain.enums.WinningCouponState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

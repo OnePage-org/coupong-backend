@@ -1,21 +1,21 @@
-package com.onepage.coupong.user.service.implement;
+package com.onepage.coupong.business.user;
 
-import com.onepage.coupong.user.domain.enums.Logintype;
-import com.onepage.coupong.user.domain.enums.UserRole;
-import com.onepage.coupong.user.dto.request.IdCheckRequestDto;
-import com.onepage.coupong.user.dto.request.SignInRequestDto;
-import com.onepage.coupong.user.dto.request.SignUpRequestDto;
-import com.onepage.coupong.user.dto.response.ResponseDto;
-import com.onepage.coupong.user.dto.response.IdCheckResponseDto;
-import com.onepage.coupong.user.dto.response.SignInResponseDto;
-import com.onepage.coupong.user.dto.response.SignUpResponseDto;
-import com.onepage.coupong.user.dto.response.TokenResponseDto;
-import com.onepage.coupong.user.domain.Certification;
-import com.onepage.coupong.user.domain.User;
+import com.onepage.coupong.jpa.user.enums.Logintype;
+import com.onepage.coupong.jpa.user.enums.UserRole;
+import com.onepage.coupong.business.user.dto.request.IdCheckRequestDto;
+import com.onepage.coupong.business.user.dto.request.SignInRequestDto;
+import com.onepage.coupong.business.user.dto.request.SignUpRequestDto;
+import com.onepage.coupong.business.user.dto.response.ResponseDto;
+import com.onepage.coupong.business.user.dto.response.IdCheckResponseDto;
+import com.onepage.coupong.business.user.dto.response.SignInResponseDto;
+import com.onepage.coupong.business.user.dto.response.SignUpResponseDto;
+import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
+import com.onepage.coupong.jpa.user.Certification;
+import com.onepage.coupong.jpa.user.User;
 import com.onepage.coupong.infrastructure.auth.provider.JwtProvider;
 import com.onepage.coupong.infrastructure.mail.CertificationRepository;
-import com.onepage.coupong.user.repository.UserRepository;
-import com.onepage.coupong.user.service.AuthService;
+import com.onepage.coupong.persistence.user.UserRepository;
+import com.onepage.coupong.presentation.user.UserUseCase;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class UserService implements UserUseCase {
 
     private final UserRepository userRepository;
     private final CertificationRepository certificationRepository;

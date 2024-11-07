@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.domain.enums;
+package com.onepage.coupong.jpa.user.enums;
 
 public enum Logintype {
     WEB, NAVER, KAKAO

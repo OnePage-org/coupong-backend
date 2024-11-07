@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.domain;
+package com.onepage.coupong.jpa.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,8 +1,8 @@
-package com.onepage.coupong.user.domain;
+package com.onepage.coupong.jpa.user;
 
-import com.onepage.coupong.user.domain.enums.Logintype;
-import com.onepage.coupong.user.domain.enums.UserRole;
-import com.onepage.coupong.user.dto.request.SignUpRequestDto;
+import com.onepage.coupong.jpa.user.enums.Logintype;
+import com.onepage.coupong.jpa.user.enums.UserRole;
+import com.onepage.coupong.business.user.dto.request.SignUpRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

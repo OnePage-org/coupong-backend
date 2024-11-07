@@ -1,4 +1,4 @@
-package com.onepage.coupong.user.dto.request;
+package com.onepage.coupong.business.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -8,8 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class IdCheckRequestDto {
+public class SignInRequestDto {
 
     @NotBlank
     private String username;
+
+    @NotBlank
+    private String password;
+
 }
