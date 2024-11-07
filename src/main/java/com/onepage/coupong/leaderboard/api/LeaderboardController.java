@@ -1,6 +1,6 @@
 package com.onepage.coupong.leaderboard.api;
 
-import com.onepage.coupong.coupon.domain.enums.CouponCategory;
+import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
 import com.onepage.coupong.leaderboard.service.LeaderBoardQueueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

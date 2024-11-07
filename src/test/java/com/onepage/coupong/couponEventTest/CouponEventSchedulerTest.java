@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 //    private CouponEventScheduler couponEventScheduler;
 //
 //    @MockBean
-//    private CouponEventService couponEventService;
+//    private CouponEventServiceImpl couponEventService;
 //
 //    @MockBean
 //    private CouponEventRepository couponEventRepository;
