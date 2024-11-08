@@ -1,4 +1,4 @@
-package com.onepage.coupong.chat.service;
+package com.onepage.coupong.business.chat;
 
 import com.onepage.coupong.global.banwordFilter.PatternFiltering;
 import com.onepage.coupong.global.banwordFilter.WordListLoader;

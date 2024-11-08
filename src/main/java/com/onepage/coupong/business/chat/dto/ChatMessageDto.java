@@ -1,10 +1,10 @@
-package com.onepage.coupong.chat.dto;
+package com.onepage.coupong.business.chat.dto;
 
 import lombok.*;
 
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-public class ChatMessageDTO {
+public class ChatMessageDto {
     private String writer;
     private String message;
     private String createdDate;
