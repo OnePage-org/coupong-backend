@@ -2,9 +2,9 @@ package com.onepage.coupong.presentation.coupon;
 
 import com.onepage.coupong.business.coupon.dto.CouponEventListDto;
 import com.onepage.coupong.business.coupon.dto.UserRequestDto;
-import com.onepage.coupong.jpa.coupon.EventManager;
-import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
+import com.onepage.coupong.global.presentation.CommonResponseEntity;
 import com.onepage.coupong.implementation.coupon.EventException;
+import com.onepage.coupong.implementation.coupon.enums.EventExceptionType;
 import com.onepage.coupong.presentation.user.UserUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import static com.onepage.coupong.global.presentation.CommonResponseEntity.error;
+import static com.onepage.coupong.global.presentation.CommonResponseEntity.success;
+
 import java.util.List;
-import java.util.Map;
+
+
 
 @Slf4j
 @RestController
@@ -26,40 +29,10 @@ public class CouponEventController {
     private final UserUseCase userUseCase;
 
     @GetMapping("/list")
-    public ResponseEntity<List<CouponEventListDto>> getCouponEventList() {
+    public CommonResponseEntity<List<CouponEventListDto>> getCouponEventList() {
         log.info("이벤트 목록 요청 들어옴");
 
-        // 현재 초기화된 모든 이벤트의 카테고리별 EventManager 가져오기
-        Map<CouponCategory, EventManager> activeEvents = couponEventUseCase.getAllInitializedEvents();
-
-        if (activeEvents.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);  // 현재 초기화된 이벤트가 없을 경우
-        }
-
-        // 각 이벤트 정보를 CouponEventListDto로 변환하여 리스트에 추가
-        List<CouponEventListDto> eventListDto = new ArrayList<>();
-        for (Map.Entry<CouponCategory, EventManager> entry : activeEvents.entrySet()) {
-            EventManager eventManager = entry.getValue();
-
-            /*// 대기열에 데이터가 남아 있으면 해당 카테고리 이벤트는 제외 (이벤트 도중에는 에러를 일으키는 코드)
-            if (!couponEventService.getIssuanceQueue(String.valueOf(eventManager.getCouponCategory())).isEmpty() ||
-                    !couponEventService.getLeaderBoardQueue(String.valueOf(eventManager.getCouponCategory())).isEmpty()) {
-                log.warn("이벤트 진행 중: 카테고리 = {}", eventManager.getCouponCategory());
-                continue;  // 대기열에 데이터가 남아 있으면 건너뜀
-            }*/
-
-            // 이벤트 정보 DTO 변환
-            CouponEventListDto eventDto = CouponEventListDto.builder()
-                    .eventName(eventManager.getCouponName())
-                    .eventCategory(String.valueOf(eventManager.getCouponCategory()))
-                    .startTime(eventManager.getStartTime())
-                    .build();
-
-            eventListDto.add(eventDto);
-        }
-
-        // 이벤트 목록 반환
-        return new ResponseEntity<>(eventListDto, HttpStatus.OK);
+        return success(couponEventUseCase.getCouponEventList());
     }
 
 
@@ -88,7 +61,7 @@ public class CouponEventController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이벤트 오류: " + e.getMessage());
         } catch (EventException e) {
             log.info("쿠폰 이벤트 아직 시작 안함 -> "+userRequestDto);
-            return ResponseEntity.status(e.getErrorCode().getStatus()).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이벤트 오류: " + e.getMessage());
         }
     }
 }
