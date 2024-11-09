@@ -129,7 +129,7 @@ public class CouponEventService {
         return issuanceQueueService.addToZSet(
                 String.valueOf(userRequestDto.getCouponCategory()),
                 String.valueOf(userRequestDto.getUsername()),
-                userRequestDto.getAttemptAt());
+                System.currentTimeMillis());
     }
 
     public void publishCoupons(CouponCategory category, int scheduleCount) {
