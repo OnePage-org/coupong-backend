@@ -1,4 +1,4 @@
-package com.onepage.coupong.implementation.coupon;
+package com.onepage.coupong.implementation.coupon.manager;
 
 import com.onepage.coupong.jpa.coupon.Coupon;
 import com.onepage.coupong.jpa.coupon.CouponEvent;

@@ -46,7 +46,6 @@ public class CouponEventScheduler {
         // 이벤트 시작 시점에 스케줄링
         ScheduledFuture<?> scheduledTask = taskScheduler.schedule(() -> {
             log.info("이벤트 시작: 카테고리 = {}, 쿠폰 수 = {}", event.getCategory(), event.getCoupon_publish_nums());
-            couponEventService.startEvent(event);
 
             // 이벤트 종료 전까지 일정 간격으로 쿠폰 발행
             ScheduledFuture<?> publishTask = taskScheduler.scheduleWithFixedDelay(() -> {

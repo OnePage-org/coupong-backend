@@ -1,5 +1,7 @@
-package com.onepage.coupong.implementation.coupon;
+package com.onepage.coupong.implementation.coupon.manager;
 
+import com.onepage.coupong.implementation.coupon.EventException;
+import com.onepage.coupong.implementation.coupon.enums.EventExceptionType;
 import com.onepage.coupong.infrastructure.redis.RedisZSetUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +21,11 @@ public class IssuanceQueueManager implements RedisZSetUseCase {
 
     //유저 요청 큐에 추가
     @Override
-    public boolean addToZSet(String couponCategory, String userId, double attemptAt) {
+    public void addToZSet(String couponCategory, String userId, double attemptAt) {
         try {
             redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
-            return true;
         } catch (Exception e) {
-            return false;
+            throw new EventException(EventExceptionType.EVENT_ATTEMPT_FAILED);
         }
     }
 

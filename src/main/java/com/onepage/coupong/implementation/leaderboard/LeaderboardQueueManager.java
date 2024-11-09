@@ -1,5 +1,7 @@
 package com.onepage.coupong.implementation.leaderboard;
 
+import com.onepage.coupong.implementation.coupon.EventException;
+import com.onepage.coupong.implementation.coupon.enums.EventExceptionType;
 import com.onepage.coupong.infrastructure.redis.RedisZSetUseCase;
 import com.onepage.coupong.presentation.leaderboard.LeaderboardUseCase;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class LeaderboardQueueManager implements RedisZSetUseCase {
 
     // 리더보드에 당첨자 추가
     @Override
-    public boolean addToZSet(String couponCategory, String userId, double attemptAt) {
+    public void addToZSet(String couponCategory, String userId, double attemptAt) {
         log.info("Adding user to leaderboard ZSet: {}", userId);
 
         try {
@@ -29,10 +31,9 @@ public class LeaderboardQueueManager implements RedisZSetUseCase {
             redisTemplate.opsForZSet().add(queueKeySeparator + couponCategory, userId, attemptAt);
             syncLeaderboardWithQueue(couponCategory, attemptAt); // 리더보드 동기화
 
-            return true; // 추가 성공
         } catch (Exception e) {
             log.error("Error while adding to ZSet: ", e);
-            return false; // 예외 발생 시 false 반환
+            throw new EventException(EventExceptionType.EVENT_REGISTER_LEADERBOARD_FAILED);
         }
     }
 

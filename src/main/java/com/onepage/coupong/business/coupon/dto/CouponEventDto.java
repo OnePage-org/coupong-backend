@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Builder
 @Getter
-public class CouponEventListDto {
+public class CouponEventDto {
     private String eventName;
     private String eventCategory;
     private LocalDateTime startTime;
