@@ -59,7 +59,7 @@ public class CouponEventService implements CouponEventUseCase {
         issuanceQueueManager.addToZSet(
                 String.valueOf(category),
                 String.valueOf(eventAttemptDto.getUsername()),
-                eventAttemptDto.getAttemptAt());
+                System.currentTimeMillis());
     }
 
     public void publishCoupons(CouponCategory category, int scheduleCount) {
