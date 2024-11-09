@@ -1,6 +1,5 @@
 package com.onepage.coupong.presentation.chat;
 
-import com.onepage.coupong.business.chat.ChatService;
 import com.onepage.coupong.business.chat.dto.FilteringRequestDto;
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatMessageController {
 
     @Autowired
-    private ChatService chatService;
+    private ChatUseCase chatUseCase;
 
     private final SimpMessagingTemplate template;
     private final Map<String, Boolean> users = new ConcurrentHashMap<>(); // 참여자 Map -> 동시성을 위한 ConcurrentHashMap사용
@@ -77,7 +76,7 @@ public class ChatMessageController {
             return ResponseEntity.status(413).body("200자 초과 문자열 감지");
         }
 
-        if(chatService.filteringChatMessage(message)) {
+        if(chatUseCase.filteringChatMessage(message)) {
             return ResponseEntity.status(200).body("fail"); //욕설 필터에 걸림
         } else {
             return ResponseEntity.status(200).body("success"); // 정상

@@ -1,10 +1,12 @@
 package com.onepage.coupong.presentation.coupon;
 
+import com.onepage.coupong.business.coupon.dto.CouponEventListDto;
 import com.onepage.coupong.jpa.coupon.CouponEvent;
 import com.onepage.coupong.jpa.coupon.EventManager;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
 import com.onepage.coupong.business.coupon.dto.UserRequestDto;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,4 +32,6 @@ public interface CouponEventUseCase {
     Map<CouponCategory, EventManager> getAllInitializedEvents();
 
     void startEvent(CouponEvent event);
+
+    List<CouponEventListDto> getCouponEventList();
 }

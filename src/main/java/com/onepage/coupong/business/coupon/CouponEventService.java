@@ -1,10 +1,13 @@
 package com.onepage.coupong.business.coupon;
 
+import com.onepage.coupong.business.coupon.dto.CouponEventListDto;
 import com.onepage.coupong.business.coupon.dto.UserRequestDto;
+import com.onepage.coupong.global.exception.CustomRuntimeException;
+import com.onepage.coupong.global.exception.NotFoundException;
+import com.onepage.coupong.implementation.coupon.enums.EventExceptionType;
 import com.onepage.coupong.jpa.coupon.Coupon;
 import com.onepage.coupong.jpa.coupon.CouponEvent;
 import com.onepage.coupong.implementation.coupon.EventException;
-import com.onepage.coupong.implementation.coupon.enums.ErrorCode;
 import com.onepage.coupong.jpa.leaderboard.CouponWinningLog;
 import com.onepage.coupong.jpa.coupon.EventManager;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
@@ -15,15 +18,14 @@ import com.onepage.coupong.presentation.coupon.CouponEventUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -99,19 +101,19 @@ public class CouponEventService implements CouponEventUseCase {
         // 이벤트 시작 여부 확인
         if (!isEventStarted(category)) {
             log.info("2-2  : " + category);
-            throw new EventException("이벤트가 아직 시작되지 않았습니다: 카테고리 = " + category, ErrorCode.EVENT_NOT_START);
+            throw new EventException(EventExceptionType.EVENT_NOT_START);
         }
 
         // 이벤트 종료 여부 (발급 개수 조건 충족 및 이벤트 시간 종료)
         if (isEventEnded(category)) {
             log.info("2-3  : " + category);
-            throw new EventException("이벤트가 종료되었습니다 : 카테고리 = " + category, ErrorCode.EVENT_ENDED);
+            throw new EventException(EventExceptionType.EVENT_ENDED);
         }
 
         // 이미 발급요청한 유저 or 발급 성공한 유저인지 확인
         if (isAlreadyJoin(category, userRequestDto.getUsername())) {
             log.info("4  : " + category);
-            throw new EventException("이미 이벤트에 참여했습니다 : 카테고리 = " + category, ErrorCode.EVENT_ALREADY_JOIN);
+            throw new EventException(EventExceptionType.EVENT_ALREADY_JOIN);
         }
 
         return issuanceQueueService.addToZSet(
@@ -215,5 +217,34 @@ public class CouponEventService implements CouponEventUseCase {
 
     public void startEvent(CouponEvent event) {
         log.info("이벤트 시작: {}", event.getId());
+    }
+
+    @Override
+    public List<CouponEventListDto> getCouponEventList() {
+        // 현재 초기화된 모든 이벤트의 카테고리별 EventManager 가져오기
+        Map<CouponCategory, EventManager> activeEvents = this.getAllInitializedEvents();
+
+        if (activeEvents.isEmpty()) {
+            throw new EventException(EventExceptionType.EVENT_NOT_START);  // 현재 초기화된 이벤트가 없을 경우
+        }
+
+        // 각 이벤트 정보를 CouponEventListDto로 변환하여 리스트에 추가
+        List<CouponEventListDto> eventListDto = new ArrayList<>();
+        for (Map.Entry<CouponCategory, EventManager> entry : activeEvents.entrySet()) {
+            EventManager eventManager = entry.getValue();
+
+
+            // 이벤트 정보 DTO 변환
+            CouponEventListDto eventDto = CouponEventListDto.builder()
+                    .eventName(eventManager.getCouponName())
+                    .eventCategory(String.valueOf(eventManager.getCouponCategory()))
+                    .startTime(eventManager.getStartTime())
+                    .build();
+
+            eventListDto.add(eventDto);
+        }
+
+        // 이벤트 목록 반환
+        return eventListDto;
     }
 }

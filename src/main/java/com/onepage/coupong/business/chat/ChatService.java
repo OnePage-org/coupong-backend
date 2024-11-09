@@ -2,13 +2,14 @@ package com.onepage.coupong.business.chat;
 
 import com.onepage.coupong.global.banwordFilter.PatternFiltering;
 import com.onepage.coupong.global.banwordFilter.WordListLoader;
+import com.onepage.coupong.presentation.chat.ChatUseCase;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
 @Service
-public class ChatService {
+public class ChatService implements ChatUseCase {
 
     private final PatternFiltering patternFiltering;
 
