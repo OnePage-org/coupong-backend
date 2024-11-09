@@ -1,6 +1,6 @@
-package com.onepage.coupong.business.leaderboard;
+package com.onepage.coupong.implementation.leaderboard;
 
-import com.onepage.coupong.infrastructure.redis.RedisZSetService;
+import com.onepage.coupong.infrastructure.redis.RedisZSetUseCase;
 import com.onepage.coupong.presentation.leaderboard.LeaderboardUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LeaderboardQueueService implements RedisZSetService {
+public class LeaderboardQueueManager implements RedisZSetUseCase {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final LeaderboardUseCase leaderboardUsecase;

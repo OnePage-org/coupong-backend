@@ -3,7 +3,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 
 import java.util.Set;
 
-public interface RedisZSetService {
+public interface RedisZSetUseCase {
     // 레디스 템플릿 상수로, 추상 클래스로
     boolean addToZSet(String ZSetKey, String itemValue, double itemScore);
     Set<Object> getTopRankSet(String ZSetKey, int limit);

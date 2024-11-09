@@ -1,6 +1,7 @@
-package com.onepage.coupong.business.coupon;
+package com.onepage.coupong.implementation.coupon;
 
-import com.onepage.coupong.infrastructure.redis.RedisZSetService;
+import com.onepage.coupong.infrastructure.redis.RedisZSetUseCase;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -10,15 +11,11 @@ import java.util.Set;
 
 @Slf4j
 @Service
-public class IssuanceQueueService implements RedisZSetService {
+@RequiredArgsConstructor
+public class IssuanceQueueManager implements RedisZSetUseCase {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final String queueKeySeparator = "ISSUANCE QUEUE:";
-
-
-    public IssuanceQueueService(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
 
     //유저 요청 큐에 추가
     @Override
@@ -61,8 +58,6 @@ public class IssuanceQueueService implements RedisZSetService {
             Long rank = redisTemplate.opsForZSet().rank(queueKeySeparator + couponCategory, userName);
             return rank != null; // 유저가 리더보드 큐에 있으면 true, 없으면 false 리턴
         } catch (Exception e) {
-            // 예외 발생 시 로그를 남기고 false 반환
-            log.error("Error checking if user is in queue: ", e);
             return false;
         }
     }
