@@ -2,8 +2,9 @@ package com.onepage.coupong.presentation.chat;
 
 import com.onepage.coupong.business.chat.dto.FilteringRequestDto;
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
+import com.onepage.coupong.implementation.chat.ChatException;
+import com.onepage.coupong.implementation.chat.enums.ChatExceptionType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.ResponseEntity;
@@ -25,44 +26,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller @RequiredArgsConstructor
 public class ChatMessageController {
 
-    @Autowired
-    private ChatUseCase chatUseCase;
+    private final ChatUseCase chatUseCase;
 
-    private final SimpMessagingTemplate template;
-    private final Map<String, Boolean> users = new ConcurrentHashMap<>(); // 참여자 Map -> 동시성을 위한 ConcurrentHashMap사용
-
-    public void updateUserCnt() { // 참여자 수 갱신
-        int userCnt = users.size();
-        template.convertAndSend("/sub/total", users);
-        template.convertAndSend("/sub/users", userCnt);
-    }
-    @MessageMapping(value = "/enter") // 입장 메시지
+    @MessageMapping(value = "/enter")
     public void userEnter(ChatMessageDto message, StompHeaderAccessor headerAccessor) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
-        String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
-
-        message.setMessage(message.getWriter()+"님이 입장하였습니다.");
-        message.setCreatedDate(formattedDate);
-
-        // username을 WebSocket 세션에 저장
         headerAccessor.getSessionAttributes().put("username", message.getWriter());
-
-        users.put(message.getWriter(), Boolean.TRUE);
-
-        ChatMessageDto chatMessageDTO = new ChatMessageDto("입장", message.getMessage(), "");
-        template.convertAndSend("/sub/chat", chatMessageDTO);
-
-        updateUserCnt(); // 참여자 갱신
+        chatUseCase.sendMessage(chatUseCase.userEnter(message.getWriter()));
     }
 
-    @MessageMapping(value = "/messages") // 메시지 전송
+    @MessageMapping(value = "/messages")
     public void sendMessage(ChatMessageDto message) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH); // 시간 format
-        String formattedDate = LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
-
-        message.setCreatedDate(formattedDate);
-
-        template.convertAndSend("/sub/chat", message);
+        chatUseCase.sendMessage(message);
     }
 
     @PostMapping("/api/v1/filtering")
@@ -70,43 +44,27 @@ public class ChatMessageController {
 
         String message = filteringRequestDTO.getMessage();
 
-        if (message.trim().isEmpty()){ // 공백만 가면
-            return ResponseEntity.status(400).body("공백 문자열 감지");
-        } else if (message.length() > 200) { // 200글자가 넘어가면
-            return ResponseEntity.status(413).body("200자 초과 문자열 감지");
+        if (message.trim().isEmpty()){
+            throw new ChatException(ChatExceptionType.MESSAGE_BLANK);
+        } else if (message.length() > 200) {
+            throw new ChatException(ChatExceptionType.MESSAGE_TOO_LONG);
         }
 
         if(chatUseCase.filteringChatMessage(message)) {
-            return ResponseEntity.status(200).body("fail"); //욕설 필터에 걸림
+            return ResponseEntity.ok("금칙어에 해당합니다.");
         } else {
-            return ResponseEntity.status(200).body("success"); // 정상
+            return ResponseEntity.ok("금칙어에 해당하지 않습니다.");
         }
-
     }
 
-    @EventListener // 퇴장 메시지 - 세션으로 처리
+    @EventListener
     public void userExit(SessionDisconnectEvent event) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = (String) accessor.getSessionAttributes().get("username");
 
         if (username != null) {
-            users.remove(username);
-            ChatMessageDto message = new ChatMessageDto("퇴장", username + "님이 퇴장하였습니다.", "");
-            template.convertAndSend("/sub/chat", message);
-            updateUserCnt(); // 참여자 갱신
+            chatUseCase.sendMessage(chatUseCase.userExit(username));
         }
     }
 
-    public void clearUserList() {
-        users.clear(); // 사용자 목록 초기화
-        updateUserCnt();
-    }
-
-    @EventListener(ApplicationReadyEvent.class) //Spring Boot 애플리케이션이 모든 초기화 작업을 마친 후에 발생하는 이벤트
-    public void onApplicationStart() {
-        clearUserList();  // 서버 시작 시 사용자 목록 초기화
-
-        // WebSocket 강제 종료 로직 추가
-        template.convertAndSend("/sub/exit", "서버 재시작");
-    }
 }
