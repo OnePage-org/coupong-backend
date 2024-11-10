@@ -2,26 +2,18 @@ package com.onepage.coupong.presentation.chat;
 
 import com.onepage.coupong.business.chat.dto.FilteringRequestDto;
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
-import com.onepage.coupong.implementation.chat.ChatException;
+import com.onepage.coupong.global.presentation.CommonResponseEntity;
 import com.onepage.coupong.implementation.chat.enums.ChatExceptionType;
+import com.onepage.coupong.presentation.chat.enums.FilteringControllerResp;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Controller @RequiredArgsConstructor
 public class ChatMessageController {
@@ -40,20 +32,22 @@ public class ChatMessageController {
     }
 
     @PostMapping("/api/v1/filtering")
-    public ResponseEntity<?> filterMessage(@RequestBody FilteringRequestDto filteringRequestDTO) throws Exception {
+    @ResponseBody
+    public CommonResponseEntity<?> filterMessage(@RequestBody FilteringRequestDto filteringRequestDTO) throws Exception {
 
         String message = filteringRequestDTO.getMessage();
 
         if (message.trim().isEmpty()){
-            throw new ChatException(ChatExceptionType.MESSAGE_BLANK);
+            return ChatExceptionType.MESSAGE_BLANK.toResponseErrorEntity();
         } else if (message.length() > 200) {
-            throw new ChatException(ChatExceptionType.MESSAGE_TOO_LONG);
+            return ChatExceptionType.MESSAGE_TOO_LONG.toResponseErrorEntity();
         }
 
         if(chatUseCase.filteringChatMessage(message)) {
-            return ResponseEntity.ok("금칙어에 해당합니다.");
+            System.out.println(CommonResponseEntity.success(FilteringControllerResp.BAN_WORD));
+            return CommonResponseEntity.success(FilteringControllerResp.BAN_WORD);
         } else {
-            return ResponseEntity.ok("금칙어에 해당하지 않습니다.");
+            return CommonResponseEntity.success(FilteringControllerResp.ALLOW_WORD);
         }
     }
 
