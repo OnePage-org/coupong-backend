@@ -1,6 +1,5 @@
 package com.onepage.coupong.implementation.chat.enums;
 
-import com.onepage.coupong.global.presentation.CommonResponseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,4 @@ public enum ChatExceptionType {
     private final HttpStatus status;
     private final String message;
 
-    public CommonResponseEntity<?> toResponseErrorEntity() {
-        return CommonResponseEntity.error(null, status, message);
-    }
 }

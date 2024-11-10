@@ -3,6 +3,7 @@ package com.onepage.coupong.presentation.chat;
 import com.onepage.coupong.business.chat.dto.FilteringRequestDto;
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
 import com.onepage.coupong.global.presentation.CommonResponseEntity;
+import com.onepage.coupong.implementation.chat.ChatFilterException;
 import com.onepage.coupong.implementation.chat.enums.ChatExceptionType;
 import com.onepage.coupong.presentation.chat.enums.FilteringControllerResp;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-@Controller @RequiredArgsConstructor
+@Controller
+@RequiredArgsConstructor
 public class ChatMessageController {
 
     private final ChatUseCase chatUseCase;
@@ -34,21 +36,8 @@ public class ChatMessageController {
     @PostMapping("/api/v1/filtering")
     @ResponseBody
     public CommonResponseEntity<?> filterMessage(@RequestBody FilteringRequestDto filteringRequestDTO) throws Exception {
-
-        String message = filteringRequestDTO.getMessage();
-
-        if (message.trim().isEmpty()){
-            return ChatExceptionType.MESSAGE_BLANK.toResponseErrorEntity();
-        } else if (message.length() > 200) {
-            return ChatExceptionType.MESSAGE_TOO_LONG.toResponseErrorEntity();
-        }
-
-        if(chatUseCase.filteringChatMessage(message)) {
-            System.out.println(CommonResponseEntity.success(FilteringControllerResp.BAN_WORD));
-            return CommonResponseEntity.success(FilteringControllerResp.BAN_WORD);
-        } else {
-            return CommonResponseEntity.success(FilteringControllerResp.ALLOW_WORD);
-        }
+        FilteringControllerResp response = chatUseCase.filteringChatMessage(filteringRequestDTO.getMessage());
+        return CommonResponseEntity.success(response);
     }
 
     @EventListener
@@ -60,5 +49,4 @@ public class ChatMessageController {
             chatUseCase.sendMessage(chatUseCase.userExit(username));
         }
     }
-
 }

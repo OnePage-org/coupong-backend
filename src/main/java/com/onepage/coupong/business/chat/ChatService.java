@@ -3,7 +3,10 @@ package com.onepage.coupong.business.chat;
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
 import com.onepage.coupong.global.banwordFilter.PatternFiltering;
 import com.onepage.coupong.global.banwordFilter.WordListLoader;
+import com.onepage.coupong.implementation.chat.ChatFilterException;
+import com.onepage.coupong.implementation.chat.enums.ChatExceptionType;
 import com.onepage.coupong.presentation.chat.ChatUseCase;
+import com.onepage.coupong.presentation.chat.enums.FilteringControllerResp;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -42,24 +45,34 @@ public class ChatService implements ChatUseCase {
         patternFiltering.addWords(String.valueOf(WordType.allowWord), allowWords);
     }
 
-    public boolean filteringChatMessage(String chatMessage) {
-        return patternFiltering.checkBanWord(chatMessage);
+    public FilteringControllerResp filteringChatMessage(String chatMessage) {
+        if (chatMessage.trim().isEmpty()) {
+            throw new ChatFilterException(ChatExceptionType.MESSAGE_BLANK);
+        }
+        if (chatMessage.length() > 200) {
+            throw new ChatFilterException(ChatExceptionType.MESSAGE_TOO_LONG);
+        }
+
+        return patternFiltering.checkBanWord(chatMessage)
+                ? FilteringControllerResp.BAN_WORD
+                : FilteringControllerResp.ALLOW_WORD;
     }
 
     public ChatMessageDto userEnter(String username) {
         users.put(username, Boolean.TRUE);
         updateUserCnt();
-        return new ChatMessageDto("입장", username+"님이 입장하였습니다.", "");
+        return new ChatMessageDto("입장", username + "님이 입장하였습니다.", "");
     }
 
     public ChatMessageDto userExit(String username) {
         users.remove(username);
         updateUserCnt();
-        return new ChatMessageDto("퇴장", username+"님이 퇴장하였습니다.", "");
+        return new ChatMessageDto("퇴장", username + "님이 퇴장하였습니다.", "");
     }
 
     public void sendMessage(ChatMessageDto message) {
-        if (!(message.getMessage().contains("입장") || message.getMessage().contains("퇴장"))) message.setCreatedDate(getCurrentTime());
+        if (!(message.getMessage().contains("입장") || message.getMessage().contains("퇴장")))
+            message.setCreatedDate(getCurrentTime());
         template.convertAndSend("/sub/chat", message);
     }
 
