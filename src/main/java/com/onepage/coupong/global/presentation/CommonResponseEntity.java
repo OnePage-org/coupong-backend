@@ -1,23 +1,12 @@
 package com.onepage.coupong.global.presentation;
 
 import com.onepage.coupong.global.exception.CustomError;
-import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Data
-public class CommonResponseEntity<T> {
-    private final boolean success;
-    private final T response;
-    private final CustomError error;
-
-    public CommonResponseEntity(boolean success, T response, CustomError error) {
-        this.success = success;
-        this.response = response;
-        this.error = error;
-    }
+public record CommonResponseEntity<T>(boolean success, T response, CustomError error) {
 
     public static <T> CommonResponseEntity<T> success(T response) {
         return new CommonResponseEntity<>(true, response, null);

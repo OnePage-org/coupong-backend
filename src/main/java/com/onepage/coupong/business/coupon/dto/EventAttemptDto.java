@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UserRequestDto {
+public class EventAttemptDto {
     private Long id;
     private CouponCategory couponCategory;
     private Long attemptAt;
