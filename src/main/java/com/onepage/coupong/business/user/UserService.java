@@ -1,19 +1,18 @@
 package com.onepage.coupong.business.user;
 
-import com.onepage.coupong.jpa.user.enums.Logintype;
-import com.onepage.coupong.jpa.user.enums.UserRole;
-import com.onepage.coupong.business.user.dto.request.IdCheckRequestDto;
 import com.onepage.coupong.business.user.dto.request.SignInRequestDto;
 import com.onepage.coupong.business.user.dto.request.SignUpRequestDto;
 import com.onepage.coupong.business.user.dto.response.ResponseDto;
-import com.onepage.coupong.business.user.dto.response.IdCheckResponseDto;
 import com.onepage.coupong.business.user.dto.response.SignInResponseDto;
 import com.onepage.coupong.business.user.dto.response.SignUpResponseDto;
 import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
-import com.onepage.coupong.jpa.user.Certification;
-import com.onepage.coupong.jpa.user.User;
+import com.onepage.coupong.implementation.user.manager.SignUpManager;
 import com.onepage.coupong.infrastructure.auth.provider.JwtProvider;
 import com.onepage.coupong.infrastructure.mail.CertificationRepository;
+import com.onepage.coupong.jpa.user.Certification;
+import com.onepage.coupong.jpa.user.User;
+import com.onepage.coupong.jpa.user.enums.Logintype;
+import com.onepage.coupong.jpa.user.enums.UserRole;
 import com.onepage.coupong.persistence.user.UserRepository;
 import com.onepage.coupong.presentation.user.UserUseCase;
 import io.jsonwebtoken.Claims;
@@ -31,34 +30,24 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class UserService implements UserUseCase {
 
+    private final SignUpManager signUpManager;
+
     private final UserRepository userRepository;
     private final CertificationRepository certificationRepository;
     private final JwtProvider jwtProvider;
 
     /* BCryptPasswordEncoder() -> 스프링 시큐리티 프레임워크에서 제공하는 클래스 중 하나로 비밀번호를 암호화하는데 사용할 수 있는 메서드를 가진 클래스
-    * BCrypt 해싱함수를 사용해서 비밀번호를 인코딩해주는 메서드와 사용자에 의해 제출된 원본 비밀번호와 DB에 저장되어 있는 암호화된 비밀번호의 일치 여부를 확인해주는 matches() 메서드를 제공
-    * PasswordEncoder interface를 구현한 클래스이다. */
+     * BCrypt 해싱함수를 사용해서 비밀번호를 인코딩해주는 메서드와 사용자에 의해 제출된 원본 비밀번호와 DB에 저장되어 있는 암호화된 비밀번호의 일치 여부를 확인해주는 matches() 메서드를 제공
+     * PasswordEncoder interface를 구현한 클래스이다. */
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    /* 아이디 중복 검사 확인 서비스 */
+    /* 아이디 중복 검사 확인 */
     @Override
-    public ResponseEntity<? super IdCheckResponseDto> idCheck(IdCheckRequestDto dto) {
-        try {
-            String username = dto.getUsername();
-            boolean isExist = userRepository.existsByUsername(username);
-            /* 요청으로부터 받은 username이 이미 DB에 존재하는 경우 중복 코드와 메시지 반환 */
-            if (isExist) {
-                return IdCheckResponseDto.duplicated();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return IdCheckResponseDto.success();
+    public boolean duplicateCheckId(String username) {
+        return signUpManager.duplicateCheckId(username);
     }
 
     /* 회원가입 서비스 */
@@ -91,7 +80,7 @@ public class UserService implements UserUseCase {
             }
 
             /* BCryptPasswordEncoder 클래스의 encode() 메서드를 이용해 클라이언트가 입력한 비밀번호를 암호화시키기고
-            * 암호화된 비밀번호를 DB에 저장하기 위해 dto에 다시 넣어준다. */
+             * 암호화된 비밀번호를 DB에 저장하기 위해 dto에 다시 넣어준다. */
             String password = dto.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
             dto.setPassword(encodedPassword);
@@ -127,7 +116,7 @@ public class UserService implements UserUseCase {
             }
 
             /* matches() 메서드를 통해 요청으로부터 받은 원본 비밀번호와 DB에 저장된 암호화된 비밀번호를 매칭한 결과를 이용해
-            * 비밀번호가 다르다면 로그인 실패 에러를 보내준다. */
+             * 비밀번호가 다르다면 로그인 실패 에러를 보내준다. */
             String password = dto.getPassword();
             String encodedPassword = user.getPassword();
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
@@ -165,7 +154,7 @@ public class UserService implements UserUseCase {
             token = token.substring(7);
 
             /* jjwt 라이브러리와 개인키(secretKey)를 이용해서 signature를 복호화하는 과정으로
-            *  setSigngKey()가 개인키를 복호화해준다. */
+             *  setSigngKey()가 개인키를 복호화해준다. */
             Claims claim =
                     Jwts.parserBuilder().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8)).build().parseClaimsJws(token).getBody();
 
