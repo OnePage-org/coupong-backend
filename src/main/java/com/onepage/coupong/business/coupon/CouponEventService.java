@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -45,11 +46,6 @@ public class CouponEventService implements CouponEventUseCase {
     @Scheduled(cron = "00 50 23 * * ?")
     public void scheduleDailyEvents() {
         getTomorrowEvents().forEach(this::registerEvent);
-    }
-
-    @Override
-    public List<CouponEventDto> getCouponEventList() {
-        return eventInitialManager.getCouponEventList(eventProgressManagers);
     }
 
     public void addUserToQueue(EventAttemptDto eventAttemptDto) {
@@ -87,7 +83,14 @@ public class CouponEventService implements CouponEventUseCase {
         eventProgressManager.addUserCoupon(String.valueOf(item.getValue()), couponEvent.getCouponList().get(eventManagerListIndex));
     }
 
-    private List<CouponEvent> getTomorrowEvents() {
+    @Override
+    @Transactional(readOnly = true)
+    public List<CouponEventDto> getCouponEventList() {
+        return eventInitialManager.getCouponEventList(eventProgressManagers);
+    }
+
+    @Transactional(readOnly = true)
+    protected List<CouponEvent> getTomorrowEvents() {
         return eventInitialManager.getTomorrowEvents();
     }
 
@@ -100,6 +103,31 @@ public class CouponEventService implements CouponEventUseCase {
     public void initializeEventManager(CouponEvent couponEvent) {
         checkConflictEvent(couponEvent);
         eventProgressManagers.put(couponEvent.getCategory(), EventProgressManager.of(couponEvent));
+    }
+
+    public boolean isEventInitialized(CouponCategory category) {
+        return eventProgressManagers.containsKey(category);
+    }
+
+    public boolean isEventStarted(CouponCategory category) {
+        CouponEvent couponEvent = couponEvents.get(category);
+        if (couponEvent == null) {
+            throw new EventException(EventExceptionType.EVENT_NOT_FOUND);
+        }
+        return LocalDateTime.now().isAfter(couponEvent.getDate());
+    }
+
+    private boolean isEventEnded(CouponCategory category) {
+        return couponEventScheduler.isSchedulerStopped(category);
+    }
+
+    private boolean isAlreadyJoined(CouponCategory category, String userName) {
+        return issuanceQueueManager.isUserInQueue(String.valueOf(category), userName) || leaderboardQueueManager.isUserInQueue(String.valueOf(category), userName);
+    }
+
+    public boolean validEnd(CouponCategory category) {
+        EventProgressManager eventProgressManager = eventProgressManagers.get(category);
+        return eventProgressManager != null && eventProgressManager.eventEnd();
     }
 
     private void checkConflictEvent(CouponEvent couponEvent) {
@@ -127,30 +155,5 @@ public class CouponEventService implements CouponEventUseCase {
         if (isAlreadyJoined(category, username)) {
             throw new EventException(EventExceptionType.EVENT_ALREADY_JOIN);
         }
-    }
-
-    public boolean isEventInitialized(CouponCategory category) {
-        return eventProgressManagers.containsKey(category);
-    }
-
-    public boolean isEventStarted(CouponCategory category) {
-        CouponEvent couponEvent = couponEvents.get(category);
-        if (couponEvent == null) {
-            throw new EventException(EventExceptionType.EVENT_NOT_FOUND);
-        }
-        return LocalDateTime.now().isAfter(couponEvent.getDate());
-    }
-
-    private boolean isEventEnded(CouponCategory category) {
-        return couponEventScheduler.isSchedulerStopped(category);
-    }
-
-    private boolean isAlreadyJoined(CouponCategory category, String userName) {
-        return issuanceQueueManager.isUserInQueue(String.valueOf(category), userName) || leaderboardQueueManager.isUserInQueue(String.valueOf(category), userName);
-    }
-
-    public boolean validEnd(CouponCategory category) {
-        EventProgressManager eventProgressManager = eventProgressManagers.get(category);
-        return eventProgressManager != null && eventProgressManager.eventEnd();
     }
 }
