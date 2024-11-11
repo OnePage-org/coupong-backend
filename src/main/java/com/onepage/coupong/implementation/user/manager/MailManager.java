@@ -88,6 +88,8 @@ public class MailManager {
             throw new CertificationException(CertificationExceptionType.CERTIFICATION_UNAVAILABLE);
         }
 
+        certificationRepository.delete(certification);
+
         return true;
     }
 }
