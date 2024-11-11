@@ -1,14 +1,13 @@
 package com.onepage.coupong.presentation.user;
 
 import com.onepage.coupong.business.user.dto.request.IdCheckReq;
-import com.onepage.coupong.business.user.dto.request.SignUpReq;
 import com.onepage.coupong.business.user.dto.request.SignInReq;
+import com.onepage.coupong.business.user.dto.request.SignUpReq;
 import com.onepage.coupong.business.user.dto.response.SignInResp;
-import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
+import com.onepage.coupong.business.user.dto.response.TokenResp;
 import com.onepage.coupong.global.presentation.CommonResponseEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.onepage.coupong.global.presentation.CommonResponseEntity.success;
@@ -41,9 +40,7 @@ public class UserController {
 
     /* 요청 헤더로부터 받은 Authorization 복호화 후 유저 정보 반환 API */
     @GetMapping("/tokenDecryption")
-    public ResponseEntity<? super TokenResponseDto> tokenDecryption(
-            @RequestHeader("Authorization") String token
-    ) {
-        return userUseCase.tokenDecryption(token);
+    public CommonResponseEntity<TokenResp> tokenDecryption(@RequestHeader("Authorization") String token) {
+        return success(userUseCase.tokenDecryption(token));
     }
 }
