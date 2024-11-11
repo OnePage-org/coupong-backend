@@ -1,11 +1,10 @@
 package com.onepage.coupong.presentation.chat;
 
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
-import com.onepage.coupong.presentation.chat.enums.FilteringControllerResp;
 
 public interface ChatUseCase {
     // 메시지 내에서 금칙어 확인
-    FilteringControllerResp filteringChatMessage(String chatMessage) throws Exception;
+    boolean filteringChatMessage(String chatMessage) throws Exception;
     // 사용자 입장
     ChatMessageDto userEnter(String username);
     // 사용자 퇴장

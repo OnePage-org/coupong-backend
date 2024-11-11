@@ -7,7 +7,6 @@ import com.onepage.coupong.implementation.chat.ChatFilterException;
 import com.onepage.coupong.implementation.chat.enums.ChatExceptionType;
 import com.onepage.coupong.implementation.chat.manager.ChatMessageManager;
 import com.onepage.coupong.presentation.chat.ChatUseCase;
-import com.onepage.coupong.presentation.chat.enums.FilteringControllerResp;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +43,7 @@ public class ChatService implements ChatUseCase {
         patternFiltering.addWords(String.valueOf(WordType.allowWord), allowWords);
     }
 
-    public FilteringControllerResp filteringChatMessage(String chatMessage) {
+    public boolean filteringChatMessage(String chatMessage) {
         if (chatMessage.trim().isEmpty()) {
             throw new ChatFilterException(ChatExceptionType.MESSAGE_BLANK);
         }
@@ -52,9 +51,7 @@ public class ChatService implements ChatUseCase {
             throw new ChatFilterException(ChatExceptionType.MESSAGE_TOO_LONG);
         }
 
-        return patternFiltering.checkBanWord(chatMessage)
-                ? FilteringControllerResp.BAN_WORD
-                : FilteringControllerResp.ALLOW_WORD;
+        return patternFiltering.checkBanWord(chatMessage);
     }
 
     public ChatMessageDto userEnter(String username) {

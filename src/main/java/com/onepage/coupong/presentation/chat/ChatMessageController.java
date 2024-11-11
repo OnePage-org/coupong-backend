@@ -3,8 +3,6 @@ package com.onepage.coupong.presentation.chat;
 import com.onepage.coupong.business.chat.dto.FilteringRequestDto;
 import com.onepage.coupong.business.chat.dto.ChatMessageDto;
 import com.onepage.coupong.global.presentation.CommonResponseEntity;
-import com.onepage.coupong.implementation.chat.ChatFilterException;
-import com.onepage.coupong.implementation.chat.enums.ChatExceptionType;
 import com.onepage.coupong.presentation.chat.enums.FilteringControllerResp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -36,7 +34,10 @@ public class ChatMessageController {
     @PostMapping("/api/v1/filtering")
     @ResponseBody
     public CommonResponseEntity<?> filterMessage(@RequestBody FilteringRequestDto filteringRequestDTO) throws Exception {
-        FilteringControllerResp response = chatUseCase.filteringChatMessage(filteringRequestDTO.getMessage());
+        boolean filteringResponse = chatUseCase.filteringChatMessage(filteringRequestDTO.getMessage());
+
+        FilteringControllerResp response = filteringResponse ? FilteringControllerResp.BAN_WORD : FilteringControllerResp.ALLOW_WORD;
+
         return CommonResponseEntity.success(response);
     }
 
