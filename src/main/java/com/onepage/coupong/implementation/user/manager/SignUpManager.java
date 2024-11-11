@@ -1,7 +1,7 @@
 package com.onepage.coupong.implementation.user.manager;
 
-import com.onepage.coupong.business.user.dto.IdCheckDto;
-import com.onepage.coupong.business.user.dto.SignUpDto;
+import com.onepage.coupong.business.user.dto.request.IdCheckReq;
+import com.onepage.coupong.business.user.dto.request.SignUpReq;
 import com.onepage.coupong.jpa.user.User;
 import com.onepage.coupong.persistence.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +22,19 @@ public class SignUpManager {
      * PasswordEncoder interface를 구현한 클래스이다. */
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public boolean isAvailableId(IdCheckDto idCheckDto) {
-        if (userRepository.existsByUsername(idCheckDto.getUsername())) {
+    public boolean isAvailableId(IdCheckReq idCheckReq) {
+        if (userRepository.existsByUsername(idCheckReq.getUsername())) {
             return false;
         }
         return true;
     }
 
-    public boolean registerUser(SignUpDto signUpDto) {
+    public boolean registerUser(SignUpReq signUpReq) {
         /* BCryptPasswordEncoder 클래스의 encode() 메서드를 이용해 클라이언트가 입력한 비밀번호를 암호화시킨 후 넣어준다 */
         User user = User.builder()
-                .username(signUpDto.getUsername())
-                .password(passwordEncoder.encode(signUpDto.getPassword()))
-                .email(signUpDto.getEmail())
+                .username(signUpReq.getUsername())
+                .password(passwordEncoder.encode(signUpReq.getPassword()))
+                .email(signUpReq.getEmail())
                 .build();
 
         userRepository.save(user);

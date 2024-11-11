@@ -2,7 +2,6 @@ package com.onepage.coupong.jpa.user;
 
 import com.onepage.coupong.jpa.user.enums.Logintype;
 import com.onepage.coupong.jpa.user.enums.UserRole;
-import com.onepage.coupong.business.user.dto.SignUpDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

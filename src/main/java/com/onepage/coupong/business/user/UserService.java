@@ -1,15 +1,15 @@
 package com.onepage.coupong.business.user;
 
-import com.onepage.coupong.business.user.dto.IdCheckDto;
-import com.onepage.coupong.business.user.dto.SignUpDto;
-import com.onepage.coupong.business.user.dto.request.SignInRequestDto;
+import com.onepage.coupong.business.user.dto.request.IdCheckReq;
+import com.onepage.coupong.business.user.dto.request.SignUpReq;
+import com.onepage.coupong.business.user.dto.request.SignInReq;
 import com.onepage.coupong.business.user.dto.response.ResponseDto;
-import com.onepage.coupong.business.user.dto.response.SignInResponseDto;
-import com.onepage.coupong.business.user.dto.response.SignUpResponseDto;
+import com.onepage.coupong.business.user.dto.response.SignInResp;
 import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
+import com.onepage.coupong.implementation.user.UserException;
+import com.onepage.coupong.implementation.user.enums.UserExceptionType;
+import com.onepage.coupong.implementation.user.manager.SignInManager;
 import com.onepage.coupong.implementation.user.manager.SignUpManager;
-import com.onepage.coupong.infrastructure.auth.provider.JwtProvider;
-import com.onepage.coupong.infrastructure.mail.CertificationRepository;
 import com.onepage.coupong.jpa.user.User;
 import com.onepage.coupong.jpa.user.enums.Logintype;
 import com.onepage.coupong.jpa.user.enums.UserRole;
@@ -20,8 +20,6 @@ import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -31,67 +29,32 @@ import java.nio.charset.StandardCharsets;
 public class UserService implements UserUseCase {
 
     private final SignUpManager signUpManager;
+    private final SignInManager signInManager;
 
     private final UserRepository userRepository;
-    private final JwtProvider jwtProvider;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     /* 아이디 중복 검사 확인 */
     @Override
-    public boolean isAvailableId(IdCheckDto idCheckDto) {
-        return signUpManager.isAvailableId(idCheckDto);
+    public boolean isAvailableId(IdCheckReq idCheckReq) {
+        return signUpManager.isAvailableId(idCheckReq);
     }
 
-    /* 회원가입 서비스
+    /* 회원가입
      * 아이디 중복 검사, 비밀번호 검증, 인증번호 검증 등 백엔드에서도 처리를 해줘야 할것 같은데 회원가입 서비스에서 해줘야하는지 의문
      * 일단 현재는 등록하는 기능만 넣어놨음
      * 인증번호 검사 버튼과 API를 추가 구현해놔야 할듯함 따로 구현한다면 certification 정보는 Request에 필요없음 */
     @Override
-    public boolean signUp(SignUpDto signUpDto) {
-        return signUpManager.registerUser(signUpDto);
+    public boolean signUp(SignUpReq signUpReq) {
+        return signUpManager.registerUser(signUpReq);
     }
 
-    /* 로그인 서비스 */
+    /* 로그인 */
     @Override
-    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
-
-        /* 로그인이 성공적으로 되면 token과 권한에 대한 정보를 생성해서 보내줘야함. */
-        String token = null;
-        UserRole role;
-
-        try {
-            /* 로그인 요청에 입력한 username이 DB에 존재하지 않으면 로그인 실패 에러를 보내준다. */
-            String username = dto.getUsername();
-            User user = userRepository.findUserByUsername(username);
-            if (user == null) {
-                return SignInResponseDto.signInFailed();
-            }
-
-            /* matches() 메서드를 통해 요청으로부터 받은 원본 비밀번호와 DB에 저장된 암호화된 비밀번호를 매칭한 결과를 이용해
-             * 비밀번호가 다르다면 로그인 실패 에러를 보내준다. */
-            String password = dto.getPassword();
-            String encodedPassword = user.getPassword();
-            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-            if (!isMatched) {
-                return SignInResponseDto.signInFailed();
-            }
-
-            /* 로그인이 성공한 경우 토큰 생성 */
-            token = jwtProvider.create(username);
-
-            role = user.getRole();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-
-        /* 성공 코드, 메시지와 토큰을 함께 보내준다. */
-        return SignInResponseDto.success(token, role);
+    public SignInResp signIn(SignInReq signInReq) {
+        return signInManager.signIn(signInReq);
     }
 
     @Override
@@ -115,7 +78,8 @@ public class UserService implements UserUseCase {
                     Jwts.parserBuilder().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8)).build().parseClaimsJws(token).getBody();
 
             String getUsername = claim.getSubject();
-            User user = userRepository.findUserByUsername(getUsername);
+            User user = userRepository.findByUsername(getUsername)
+                    .orElseThrow(() -> new UserException(UserExceptionType.USER_NOT_FOUND));
             if (user == null) {
                 return ResponseDto.validationFailed();
             }
@@ -148,7 +112,8 @@ public class UserService implements UserUseCase {
                     Jwts.parserBuilder().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8)).build().parseClaimsJws(token).getBody();
 
             String getUsername = claim.getSubject();
-            User user = userRepository.findUserByUsername(getUsername);
+            User user = userRepository.findByUsername(getUsername)
+                    .orElseThrow(() -> new UserException(UserExceptionType.USER_NOT_FOUND));
 
             if (user == null) {
                 return null;

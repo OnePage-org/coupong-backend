@@ -1,12 +1,11 @@
 package com.onepage.coupong.presentation.user;
 
-import com.onepage.coupong.business.user.dto.IdCheckDto;
-import com.onepage.coupong.business.user.dto.request.SignInRequestDto;
-import com.onepage.coupong.business.user.dto.SignUpDto;
-import com.onepage.coupong.business.user.dto.response.SignInResponseDto;
+import com.onepage.coupong.business.user.dto.request.IdCheckReq;
+import com.onepage.coupong.business.user.dto.request.SignUpReq;
+import com.onepage.coupong.business.user.dto.request.SignInReq;
+import com.onepage.coupong.business.user.dto.response.SignInResp;
 import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
 import com.onepage.coupong.global.presentation.CommonResponseEntity;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,22 +23,20 @@ public class UserController {
 
     /* ID 중복 검사 요청 API */
     @PostMapping("/idCheck")
-    public CommonResponseEntity<Boolean> isAvailableId(@RequestBody IdCheckDto idCheckDto) {
-        return success(userUseCase.isAvailableId(idCheckDto));
+    public CommonResponseEntity<Boolean> isAvailableId(@RequestBody IdCheckReq idCheckReq) {
+        return success(userUseCase.isAvailableId(idCheckReq));
     }
 
     /* 회원가입 요청 API */
     @PostMapping("/signUp")
-    public CommonResponseEntity<Boolean> signUp(@RequestBody SignUpDto signUpDto) {
-        return success(userUseCase.signUp(signUpDto));
+    public CommonResponseEntity<Boolean> signUp(@RequestBody SignUpReq signUpReq) {
+        return success(userUseCase.signUp(signUpReq));
     }
 
     /* 로그인 요청 API */
     @PostMapping("/signIn")
-    public ResponseEntity<? super SignInResponseDto> signIn(
-            @RequestBody @Valid SignInRequestDto requestBody
-    ) {
-        return userUseCase.signIn(requestBody);
+    public CommonResponseEntity<SignInResp> signIn(@RequestBody SignInReq signInReq) {
+        return success(userUseCase.signIn(signInReq));
     }
 
     /* 요청 헤더로부터 받은 Authorization 복호화 후 유저 정보 반환 API */
