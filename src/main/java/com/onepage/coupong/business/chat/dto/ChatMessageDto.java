@@ -4,8 +4,9 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 public class ChatMessageDto {
+    private String type;
     private String writer;
     private String message;
     private String createdDate;

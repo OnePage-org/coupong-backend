@@ -5,17 +5,14 @@ import com.onepage.coupong.global.banwordFilter.PatternFiltering;
 import com.onepage.coupong.global.banwordFilter.WordListLoader;
 import com.onepage.coupong.implementation.chat.ChatFilterException;
 import com.onepage.coupong.implementation.chat.enums.ChatExceptionType;
+import com.onepage.coupong.implementation.chat.manager.ChatMessageManager;
 import com.onepage.coupong.presentation.chat.ChatUseCase;
 import com.onepage.coupong.presentation.chat.enums.FilteringControllerResp;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,14 +22,16 @@ public class ChatService implements ChatUseCase {
     private final PatternFiltering patternFiltering;
     private final Map<String, Boolean> users = new ConcurrentHashMap<>();
     private final SimpMessagingTemplate template;
+    private final ChatMessageManager chatMessageManager;
 
     enum WordType {
         banWord,
         allowWord
     }
 
-    public ChatService(SimpMessagingTemplate template) throws IOException {
+    public ChatService(SimpMessagingTemplate template, ChatMessageManager chatMessageManager) throws IOException {
         this.template = template;
+        this.chatMessageManager = chatMessageManager;
         this.patternFiltering = new PatternFiltering();
         initializeBanWords();
     }
@@ -61,18 +60,19 @@ public class ChatService implements ChatUseCase {
     public ChatMessageDto userEnter(String username) {
         users.put(username, Boolean.TRUE);
         updateUserCnt();
-        return new ChatMessageDto("입장", username + "님이 입장하였습니다.", "");
+        ChatMessageDto message = chatMessageManager.createEnterMessage(username);
+        return chatMessageManager.createChatMessage(message.getMessage(), username, message.getType());
     }
 
     public ChatMessageDto userExit(String username) {
         users.remove(username);
         updateUserCnt();
-        return new ChatMessageDto("퇴장", username + "님이 퇴장하였습니다.", "");
+        ChatMessageDto message = chatMessageManager.createExitMessage(username);
+        return chatMessageManager.createChatMessage(message.getMessage(), username, message.getType());
     }
 
     public void sendMessage(ChatMessageDto message) {
-        if (!(message.getMessage().contains("입장") || message.getMessage().contains("퇴장")))
-            message.setCreatedDate(getCurrentTime());
+        message = chatMessageManager.createChatMessage(message.getMessage(), message.getWriter(), message.getType());
         template.convertAndSend("/sub/chat", message);
     }
 
@@ -81,8 +81,4 @@ public class ChatService implements ChatUseCase {
         template.convertAndSend("/sub/users", users.size());
     }
 
-    public String getCurrentTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, hh:mm a", Locale.ENGLISH);
-        return LocalDateTime.now(ZoneId.of("Asia/Seoul")).format(formatter);
-    }
 }

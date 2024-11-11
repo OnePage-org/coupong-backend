@@ -14,6 +14,4 @@ public interface ChatUseCase {
     void sendMessage(ChatMessageDto message);
     // 사용자 수 및 목록 업데이트
     void updateUserCnt();
-    // 메시지 전송 시간
-    String getCurrentTime();
 }
