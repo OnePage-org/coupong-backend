@@ -1,6 +1,9 @@
 package com.onepage.coupong.implementation.user.manager;
 
+import com.onepage.coupong.business.user.dto.request.CertificationCheckReq;
 import com.onepage.coupong.business.user.dto.request.EmailCertificationReq;
+import com.onepage.coupong.implementation.user.CertificationException;
+import com.onepage.coupong.implementation.user.enums.CertificationExceptionType;
 import com.onepage.coupong.infrastructure.mail.exception.MailException;
 import com.onepage.coupong.infrastructure.mail.exception.enums.MailExceptionType;
 import com.onepage.coupong.jpa.user.Certification;
@@ -20,7 +23,6 @@ public class MailManager {
     /* MailConfig 에서 등록해둔 Bean을 autowired 해 사용하기 */
     private final JavaMailSender emailSender;
     private final CertificationRepository certificationRepository;
-
 
     @Value("${mail.naver.id}")
     private String from;
@@ -73,5 +75,19 @@ public class MailManager {
                 .certification(certificationNumber)
                 .build();
         certificationRepository.save(certification);
+    }
+
+    public boolean isAvailableCertification(CertificationCheckReq certificationCheckReq) {
+
+        /* 해당 사용자에 대한 인증번호 정보가 없다면 에러 반환 */
+        Certification certification = certificationRepository.findByUsername(certificationCheckReq.getUsername())
+                .orElseThrow(() -> new CertificationException(CertificationExceptionType.CERTIFICATION_NOT_FOUND));
+
+        /* 인증번호 검증을 위해 클라이언트가 작성한 인증번호가 다르다면 에러 반환 */
+        if (!certification.getCertification().equals(certificationCheckReq.getCertification())) {
+            throw new CertificationException(CertificationExceptionType.CERTIFICATION_UNAVAILABLE);
+        }
+
+        return true;
     }
 }

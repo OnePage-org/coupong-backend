@@ -1,12 +1,9 @@
 package com.onepage.coupong.presentation.user;
 
-import com.onepage.coupong.business.user.dto.request.CheckEmailCertificationRequestDto;
+import com.onepage.coupong.business.user.dto.request.CertificationCheckReq;
 import com.onepage.coupong.business.user.dto.request.EmailCertificationReq;
-import com.onepage.coupong.business.user.dto.response.CheckEmailCertificationResponseDto;
 import com.onepage.coupong.global.presentation.CommonResponseEntity;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,16 +20,13 @@ public class MailController {
 
     /* 메일 전송 API */
     @PostMapping("/sendMail")
-    public CommonResponseEntity<Boolean> sendMail(@RequestBody EmailCertificationReq emailCertificationReq){
+    public CommonResponseEntity<Boolean> sendMail(@RequestBody EmailCertificationReq emailCertificationReq) {
         return success(mailUseCase.sendMessage(emailCertificationReq));
     }
 
     /* 인증번호 검증 API */
     @PostMapping("/checkCertification")
-    ResponseEntity<? super CheckEmailCertificationResponseDto> checkCertification(
-            @RequestBody @Valid CheckEmailCertificationRequestDto requestBody
-    ) {
-        ResponseEntity<? super CheckEmailCertificationResponseDto> response = mailUseCase.verifyCode(requestBody);
-        return response;
+    public CommonResponseEntity<Boolean> checkCertification(@RequestBody CertificationCheckReq certificationCheckReq) {
+        return success(mailUseCase.isAvailableCertification(certificationCheckReq));
     }
 }

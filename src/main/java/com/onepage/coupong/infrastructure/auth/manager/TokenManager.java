@@ -1,6 +1,5 @@
 package com.onepage.coupong.infrastructure.auth.manager;
 
-import com.onepage.coupong.business.user.dto.response.ResponseDto;
 import com.onepage.coupong.implementation.user.UserException;
 import com.onepage.coupong.implementation.user.enums.UserExceptionType;
 import com.onepage.coupong.infrastructure.auth.exception.AuthException;
