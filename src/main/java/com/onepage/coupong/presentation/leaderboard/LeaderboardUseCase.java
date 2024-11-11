@@ -1,9 +1,18 @@
 package com.onepage.coupong.presentation.leaderboard;
 
-import java.util.Set;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
+import java.util.Map;
 
 public interface LeaderboardUseCase {
-    public void updateLeaderboard(String couponCategory, Set<Object> topWinners, double entryTime);
 
-    public String createLeaderboardUpdateMessage(String couponCategory, Set<Object> topWinners, double entryTime);
+    SseEmitter addSseEmitter();
+
+    Map<String, Map<Object, Double>> getLeaderboard(String couponCategory);
+
+    void clearLeaderboard(String couponCategory);
+
+    List<String> getAllCategories();
+
 }
