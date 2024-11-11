@@ -2,6 +2,8 @@ package com.onepage.coupong.implementation.user.manager;
 
 import com.onepage.coupong.business.user.dto.request.IdCheckReq;
 import com.onepage.coupong.business.user.dto.request.SignUpReq;
+import com.onepage.coupong.implementation.user.UserException;
+import com.onepage.coupong.implementation.user.enums.UserExceptionType;
 import com.onepage.coupong.jpa.user.User;
 import com.onepage.coupong.persistence.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,13 @@ public class SignUpManager {
 
     public boolean isAvailableId(IdCheckReq idCheckReq) {
         if (userRepository.existsByUsername(idCheckReq.getUsername())) {
-            return false;
+            throw new UserException(UserExceptionType.UNAVAILABLE_USERNAME);
         }
         return true;
     }
 
     public boolean registerUser(SignUpReq signUpReq) {
+
         /* BCryptPasswordEncoder 클래스의 encode() 메서드를 이용해 클라이언트가 입력한 비밀번호를 암호화시킨 후 넣어준다 */
         User user = User.builder()
                 .username(signUpReq.getUsername())

@@ -59,7 +59,7 @@ public class MailManager {
             /* 보내는 사람의 이메일 주소 */
             message.setFrom(from);
         } catch (MessagingException e) {
-            throw new MailException(MailExceptionType.MAIL_SEND_ERROR);
+            throw new MailException(MailExceptionType.MAIL_CREATE_ERROR);
         }
         return message;
     }

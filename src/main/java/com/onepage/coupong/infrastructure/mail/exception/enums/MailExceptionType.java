@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 public enum MailExceptionType {
-    MAIL_SEND_ERROR(HttpStatus.BAD_REQUEST, "400");
+    MAIL_CREATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500");
 
     private final HttpStatus status;
     private final String code;
