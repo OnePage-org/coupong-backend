@@ -2,9 +2,10 @@ package com.onepage.coupong.jpa.user;
 
 import com.onepage.coupong.jpa.user.enums.Logintype;
 import com.onepage.coupong.jpa.user.enums.UserRole;
-import com.onepage.coupong.business.user.dto.request.SignUpRequestDto;
+import com.onepage.coupong.business.user.dto.SignUpDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,11 +41,12 @@ public class User {
      */
 
     /* 이메일 인증을 통해 회원가입할 때 사용할 생성자
-    * 웹페이지에서 회원가입하기 때문에 type은 WEB으로 저장됨 */
-    public User(SignUpRequestDto dto) {
-        this.username = dto.getUsername();
-        this.password = dto.getPassword();
-        this.email = dto.getEmail();
+    * 웹 페이지에서 회원가입하기 때문에 type은 WEB으로 저장됨 */
+    @Builder
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
         type = Logintype.WEB;
         role = UserRole.ROLE_USER;
     }

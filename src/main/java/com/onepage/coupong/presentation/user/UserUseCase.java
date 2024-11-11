@@ -1,7 +1,8 @@
 package com.onepage.coupong.presentation.user;
 
+import com.onepage.coupong.business.user.dto.IdCheckDto;
 import com.onepage.coupong.business.user.dto.request.SignInRequestDto;
-import com.onepage.coupong.business.user.dto.request.SignUpRequestDto;
+import com.onepage.coupong.business.user.dto.SignUpDto;
 import com.onepage.coupong.business.user.dto.response.SignInResponseDto;
 import com.onepage.coupong.business.user.dto.response.SignUpResponseDto;
 import com.onepage.coupong.business.user.dto.response.TokenResponseDto;
@@ -10,10 +11,10 @@ import org.springframework.http.ResponseEntity;
 public interface UserUseCase {
 
     /* 아이디 중복 검사 서비스 */
-    boolean duplicateCheckId(String username);
+    boolean isAvailableId(IdCheckDto idCheckDto);
 
     /* 회원가입 서비스*/
-    ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto);
+    boolean signUp(SignUpDto signUpDto);
 
     /* 로그인 서비스 */
     ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto);
