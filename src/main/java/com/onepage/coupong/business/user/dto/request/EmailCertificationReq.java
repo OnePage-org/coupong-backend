@@ -7,14 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
-@NoArgsConstructor
-public class EmailCertificationRequestDto {
+public class EmailCertificationReq {
 
-    @NotBlank
     private String username;
-
-    @NotBlank
-    @Email
     private String email;
+
 }

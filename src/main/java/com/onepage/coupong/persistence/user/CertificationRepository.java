@@ -1,4 +1,4 @@
-package com.onepage.coupong.infrastructure.mail;
+package com.onepage.coupong.persistence.user;
 
 import com.onepage.coupong.jpa.user.Certification;
 import jakarta.transaction.Transactional;
