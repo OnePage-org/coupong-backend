@@ -24,15 +24,19 @@ public class SignUpManager {
      * PasswordEncoder interface를 구현한 클래스이다. */
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public boolean isAvailableId(IdCheckReq idCheckReq) {
-        if (userRepository.existsByUsername(idCheckReq.getUsername())) {
+    public void isAvailableId(String username) {
+        if (userRepository.existsByUsername(username)) {
             throw new UserException(UserExceptionType.UNAVAILABLE_USERNAME);
         }
-        return true;
     }
 
-    public boolean registerUser(SignUpReq signUpReq) {
+    public void isAvailablePassword(String password, String passwordCheck) {
+        if (!password.equals(passwordCheck)) {
+            throw new UserException(UserExceptionType.UNAVAILABLE_PASSWORD);
+        }
+    }
 
+    public void registerUser(SignUpReq signUpReq) {
         /* BCryptPasswordEncoder 클래스의 encode() 메서드를 이용해 클라이언트가 입력한 비밀번호를 암호화시킨 후 넣어준다 */
         User user = User.builder()
                 .username(signUpReq.getUsername())
@@ -41,6 +45,5 @@ public class SignUpManager {
                 .build();
 
         userRepository.save(user);
-        return true;
     }
 }

@@ -77,19 +77,17 @@ public class MailManager {
         certificationRepository.save(certification);
     }
 
-    public boolean isAvailableCertification(CertificationCheckReq certificationCheckReq) {
+    public void isAvailableCertification(String username, String certificationNumber) {
 
         /* 해당 사용자에 대한 인증번호 정보가 없다면 에러 반환 */
-        Certification certification = certificationRepository.findByUsername(certificationCheckReq.getUsername())
+        Certification certification = certificationRepository.findByUsername(username)
                 .orElseThrow(() -> new CertificationException(CertificationExceptionType.CERTIFICATION_NOT_FOUND));
 
         /* 인증번호 검증을 위해 클라이언트가 작성한 인증번호가 다르다면 에러 반환 */
-        if (!certification.getCertification().equals(certificationCheckReq.getCertification())) {
+        if (!certification.getCertification().equals(certificationNumber)) {
             throw new CertificationException(CertificationExceptionType.CERTIFICATION_UNAVAILABLE);
         }
 
         certificationRepository.delete(certification);
-
-        return true;
     }
 }

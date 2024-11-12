@@ -41,6 +41,6 @@ public class MailService implements MailUseCase {
     /* 사용자가 입력한 인증번호와 서버에서 생성한 인증번호를 비교하는 메서드 */
     @Override
     public boolean isAvailableCertification(CertificationCheckReq certificationCheckReq) {
-        return mailManager.isAvailableCertification(certificationCheckReq);
+        return mailManager.isAvailableCertification(certificationCheckReq.getUsername(), certificationCheckReq.getCertification());
     }
 }
