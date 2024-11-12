@@ -35,26 +35,26 @@ public class LeaderboardQueueManager implements RedisZSetUseCase {
 
     @Override
     public Set<Object> getZSet(String couponCategory) {
-        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, -1); // 전체 사용자 가져오기
+        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, -1);
     }
 
     @Override
     public Set<ZSetOperations.TypedTuple<Object>> getTopRankSetWithScore(String couponCategory, int limit) {
-        return redisTemplate.opsForZSet().rangeWithScores(queueKeySeparator + couponCategory, 0, limit - 1); // 상위 사용자 및 점수 가져오기
+        return redisTemplate.opsForZSet().rangeWithScores(queueKeySeparator + couponCategory, 0, limit - 1);
     }
 
     @Override
     public Set<Object> getTopRankSet(String couponCategory, int limit) {
-        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, limit - 1); // 상위 사용자 가져오기
+        return redisTemplate.opsForZSet().range(queueKeySeparator + couponCategory, 0, limit - 1);
     }
 
     @Override
     public void removeItemFromZSet(String couponCategory, String itemValue) {
-        redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue); // 사용자 제거
+        redisTemplate.opsForZSet().remove(queueKeySeparator + couponCategory, itemValue);
     }
 
     public void clearLeaderboardQueue(String couponCategory) {
-        redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1); // 모든 사용자 제거
+        redisTemplate.opsForZSet().removeRange(queueKeySeparator + couponCategory, 0, -1);
         updateLeaderboard(couponCategory, null);
     }
 

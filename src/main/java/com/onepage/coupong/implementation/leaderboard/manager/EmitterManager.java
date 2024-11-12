@@ -17,14 +17,17 @@ public class EmitterManager {
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
 
         emitters.add(sseEmitter);
+        extracted(sseEmitter);
 
+        return sseEmitter;
+    }
+
+    private void extracted(SseEmitter sseEmitter) {
         sseEmitter.onCompletion(() -> emitters.remove(sseEmitter));
         sseEmitter.onTimeout(() -> {
             sseEmitter.complete();
             emitters.remove(sseEmitter);
         });
-
-        return sseEmitter;
     }
 
     public void sendMessageToEmitters(String message) {

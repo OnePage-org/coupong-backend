@@ -1,12 +1,14 @@
 package com.onepage.coupong.presentation.leaderboard;
 
+import com.onepage.coupong.business.leaderboard.dto.CategoryDto;
+import com.onepage.coupong.business.leaderboard.dto.LeaderboardDto;
+import com.onepage.coupong.business.leaderboard.dto.SseEmitterDto;
 import com.onepage.coupong.global.presentation.CommonResponseEntity;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.*;
 
@@ -20,15 +22,32 @@ public class LeaderboardController {
 
     private final LeaderboardUseCase leaderboardUseCase;
 
+//    @GetMapping(value = "/sse/leaderboard/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+//    public SseEmitter streamLeaderboardUpdates() {
+//        return leaderboardUseCase.addSseEmitter();
+//    }
+//
+//    @GetMapping("/sse/leaderboard")
+//    public Map<String, Map<Object, Double>> getLeaderboard(@RequestParam String couponCategory) {
+//        return leaderboardUseCase.getLeaderboard(couponCategory);
+//    }
+
     @GetMapping(value = "/sse/leaderboard/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter streamLeaderboardUpdates() {
-        return leaderboardUseCase.addSseEmitter();
+    public CommonResponseEntity<SseEmitterDto> streamLeaderboardUpdates() {
+        SseEmitterDto dto = leaderboardUseCase.addSseEmitter();
+        return success(dto);
     }
 
     @GetMapping("/sse/leaderboard")
-    public Map<String, Map<Object, Double>> getLeaderboard(@RequestParam String couponCategory) {
-        return leaderboardUseCase.getLeaderboard(couponCategory);
+    public CommonResponseEntity<LeaderboardDto> getLeaderboard(@RequestParam String couponCategory) {
+        LeaderboardDto dto = leaderboardUseCase.getLeaderboard(couponCategory);
+        return success(dto);
     }
+
+//    @GetMapping("/sse/leaderboard")
+//    public Map<String, Map<Object, Double>> getLeaderboard(@RequestParam String couponCategory) {
+//        return leaderboardUseCase.getLeaderboard(couponCategory);
+//    }
 
     @PostMapping("/sse/leaderboard/clear")
     public CommonResponseEntity<String> clearLeaderboard(@RequestParam String couponCategory) {
@@ -37,11 +56,17 @@ public class LeaderboardController {
     }
 
     @GetMapping("/api/categories")
-    public CommonResponseEntity<List<String>> getAllCategories() {
-        List<String> categories = Arrays.stream(CouponCategory.values())
-                .filter(category -> category != CouponCategory.DEFAULT)
-                .map(Enum::name)
-                .toList();
-        return success(categories);
+    public CommonResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> dtos = leaderboardUseCase.getAllCategories();
+        return success(dtos);
     }
+
+//    @GetMapping("/api/categories")
+//    public CommonResponseEntity<List<String>> getAllCategories() {
+//        List<String> categories = Arrays.stream(CouponCategory.values())
+//                .filter(category -> category != CouponCategory.DEFAULT)
+//                .map(Enum::name)
+//                .toList();
+//        return success(categories);
+//    }
 }

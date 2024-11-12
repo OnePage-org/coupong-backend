@@ -1,18 +1,21 @@
 package com.onepage.coupong.presentation.leaderboard;
 
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import com.onepage.coupong.business.leaderboard.dto.CategoryDto;
+import com.onepage.coupong.business.leaderboard.dto.LeaderboardDto;
+import com.onepage.coupong.business.leaderboard.dto.SseEmitterDto;
 
 import java.util.List;
 import java.util.Map;
 
 public interface LeaderboardUseCase {
 
-    SseEmitter addSseEmitter();
+    SseEmitterDto addSseEmitter();
 
-    Map<String, Map<Object, Double>> getLeaderboard(String couponCategory);
+    LeaderboardDto getLeaderboard(String couponCategory);
+//Map<String, Map<Object, Double>> getLeaderboard(String couponCategory);
 
     void clearLeaderboard(String couponCategory);
 
-    List<String> getAllCategories();
+    List<CategoryDto> getAllCategories();
 
 }
