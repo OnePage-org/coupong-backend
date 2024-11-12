@@ -39,11 +39,6 @@ public class LeaderboardService implements LeaderboardUseCase {
         return LeaderboardDtoMapper.toViewLeaderboard(leaderboard);
     }
 
-//    @Override
-//    public Map<String, Map<Object, Double>> getLeaderboard(String couponCategory) {
-//        return leaderboardQueueManager.getLeaderboard(couponCategory);
-//    }
-
     @Override
     public void clearLeaderboard(String couponCategory) {
         leaderboardQueueManager.clearLeaderboardQueue(couponCategory);
