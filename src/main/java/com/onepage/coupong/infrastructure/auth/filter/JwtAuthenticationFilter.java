@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -49,7 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             /* 검증까지 완료했을 경우 토큰에서 꺼내온 userId와 UserRepository를 이용해 User의 정보를 가져오는 작업. */
-            User user = userRepository.findUserByUsername(username);
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException(username));
             /* ROLE_USER, ROLE_ADMIN */
             String role = String.valueOf(user.getRole());
 

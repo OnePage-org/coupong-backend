@@ -3,6 +3,7 @@ package com.onepage.coupong.jpa.user;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Certification {
 
     @Id
@@ -21,4 +21,10 @@ public class Certification {
     /* 인증번호 */
     private String certification;
 
+    @Builder
+    public Certification(String username, String email, String certification) {
+        this.username = username;
+        this.email = email;
+        this.certification = certification;
+    }
 }

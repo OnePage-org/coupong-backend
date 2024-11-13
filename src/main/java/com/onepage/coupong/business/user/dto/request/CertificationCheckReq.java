@@ -1,6 +1,5 @@
 package com.onepage.coupong.business.user.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,12 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SignInRequestDto {
+public class CertificationCheckReq {
 
-    @NotBlank
     private String username;
-
-    @NotBlank
-    private String password;
+    private String email;
+    private String certification;
 
 }

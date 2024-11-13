@@ -44,7 +44,7 @@ public class MailConfig {
         /* SMTP starttless 사용 */
         properties.setProperty("mail.smtp.starttls.enable", "true");
         /* 디버그 사용 */
-        properties.setProperty("mail.debug", "true");
+//        properties.setProperty("mail.debug", "true");
         /* ssl 인증 서버 (smtp 서버명) */
         properties.setProperty("mail.smtp.ssl.trust", "smtp.naver.com");
         /* ssl 사용 */
