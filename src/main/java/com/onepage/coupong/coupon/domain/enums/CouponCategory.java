@@ -1,5 +1,5 @@
 package com.onepage.coupong.coupon.domain.enums;
 
 public enum CouponCategory {
-    CHICKEN, PIZZA, COFFEE, HAMBURGER, DEFAULT
+    NAVER_POINT_TWO, NAVER_POINT_ONE, CHICKEN, PIZZA, COFFEE, HAMBURGER, DEFAULT
 }
