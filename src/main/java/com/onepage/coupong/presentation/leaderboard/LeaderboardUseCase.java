@@ -1,9 +1,19 @@
 package com.onepage.coupong.presentation.leaderboard;
 
-import java.util.Set;
+import com.onepage.coupong.business.leaderboard.dto.CategoryDto;
+import com.onepage.coupong.business.leaderboard.dto.LeaderboardDto;
+import com.onepage.coupong.business.leaderboard.dto.SseEmitterDto;
+
+import java.util.List;
 
 public interface LeaderboardUseCase {
-    public void updateLeaderboard(String couponCategory, Set<Object> topWinners, double entryTime);
 
-    public String createLeaderboardUpdateMessage(String couponCategory, Set<Object> topWinners, double entryTime);
+    SseEmitterDto addSseEmitter();
+
+    LeaderboardDto getLeaderboard(String couponCategory);
+
+    void clearLeaderboard(String couponCategory);
+
+    List<CategoryDto> getAllCategories();
+
 }

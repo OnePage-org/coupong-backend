@@ -10,7 +10,7 @@ import com.onepage.coupong.implementation.coupon.EventException;
 import com.onepage.coupong.implementation.coupon.manager.EventProgressManager;
 import com.onepage.coupong.jpa.coupon.enums.CouponCategory;
 import com.onepage.coupong.global.scheduler.CouponEventScheduler;
-import com.onepage.coupong.implementation.leaderboard.LeaderboardQueueManager;
+import com.onepage.coupong.implementation.leaderboard.manager.LeaderboardQueueManager;
 import com.onepage.coupong.presentation.coupon.CouponEventUseCase;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
