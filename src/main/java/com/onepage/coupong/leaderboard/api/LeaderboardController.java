@@ -53,7 +53,9 @@ public class LeaderboardController {
     @GetMapping("/api/categories")
     public ResponseEntity<List<String>> getAllCategories() {
         List<String> categories = Arrays.stream(CouponCategory.values())
-                .filter(category -> category != CouponCategory.DEFAULT)
+//                .filter(category -> category != CouponCategory.DEFAULT)
+                .filter(category -> category != CouponCategory.HAMBURGER && category != CouponCategory.CHICKEN
+                        && category != CouponCategory.PIZZA) //  이벤트 세팅을 위한 사용하지 않는 데이터 제외
                 .map(Enum::name)
                 .toList();
         return ResponseEntity.ok(categories);

@@ -72,7 +72,7 @@ public class CouponEventService {
             couponEvents.put(event.getCategory(), event);
 
             log.info("이벤트 초기화: 카테고리 = {}, 쿠폰 수 = {}, 시작 시간 = {}",
-                    event.getCategory(), event.getCoupon_publish_nums(), event.getDate() + "\n");
+                    event.getCategory(), event.getCoupon_publish_nums(), event.getDate());
 
             // 각 이벤트마다 스케줄을 동적으로 등록
             couponEventScheduler.scheduleEvent(event, this);
@@ -89,7 +89,7 @@ public class CouponEventService {
         EventManager eventManager = new EventManager(couponEvent.getName(), couponEvent.getCategory(), couponEvent.getDate(), couponEvent.getCoupon_publish_nums(), 0);
         eventManagers.put(couponEvent.getCategory(), eventManager);
 
-        log.info("이벤트 초기화 완료: 카테고리 = {}", couponEvent.getCategory());
+        log.info("이벤트 초기화 완료: 카테고리 = {} \n\n", couponEvent.getCategory());
     }
 
     public boolean isEventInitialized(CouponCategory category) {
